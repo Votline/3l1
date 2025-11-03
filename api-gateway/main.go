@@ -33,5 +33,6 @@ func main() {
 	log := setupLog()
 
 	srv := routers.NewServer(log)
+	log.Debug("Server starting...")
 	log.Fatal("Fatal server failure", zap.Any("Error", srv.ListenAndServe()))
 }

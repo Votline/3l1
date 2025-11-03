@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"os"
 	"time"
 	"net/http"
 
@@ -17,7 +18,7 @@ func NewServer(log *zap.Logger) *http.Server {
 
 	routing(r)
 
-	addr := ":8443"
+	addr := ":"+os.Getenv("API_PORT")
 	return &http.Server{
 		Handler: r,
 		Addr: addr,
