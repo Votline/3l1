@@ -213,6 +213,102 @@ func (x *RegRes) GetToken() string {
 	return ""
 }
 
+type LogReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	PasswordHash  string                 `protobuf:"bytes,3,opt,name=password_hash,json=passwordHash,proto3" json:"password_hash,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LogReq) Reset() {
+	*x = LogReq{}
+	mi := &file_user_service_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LogReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LogReq) ProtoMessage() {}
+
+func (x *LogReq) ProtoReflect() protoreflect.Message {
+	mi := &file_user_service_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LogReq.ProtoReflect.Descriptor instead.
+func (*LogReq) Descriptor() ([]byte, []int) {
+	return file_user_service_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *LogReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *LogReq) GetPasswordHash() string {
+	if x != nil {
+		return x.PasswordHash
+	}
+	return ""
+}
+
+type LogRes struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LogRes) Reset() {
+	*x = LogRes{}
+	mi := &file_user_service_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LogRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LogRes) ProtoMessage() {}
+
+func (x *LogRes) ProtoReflect() protoreflect.Message {
+	mi := &file_user_service_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LogRes.ProtoReflect.Descriptor instead.
+func (*LogRes) Descriptor() ([]byte, []int) {
+	return file_user_service_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *LogRes) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
 var File_user_service_proto protoreflect.FileDescriptor
 
 const file_user_service_proto_rawDesc = "" +
@@ -227,6 +323,11 @@ const file_user_service_proto_rawDesc = "" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12#\n" +
 	"\rpassword_hash\x18\x03 \x01(\tR\fpasswordHash\"\x1e\n" +
 	"\x06RegRes\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\"F\n" +
+	"\x06LogReq\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12#\n" +
+	"\rpassword_hash\x18\x03 \x01(\tR\fpasswordHash\"\x1e\n" +
+	"\x06LogRes\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token2b\n" +
 	"\vUserService\x12*\n" +
 	"\bHashPswd\x12\x0e.users.HashReq\x1a\x0e.users.HashRes\x12'\n" +
@@ -244,12 +345,14 @@ func file_user_service_proto_rawDescGZIP() []byte {
 	return file_user_service_proto_rawDescData
 }
 
-var file_user_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_user_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_user_service_proto_goTypes = []any{
 	(*HashReq)(nil), // 0: users.HashReq
 	(*HashRes)(nil), // 1: users.HashRes
 	(*RegReq)(nil),  // 2: users.RegReq
 	(*RegRes)(nil),  // 3: users.RegRes
+	(*LogReq)(nil),  // 4: users.LogReq
+	(*LogRes)(nil),  // 5: users.LogRes
 }
 var file_user_service_proto_depIdxs = []int32{
 	0, // 0: users.UserService.HashPswd:input_type -> users.HashReq
@@ -274,7 +377,7 @@ func file_user_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_service_proto_rawDesc), len(file_user_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
