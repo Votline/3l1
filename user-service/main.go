@@ -47,10 +47,11 @@ func (us *userserver) HashPswd(ctx context.Context, req *pb.HashReq) (*pb.HashRe
 }
 
 func (us *userserver) RegUser(ctx context.Context, req *pb.RegReq) (*pb.RegRes, error) {
-	name := req.GetName()
-	role := req.GetRole()
-	pswd := req.GetPasswordHash()
-	id   := uuid.New().String()
+	name  := req.GetName()
+	email := req.GetEmail()
+	role  := req.GetRole()
+	pswd  := req.GetPasswordHash()
+	id    := uuid.New().String()
 
 	token, err := crypto.GenJWT(id, role)
 	if err != nil {
@@ -58,10 +59,30 @@ func (us *userserver) RegUser(ctx context.Context, req *pb.RegReq) (*pb.RegRes, 
 		return nil, err
 	}
 
-	if err := us.repo.AddUser(id, name, role, pswd); err != nil {
+	if err := us.repo.AddUser(id, name+email, role, pswd); err != nil {
 		us.log.Error("Failed to add user into db", zap.Error(err))
 		return nil, err
 	}
 
 	return &pb.RegRes{Token: token}, nil
+}
+
+func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, error) {
+	name := req.GetName()
+	email := req.GetEmail()
+	pswd := req.GetPasswordHash()
+
+	data, err := us.repo.LogUser(name+email, pswd);
+	if err != nil {
+		us.log.Error("Failed login user", zap.Error(err))
+		return nil, err
+	}
+
+	token, err := crypto.GenJWT(data.ID, data.Role)
+	if err != nil {
+		us.log.Error("Failed create jwt token", zap.Error(err))
+		return nil, err
+	}
+
+	return &pb.LogRes{Token: token}, nil
 }

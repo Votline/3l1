@@ -43,14 +43,19 @@ func (r *Repo) initDB() *sqlx.DB {
 	return nil
 }
 
-func (r *Repo) AddUser(id, name, role, pswd string) error {
+type User struct {
+	ID   string
+	Role string
+}
+
+func (r *Repo) AddUser(id, userName, role, pswd string) error {
 	query, args, err := r.bd.
 		Insert("users").
-		Columns("id", "name", "role", "pswd").
-		Values(id, name, role, pswd).
+		Columns("id", "user_name", "role", "pswd").
+		Values(id, userName, role, pswd).
 		ToSql()
 	if err != nil {
-		r.log.Error("Failed to create error", zap.Error(err))
+		r.log.Error("Failed to create query", zap.Error(err))
 		return err
 	}
 
@@ -60,4 +65,25 @@ func (r *Repo) AddUser(id, name, role, pswd string) error {
 	}
 
 	return nil
+}
+
+func (r *Repo) LogUser(userName, pswd string) (*User, error){
+	query, args, err := r.bd.
+		Select("users").
+		Columns("id", "role").
+		Where(sq.Eq{"user_name":userName}).
+		Where(sq.Eq{"password":pswd}).
+		ToSql()
+	if err != nil {
+		r.log.Error("Failed to create query", zap.Error(err))
+		return nil, err
+	}
+
+	var data User
+	if err := r.db.QueryRow(query, args...).Scan(&data.ID, &data.Role); err != nil {
+		r.log.Error("Failed to execute query", zap.Error(err))
+		return nil, err
+	}
+
+	return &data, nil
 }
