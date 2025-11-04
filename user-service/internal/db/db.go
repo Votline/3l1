@@ -1,6 +1,9 @@
 package db
 
 import (
+	"os"
+	"time"
+
 	"go.uber.org/zap"
 	_ "github.com/lib/pq"
 	"github.com/jmoiron/sqlx"
@@ -25,11 +28,12 @@ func (r *Repo) initDB() *sqlx.DB {
 	var db *sqlx.DB
 	var err error
 
-	connStr := ""
+	connStr := os.Getenv("POSTGRES_URL")
 	for i := 0; i < 10; i++ {
 		db, err = sqlx.Connect("postgres", connStr)
 		if err != nil {
 			r.log.Error("Connect PQ error", zap.Error(err))
+			time.Sleep(1*time.Second)
 			continue
 		}
 		r.log.Debug("Successfully connected")

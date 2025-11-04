@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"net"
 	"context"
 
@@ -22,7 +23,7 @@ type userserver struct {
 
 func main() {
 	log, _ := zap.NewDevelopment()
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", ":"+os.Getenv("US_PORT"))
 	if err != nil {
 		log.Fatal("Couldn't listen tcp user-service port", zap.Error(err))
 	}
