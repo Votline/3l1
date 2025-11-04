@@ -11,16 +11,18 @@ message HashRes {
 }
 
 message RegReq {
-  string name = 1;
-  string role = 2;
-  string password_hash = 3;
+  string name  = 1;
+  string email = 2;
+  string role  = 3;
+  string password_hash = 4;
 }
 message RegRes {
   string token = 1;
 }
 
 message LogReq {
-  string user_id = 1;
+  string name  = 1;
+  string email = 2;
   string password_hash = 3;
 }
 message LogRes {
@@ -30,4 +32,5 @@ message LogRes {
 service UserService {
   rpc HashPswd (HashReq) returns (HashRes);
   rpc RegUser (RegReq) returns (RegRes);
+  rpc LogUser (LogReq) returns (LogRes);
 }

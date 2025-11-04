@@ -112,8 +112,9 @@ func (x *HashRes) GetPasswordHash() string {
 type RegReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Role          string                 `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
-	PasswordHash  string                 `protobuf:"bytes,3,opt,name=password_hash,json=passwordHash,proto3" json:"password_hash,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
+	PasswordHash  string                 `protobuf:"bytes,4,opt,name=password_hash,json=passwordHash,proto3" json:"password_hash,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,6 +152,13 @@ func (*RegReq) Descriptor() ([]byte, []int) {
 func (x *RegReq) GetName() string {
 	if x != nil {
 		return x.Name
+	}
+	return ""
+}
+
+func (x *RegReq) GetEmail() string {
+	if x != nil {
+		return x.Email
 	}
 	return ""
 }
@@ -215,7 +223,8 @@ func (x *RegRes) GetToken() string {
 
 type LogReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	PasswordHash  string                 `protobuf:"bytes,3,opt,name=password_hash,json=passwordHash,proto3" json:"password_hash,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -251,9 +260,16 @@ func (*LogReq) Descriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *LogReq) GetUserId() string {
+func (x *LogReq) GetName() string {
 	if x != nil {
-		return x.UserId
+		return x.Name
+	}
+	return ""
+}
+
+func (x *LogReq) GetEmail() string {
+	if x != nil {
+		return x.Email
 	}
 	return ""
 }
@@ -317,21 +333,24 @@ const file_user_service_proto_rawDesc = "" +
 	"\aHashReq\x12\x1a\n" +
 	"\bpassword\x18\x01 \x01(\tR\bpassword\".\n" +
 	"\aHashRes\x12#\n" +
-	"\rpassword_hash\x18\x01 \x01(\tR\fpasswordHash\"U\n" +
+	"\rpassword_hash\x18\x01 \x01(\tR\fpasswordHash\"k\n" +
 	"\x06RegReq\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
-	"\x04role\x18\x02 \x01(\tR\x04role\x12#\n" +
-	"\rpassword_hash\x18\x03 \x01(\tR\fpasswordHash\"\x1e\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
+	"\x04role\x18\x03 \x01(\tR\x04role\x12#\n" +
+	"\rpassword_hash\x18\x04 \x01(\tR\fpasswordHash\"\x1e\n" +
 	"\x06RegRes\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\"F\n" +
-	"\x06LogReq\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12#\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\"W\n" +
+	"\x06LogReq\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12#\n" +
 	"\rpassword_hash\x18\x03 \x01(\tR\fpasswordHash\"\x1e\n" +
 	"\x06LogRes\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token2b\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token2\x8b\x01\n" +
 	"\vUserService\x12*\n" +
 	"\bHashPswd\x12\x0e.users.HashReq\x1a\x0e.users.HashRes\x12'\n" +
-	"\aRegUser\x12\r.users.RegReq\x1a\r.users.RegResB\x10Z\x0e./;userserviceb\x06proto3"
+	"\aRegUser\x12\r.users.RegReq\x1a\r.users.RegRes\x12'\n" +
+	"\aLogUser\x12\r.users.LogReq\x1a\r.users.LogResB\x10Z\x0e./;userserviceb\x06proto3"
 
 var (
 	file_user_service_proto_rawDescOnce sync.Once
@@ -357,10 +376,12 @@ var file_user_service_proto_goTypes = []any{
 var file_user_service_proto_depIdxs = []int32{
 	0, // 0: users.UserService.HashPswd:input_type -> users.HashReq
 	2, // 1: users.UserService.RegUser:input_type -> users.RegReq
-	1, // 2: users.UserService.HashPswd:output_type -> users.HashRes
-	3, // 3: users.UserService.RegUser:output_type -> users.RegRes
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	4, // 2: users.UserService.LogUser:input_type -> users.LogReq
+	1, // 3: users.UserService.HashPswd:output_type -> users.HashRes
+	3, // 4: users.UserService.RegUser:output_type -> users.RegRes
+	5, // 5: users.UserService.LogUser:output_type -> users.LogRes
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
