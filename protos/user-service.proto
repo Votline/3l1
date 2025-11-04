@@ -19,6 +19,14 @@ message RegRes {
   string token = 1;
 }
 
+message LogReq {
+  string user_id = 1;
+  string password_hash = 3;
+}
+message LogRes {
+  string token = 1;
+}
+
 service UserService {
   rpc HashPswd (HashReq) returns (HashRes);
   rpc RegUser (RegReq) returns (RegRes);
