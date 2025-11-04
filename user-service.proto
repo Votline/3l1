@@ -1,0 +1,23 @@
+syntax = "proto3";
+package users;
+
+option go_package = "./;userservice";
+
+message HashReq {
+  string password = 1;
+}
+message HashRes {
+  string password_hash = 1;
+}
+
+message RegReq {
+  string password_hash = 1;
+}
+message RegRes {
+  string token = 1;
+}
+
+service UserService {
+  rpc HashPswd (HashReq) returns (HashRes);
+  rpc RegUser (RegReq) returns (RegRes);
+}
