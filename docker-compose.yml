@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: ./api-gateway/Dockerfile
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
     env_file:
       - .env
     ports:

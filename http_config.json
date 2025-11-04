@@ -1,0 +1,17 @@
+[
+    {
+        "id": "1",
+        "type": "http",
+        "url": "http://localhost/api/users",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+			"name":"viz",
+			"role":"admin",
+			"password":"pswd"
+		},
+        "response": "-"
+    }
+]
