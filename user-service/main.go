@@ -50,14 +50,15 @@ func (us *userserver) RegUser(ctx context.Context, req *pb.RegReq) (*pb.RegRes, 
 	name := req.GetName()
 	role := req.GetRole()
 	pswd := req.GetPasswordHash()
+	id   := uuid.New().String()
 
-	token, err := crypto.GenJWT(uuid.New().String(), role)
+	token, err := crypto.GenJWT(id, role)
 	if err != nil {
 		us.log.Error("Failed create jwt token", zap.Error(err))
 		return nil, err
 	}
 
-	if err := us.repo.AddUser(name, role, pswd); err != nil {
+	if err := us.repo.AddUser(id, name, role, pswd); err != nil {
 		us.log.Error("Failed to add user into db", zap.Error(err))
 		return nil, err
 	}

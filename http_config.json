@@ -2,16 +2,16 @@
     {
         "id": "1",
         "type": "http",
-        "url": "http://localhost/api/users",
+        "url": "http://localhost:8443/api/users",
         "method": "POST",
         "headers": {
             "Content-Type": "application/json"
         },
         "body": {
-			"name":"viz",
-			"role":"admin",
-			"password":"pswd"
-		},
-        "response": "-"
+            "name": "viz",
+            "role": "admin",
+            "password": "pswd"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjIzNDE5NzAsInJvbGUiOiIiLCJ1c2VyX2lkIjoiYTBkZDkyMWItMjM4ZC00MGFlLWExZGUtMGVkOWFmMGI2MjNmIn0.lA0Jumm5MJzmmxa9J8PACy_ulOy7r0JV5b-b4eqHg7Q\"}\n"
     }
 ]

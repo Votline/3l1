@@ -1,6 +1,7 @@
 package crypto
 
 import (
+	"os"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -23,5 +24,5 @@ func GenJWT(userID, role string) (string, error) {
 		"exp": time.Now().Add(24*time.Hour).Unix(),
 	}
 
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte("secret"))
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(os.Getenv("JWT_SECRET")))
 }

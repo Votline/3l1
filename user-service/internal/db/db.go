@@ -33,7 +33,7 @@ func (r *Repo) initDB() *sqlx.DB {
 		db, err = sqlx.Connect("postgres", connStr)
 		if err != nil {
 			r.log.Error("Connect PQ error", zap.Error(err))
-			time.Sleep(1*time.Second)
+			time.Sleep(2*time.Second)
 			continue
 		}
 		r.log.Debug("Successfully connected")
@@ -43,11 +43,11 @@ func (r *Repo) initDB() *sqlx.DB {
 	return nil
 }
 
-func (r *Repo) AddUser(name, role, pswd string) error {
+func (r *Repo) AddUser(id, name, role, pswd string) error {
 	query, args, err := r.bd.
 		Insert("users").
-		Columns("name", "role", "pswd").
-		Values(name, role, pswd).
+		Columns("id", "name", "role", "pswd").
+		Values(id, name, role, pswd).
 		ToSql()
 	if err != nil {
 		r.log.Error("Failed to create error", zap.Error(err))
