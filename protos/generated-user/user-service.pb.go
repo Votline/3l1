@@ -111,7 +111,9 @@ func (x *HashRes) GetPasswordHash() string {
 
 type RegReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PasswordHash  string                 `protobuf:"bytes,1,opt,name=password_hash,json=passwordHash,proto3" json:"password_hash,omitempty"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Role          string                 `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
+	PasswordHash  string                 `protobuf:"bytes,3,opt,name=password_hash,json=passwordHash,proto3" json:"password_hash,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,6 +146,20 @@ func (x *RegReq) ProtoReflect() protoreflect.Message {
 // Deprecated: Use RegReq.ProtoReflect.Descriptor instead.
 func (*RegReq) Descriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *RegReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *RegReq) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
 }
 
 func (x *RegReq) GetPasswordHash() string {
@@ -205,9 +221,11 @@ const file_user_service_proto_rawDesc = "" +
 	"\aHashReq\x12\x1a\n" +
 	"\bpassword\x18\x01 \x01(\tR\bpassword\".\n" +
 	"\aHashRes\x12#\n" +
-	"\rpassword_hash\x18\x01 \x01(\tR\fpasswordHash\"-\n" +
-	"\x06RegReq\x12#\n" +
-	"\rpassword_hash\x18\x01 \x01(\tR\fpasswordHash\"\x1e\n" +
+	"\rpassword_hash\x18\x01 \x01(\tR\fpasswordHash\"U\n" +
+	"\x06RegReq\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
+	"\x04role\x18\x02 \x01(\tR\x04role\x12#\n" +
+	"\rpassword_hash\x18\x03 \x01(\tR\fpasswordHash\"\x1e\n" +
 	"\x06RegRes\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token2b\n" +
 	"\vUserService\x12*\n" +
