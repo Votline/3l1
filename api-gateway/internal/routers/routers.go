@@ -12,6 +12,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 
 	"gateway/internal/users"
+	"gateway/internal/orders"
 	"gateway/internal/service"
 )
 
@@ -53,6 +54,7 @@ func NewServer(log *zap.Logger) *http.Server {
 func routing(r *chi.Mux, log *zap.Logger) {
 	services := []service.Service{
 		users.New(log),
+		orders.New(log),
 	}
 
 	for _, svc := range services {

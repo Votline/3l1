@@ -1,0 +1,34 @@
+[
+    {
+        "id": "1",
+        "type": "http",
+        "url": "http://localhost:8443/api/orders",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "user_id": "123",
+            "target_url": "https://lol.com",
+            "service_url": "https://nakrutka.com",
+            "order_type": "likes",
+            "quantity": 200
+        },
+        "response": "rpc error: code = Unknown desc = pq: duplicate key value violates unique constraint \"orders_user_id_key\"\n"
+    },
+    {
+        "id": "2",
+        "type": "http",
+        "url": "http://localhost:8443/api/orders/{RESPONSE id=1 json:id}",
+        "method": "GET",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "name": "viz",
+            "email": "yomi@duck.com",
+            "password": "pswd"
+        },
+        "response": "{\"created_at\":\"seconds:1762353295 nanos:221553000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1762353295 nanos:221553000\",\"user_id\":\"123\"}\n"
+    }
+]

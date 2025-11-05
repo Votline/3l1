@@ -69,7 +69,7 @@ func (r *Repo) AddOrder(order *Order) error {
 	}
 
 	if _, err := r.db.Exec(query, args...); err != nil {
-		r.log.Error("Faield to execute query")
+		r.log.Error("Failed to execute query")
 		return err
 	}
 

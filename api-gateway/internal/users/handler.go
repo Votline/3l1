@@ -9,7 +9,7 @@ import (
 	pb "github.com/Votline/3l1/protos/generated-user"
 )
 
-func (uc usersClient) regUser(w http.ResponseWriter, r *http.Request) {
+func (uc *usersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
 	req := struct{
 		Name  string `json:"name"`
@@ -49,7 +49,7 @@ func (uc usersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (uc usersClient) logUser(w http.ResponseWriter, r *http.Request) {
+func (uc *usersClient) logUser(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
 	req := struct {
 		Name  string `json:"name"`
