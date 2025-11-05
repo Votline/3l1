@@ -1,0 +1,28 @@
+syntax = "proto3";
+package orders;
+
+option go_package = "./;ordersservice";
+
+message AddOrderReq {
+  string user_id = 1;
+  string post_url = 2;
+  string service_type = 3;
+  int32 quantity = 4;
+  string smm_service_id = 5;
+}
+message AddOrderRes {
+  string id = 1;
+}
+
+message CheckOrderReq {
+  string id = 1;
+}
+message CheckOrderRes {
+  string id = 1;
+  string status = 2;
+}
+
+service OrderService {
+  rpc AddOrder (AddOrderReq) returns (AddOrderRes);
+  rpc CheckOrder (CheckOrderReq) returns (CheckOrderRes);
+}
