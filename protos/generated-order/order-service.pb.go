@@ -9,6 +9,7 @@ package ordersservice
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -24,10 +25,10 @@ const (
 type AddOrderReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	PostUrl       string                 `protobuf:"bytes,2,opt,name=post_url,json=postUrl,proto3" json:"post_url,omitempty"`
-	ServiceType   string                 `protobuf:"bytes,3,opt,name=service_type,json=serviceType,proto3" json:"service_type,omitempty"`
+	TargetUrl     string                 `protobuf:"bytes,2,opt,name=target_url,json=targetUrl,proto3" json:"target_url,omitempty"`
+	OrderType     string                 `protobuf:"bytes,3,opt,name=order_type,json=orderType,proto3" json:"order_type,omitempty"`
 	Quantity      int32                  `protobuf:"varint,4,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	SmmServiceId  string                 `protobuf:"bytes,5,opt,name=smm_service_id,json=smmServiceId,proto3" json:"smm_service_id,omitempty"`
+	ServiceUrl    string                 `protobuf:"bytes,5,opt,name=service_url,json=serviceUrl,proto3" json:"service_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -69,16 +70,16 @@ func (x *AddOrderReq) GetUserId() string {
 	return ""
 }
 
-func (x *AddOrderReq) GetPostUrl() string {
+func (x *AddOrderReq) GetTargetUrl() string {
 	if x != nil {
-		return x.PostUrl
+		return x.TargetUrl
 	}
 	return ""
 }
 
-func (x *AddOrderReq) GetServiceType() string {
+func (x *AddOrderReq) GetOrderType() string {
 	if x != nil {
-		return x.ServiceType
+		return x.OrderType
 	}
 	return ""
 }
@@ -90,9 +91,9 @@ func (x *AddOrderReq) GetQuantity() int32 {
 	return 0
 }
 
-func (x *AddOrderReq) GetSmmServiceId() string {
+func (x *AddOrderReq) GetServiceUrl() string {
 	if x != nil {
-		return x.SmmServiceId
+		return x.ServiceUrl
 	}
 	return ""
 }
@@ -189,6 +190,11 @@ type CheckOrderRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	TargetUrl     string                 `protobuf:"bytes,3,opt,name=target_url,json=targetUrl,proto3" json:"target_url,omitempty"`
+	ServiceUrl    string                 `protobuf:"bytes,4,opt,name=service_url,json=serviceUrl,proto3" json:"service_url,omitempty"`
+	OrderType     string                 `protobuf:"bytes,5,opt,name=order_type,json=orderType,proto3" json:"order_type,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -237,24 +243,72 @@ func (x *CheckOrderRes) GetStatus() string {
 	return ""
 }
 
+func (x *CheckOrderRes) GetTargetUrl() string {
+	if x != nil {
+		return x.TargetUrl
+	}
+	return ""
+}
+
+func (x *CheckOrderRes) GetServiceUrl() string {
+	if x != nil {
+		return x.ServiceUrl
+	}
+	return ""
+}
+
+func (x *CheckOrderRes) GetOrderType() string {
+	if x != nil {
+		return x.OrderType
+	}
+	return ""
+}
+
+func (x *CheckOrderRes) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *CheckOrderRes) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
 var File_order_service_proto protoreflect.FileDescriptor
 
 const file_order_service_proto_rawDesc = "" +
 	"\n" +
-	"\x13order-service.proto\x12\x06orders\"\xa6\x01\n" +
+	"\x13order-service.proto\x12\x06orders\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa1\x01\n" +
 	"\vAddOrderReq\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x19\n" +
-	"\bpost_url\x18\x02 \x01(\tR\apostUrl\x12!\n" +
-	"\fservice_type\x18\x03 \x01(\tR\vserviceType\x12\x1a\n" +
-	"\bquantity\x18\x04 \x01(\x05R\bquantity\x12$\n" +
-	"\x0esmm_service_id\x18\x05 \x01(\tR\fsmmServiceId\"\x1d\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1d\n" +
+	"\n" +
+	"target_url\x18\x02 \x01(\tR\ttargetUrl\x12\x1d\n" +
+	"\n" +
+	"order_type\x18\x03 \x01(\tR\torderType\x12\x1a\n" +
+	"\bquantity\x18\x04 \x01(\x05R\bquantity\x12\x1f\n" +
+	"\vservice_url\x18\x05 \x01(\tR\n" +
+	"serviceUrl\"\x1d\n" +
 	"\vAddOrderRes\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\x1f\n" +
 	"\rCheckOrderReq\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"7\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x8c\x02\n" +
 	"\rCheckOrderRes\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
-	"\x06status\x18\x02 \x01(\tR\x06status2\x80\x01\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"target_url\x18\x03 \x01(\tR\ttargetUrl\x12\x1f\n" +
+	"\vservice_url\x18\x04 \x01(\tR\n" +
+	"serviceUrl\x12\x1d\n" +
+	"\n" +
+	"order_type\x18\x05 \x01(\tR\torderType\x129\n" +
+	"\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt2\x80\x01\n" +
 	"\fOrderService\x124\n" +
 	"\bAddOrder\x12\x13.orders.AddOrderReq\x1a\x13.orders.AddOrderRes\x12:\n" +
 	"\n" +
@@ -274,21 +328,24 @@ func file_order_service_proto_rawDescGZIP() []byte {
 
 var file_order_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_order_service_proto_goTypes = []any{
-	(*AddOrderReq)(nil),   // 0: orders.AddOrderReq
-	(*AddOrderRes)(nil),   // 1: orders.AddOrderRes
-	(*CheckOrderReq)(nil), // 2: orders.CheckOrderReq
-	(*CheckOrderRes)(nil), // 3: orders.CheckOrderRes
+	(*AddOrderReq)(nil),           // 0: orders.AddOrderReq
+	(*AddOrderRes)(nil),           // 1: orders.AddOrderRes
+	(*CheckOrderReq)(nil),         // 2: orders.CheckOrderReq
+	(*CheckOrderRes)(nil),         // 3: orders.CheckOrderRes
+	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_order_service_proto_depIdxs = []int32{
-	0, // 0: orders.OrderService.AddOrder:input_type -> orders.AddOrderReq
-	2, // 1: orders.OrderService.CheckOrder:input_type -> orders.CheckOrderReq
-	1, // 2: orders.OrderService.AddOrder:output_type -> orders.AddOrderRes
-	3, // 3: orders.OrderService.CheckOrder:output_type -> orders.CheckOrderRes
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	4, // 0: orders.CheckOrderRes.created_at:type_name -> google.protobuf.Timestamp
+	4, // 1: orders.CheckOrderRes.updated_at:type_name -> google.protobuf.Timestamp
+	0, // 2: orders.OrderService.AddOrder:input_type -> orders.AddOrderReq
+	2, // 3: orders.OrderService.CheckOrder:input_type -> orders.CheckOrderReq
+	1, // 4: orders.OrderService.AddOrder:output_type -> orders.AddOrderRes
+	3, // 5: orders.OrderService.CheckOrder:output_type -> orders.CheckOrderRes
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_order_service_proto_init() }

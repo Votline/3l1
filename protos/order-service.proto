@@ -2,13 +2,14 @@ syntax = "proto3";
 package orders;
 
 option go_package = "./;ordersservice";
+import "google/protobuf/timestamp.proto";
 
 message AddOrderReq {
   string user_id = 1;
-  string post_url = 2;
-  string service_type = 3;
+  string target_url = 2;
+  string order_type = 3;
   int32 quantity = 4;
-  string smm_service_id = 5;
+  string service_url = 5;
 }
 message AddOrderRes {
   string id = 1;
@@ -20,6 +21,11 @@ message CheckOrderReq {
 message CheckOrderRes {
   string id = 1;
   string status = 2;
+  string target_url = 3;
+  string service_url = 4;
+  string order_type = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
 service OrderService {
