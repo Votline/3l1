@@ -19,7 +19,7 @@ message OrderInfoReq {
   string id = 1;
 }
 message OrderInfoRes {
-  string id = 1;
+  string user_id = 1;
   string status = 2;
   string target_url = 3;
   string service_url = 4;
