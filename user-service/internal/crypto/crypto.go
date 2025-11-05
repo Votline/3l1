@@ -16,6 +16,10 @@ func Hash(source string) (string, error) {
 	}
 	return string(bytes), nil
 }
+func CheckPswd(hash, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
 
 func GenJWT(userID, role string) (string, error) {
 	claims := jwt.MapClaims{

@@ -46,6 +46,7 @@ func (r *Repo) initDB() *sqlx.DB {
 type User struct {
 	ID   string
 	Role string
+	Pswd string
 }
 
 func (r *Repo) AddUser(id, userName, role, pswd string) error {
@@ -69,10 +70,9 @@ func (r *Repo) AddUser(id, userName, role, pswd string) error {
 
 func (r *Repo) LogUser(userName, pswd string) (*User, error){
 	query, args, err := r.bd.
-		Select("users").
-		Columns("id", "role").
+		Select("id", "role", "pswd").
+		From("users").
 		Where(sq.Eq{"user_name":userName}).
-		Where(sq.Eq{"password":pswd}).
 		ToSql()
 	if err != nil {
 		r.log.Error("Failed to create query", zap.Error(err))
@@ -80,7 +80,11 @@ func (r *Repo) LogUser(userName, pswd string) (*User, error){
 	}
 
 	var data User
-	if err := r.db.QueryRow(query, args...).Scan(&data.ID, &data.Role); err != nil {
+	if err := r.db.QueryRow(query, args...).Scan(
+		&data.ID,
+		&data.Role,
+		&data.Pswd);
+	err != nil {
 		r.log.Error("Failed to execute query", zap.Error(err))
 		return nil, err
 	}

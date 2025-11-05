@@ -3,7 +3,7 @@ module gateway
 go 1.24.5
 
 require (
-	github.com/Votline/3l1/protos v0.0.2 // indirect
+	github.com/Votline/3l1/protos v0.0.3 // indirect
 	github.com/go-chi/chi v1.5.5 // indirect
 	github.com/go-chi/cors v1.2.2 // indirect
 	go.uber.org/multierr v1.10.0 // indirect

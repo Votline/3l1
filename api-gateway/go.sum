@@ -1,5 +1,7 @@
 github.com/Votline/3l1/protos v0.0.2 h1:HePzrZAwas3NZ0YKlmpb6pLBmMvlEEu9eRhAmD+i62U=
 github.com/Votline/3l1/protos v0.0.2/go.mod h1:zZB5EHoJcjPQRfGZw4xcdbmSx70Ge3WxmeobF4ls16o=
+github.com/Votline/3l1/protos v0.0.3 h1:Md3qeYvFX1hb75hElVAbJNkLoRQOl0/Zev/eZSHTSaY=
+github.com/Votline/3l1/protos v0.0.3/go.mod h1:zZB5EHoJcjPQRfGZw4xcdbmSx70Ge3WxmeobF4ls16o=
 github.com/go-chi/chi v1.5.5 h1:vOB/HbEMt9QqBqErz07QehcOKHaWFtuj87tTDVz2qXE=
 github.com/go-chi/chi v1.5.5/go.mod h1:C9JqLr3tIYjDOZpzn+BCuxY8z8vmca43EeMgyZt7irw=
 github.com/go-chi/cors v1.2.2 h1:Jmey33TE+b+rB7fT8MUy1u0I4L+NARQlK6LhzKPSyQE=

@@ -12,9 +12,10 @@ import (
 func (uc usersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
 	req := struct{
-		name string `json:"name"`
-		role string `json:"role"`
-		pswd string `json:"password"`
+		Name  string `json:"name"`
+		Role  string `json:"role"`
+		Email string `json:"email"`
+		Pswd  string `json:"password"`
 	}{}
 	if err := c.Bind(&req); err != nil {
 		uc.log.Error("Failed to bind reg request", zap.Error(err))
@@ -23,7 +24,7 @@ func (uc usersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	hashRes, err := uc.client.HashPswd(c.Context(), &pb.HashReq{
-		Password: req.pswd,
+		Password: req.Pswd,
 	})
 	if err != nil {
 		uc.log.Error("Failed to hash password", zap.Error(err))
@@ -32,9 +33,39 @@ func (uc usersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res, err := uc.client.RegUser(c.Context(), &pb.RegReq{
-		Name: req.name,
-		Role: req.role,
+		Name:  req.Name,
+		Email: req.Email,
+		Role:  req.Role,
 		PasswordHash: hashRes.PasswordHash,
+	})
+	if err != nil {
+		uc.log.Error("Rpc request failed", zap.Error(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]string{
+		"token": res.Token,
+	})
+}
+
+func (uc usersClient) logUser(w http.ResponseWriter, r *http.Request) {
+	c := service.NewContext(w, r)
+	req := struct {
+		Name  string `json:"name"`
+		Email string `json:"email"`
+		Pswd  string `json:"password"`
+	}{}
+	if err := c.Bind(&req); err != nil {
+		uc.log.Error("Failed to bind request", zap.Error(err))
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	res, err := uc.client.LogUser(c.Context(), &pb.LogReq{
+		Name: req.Name,
+		Email: req.Email,
+		PasswordHash: req.Pswd,
 	})
 	if err != nil {
 		uc.log.Error("Rpc request failed", zap.Error(err))

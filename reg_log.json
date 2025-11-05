@@ -1,0 +1,78 @@
+[
+    {
+        "id": "1",
+        "type": "http",
+        "url": "http://localhost:8443/api/users/reg",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "name": "viz",
+            "email": "yomi@duck.com",
+            "role": "admin",
+            "password": "pswd"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI0MjQwMDIsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJlZmZkNDU4Yy0yYTE0LTQxMTctYjMwYy1lMjQ1ZjIyOGFiMjUifQ.qCOElu9uryUwfojVRzVc1oSg_-nZA7Yz_WSbztob--8\"}\n"
+    },
+    {
+        "id": "2",
+        "type": "http",
+        "url": "http://localhost:8443/api/users/log",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "name": "viz",
+            "email": "yomi@duck.com",
+            "password": "pswd"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI0MjQwMDMsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIwMzRhN2M0OS1jZDI0LTRlOTAtODAwNi0yOGUxMTkzNjhmYjgifQ.-Q3y83kHAoQ862u03SCeoJvlqPVJjY0K3GcuTTpRH6g\"}\n"
+    },
+    {
+        "id": "3",
+        "type": "http",
+        "url": "http://localhost:8443/api/users/log",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "name": "viza",
+            "email": "yomi@duck.com",
+            "password": "pswd"
+        },
+        "response": "rpc error: code = Unknown desc = sql: no rows in result set\n"
+    },
+    {
+        "id": "4",
+        "type": "http",
+        "url": "http://localhost:8443/api/users/log",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "name": "viz",
+            "email": "yomi@duck.com",
+            "password": "pswds"
+        },
+        "response": "rpc error: code = Unknown desc = Invalid password\n"
+    },
+    {
+        "id": "5",
+        "type": "http",
+        "url": "http://localhost:8443/api/users/log",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "name": "viz",
+            "email": "syomi@duck.com",
+            "password": "pswd"
+        },
+        "response": "rpc error: code = Unknown desc = sql: no rows in result set\n"
+    }
+]

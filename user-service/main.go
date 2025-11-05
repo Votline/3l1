@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"net"
+	"errors"
 	"context"
 
 	"go.uber.org/zap"
@@ -74,8 +75,13 @@ func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, 
 
 	data, err := us.repo.LogUser(name+email, pswd);
 	if err != nil {
-		us.log.Error("Failed login user", zap.Error(err))
+		us.log.Error("Failed extract data", zap.Error(err))
 		return nil, err
+	}
+
+	if !crypto.CheckPswd(data.Pswd, pswd) {
+		us.log.Error("Failed login user")
+		return nil, errors.New("Invalid password")
 	}
 
 	token, err := crypto.GenJWT(data.ID, data.Role)
