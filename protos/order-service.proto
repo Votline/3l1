@@ -15,10 +15,10 @@ message AddOrderRes {
   string id = 1;
 }
 
-message CheckOrderReq {
+message OrderInfoReq {
   string id = 1;
 }
-message CheckOrderRes {
+message OrderInfoRes {
   string id = 1;
   string status = 2;
   string target_url = 3;
@@ -30,5 +30,5 @@ message CheckOrderRes {
 
 service OrderService {
   rpc AddOrder (AddOrderReq) returns (AddOrderRes);
-  rpc CheckOrder (CheckOrderReq) returns (CheckOrderRes);
+  rpc OrderInfo (OrderInfoReq) returns (OrderInfoRes);
 }

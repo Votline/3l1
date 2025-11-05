@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	OrderService_AddOrder_FullMethodName   = "/orders.OrderService/AddOrder"
-	OrderService_CheckOrder_FullMethodName = "/orders.OrderService/CheckOrder"
+	OrderService_AddOrder_FullMethodName  = "/orders.OrderService/AddOrder"
+	OrderService_OrderInfo_FullMethodName = "/orders.OrderService/OrderInfo"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -28,7 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderServiceClient interface {
 	AddOrder(ctx context.Context, in *AddOrderReq, opts ...grpc.CallOption) (*AddOrderRes, error)
-	CheckOrder(ctx context.Context, in *CheckOrderReq, opts ...grpc.CallOption) (*CheckOrderRes, error)
+	OrderInfo(ctx context.Context, in *OrderInfoReq, opts ...grpc.CallOption) (*OrderInfoRes, error)
 }
 
 type orderServiceClient struct {
@@ -49,10 +49,10 @@ func (c *orderServiceClient) AddOrder(ctx context.Context, in *AddOrderReq, opts
 	return out, nil
 }
 
-func (c *orderServiceClient) CheckOrder(ctx context.Context, in *CheckOrderReq, opts ...grpc.CallOption) (*CheckOrderRes, error) {
+func (c *orderServiceClient) OrderInfo(ctx context.Context, in *OrderInfoReq, opts ...grpc.CallOption) (*OrderInfoRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CheckOrderRes)
-	err := c.cc.Invoke(ctx, OrderService_CheckOrder_FullMethodName, in, out, cOpts...)
+	out := new(OrderInfoRes)
+	err := c.cc.Invoke(ctx, OrderService_OrderInfo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (c *orderServiceClient) CheckOrder(ctx context.Context, in *CheckOrderReq, 
 // for forward compatibility.
 type OrderServiceServer interface {
 	AddOrder(context.Context, *AddOrderReq) (*AddOrderRes, error)
-	CheckOrder(context.Context, *CheckOrderReq) (*CheckOrderRes, error)
+	OrderInfo(context.Context, *OrderInfoReq) (*OrderInfoRes, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -78,8 +78,8 @@ type UnimplementedOrderServiceServer struct{}
 func (UnimplementedOrderServiceServer) AddOrder(context.Context, *AddOrderReq) (*AddOrderRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddOrder not implemented")
 }
-func (UnimplementedOrderServiceServer) CheckOrder(context.Context, *CheckOrderReq) (*CheckOrderRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckOrder not implemented")
+func (UnimplementedOrderServiceServer) OrderInfo(context.Context, *OrderInfoReq) (*OrderInfoRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderInfo not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 func (UnimplementedOrderServiceServer) testEmbeddedByValue()                      {}
@@ -120,20 +120,20 @@ func _OrderService_AddOrder_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OrderService_CheckOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CheckOrderReq)
+func _OrderService_OrderInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderInfoReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OrderServiceServer).CheckOrder(ctx, in)
+		return srv.(OrderServiceServer).OrderInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OrderService_CheckOrder_FullMethodName,
+		FullMethod: OrderService_OrderInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServiceServer).CheckOrder(ctx, req.(*CheckOrderReq))
+		return srv.(OrderServiceServer).OrderInfo(ctx, req.(*OrderInfoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -150,8 +150,8 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _OrderService_AddOrder_Handler,
 		},
 		{
-			MethodName: "CheckOrder",
-			Handler:    _OrderService_CheckOrder_Handler,
+			MethodName: "OrderInfo",
+			Handler:    _OrderService_OrderInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

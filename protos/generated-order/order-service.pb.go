@@ -142,27 +142,27 @@ func (x *AddOrderRes) GetId() string {
 	return ""
 }
 
-type CheckOrderReq struct {
+type OrderInfoReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CheckOrderReq) Reset() {
-	*x = CheckOrderReq{}
+func (x *OrderInfoReq) Reset() {
+	*x = OrderInfoReq{}
 	mi := &file_order_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CheckOrderReq) String() string {
+func (x *OrderInfoReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CheckOrderReq) ProtoMessage() {}
+func (*OrderInfoReq) ProtoMessage() {}
 
-func (x *CheckOrderReq) ProtoReflect() protoreflect.Message {
+func (x *OrderInfoReq) ProtoReflect() protoreflect.Message {
 	mi := &file_order_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -174,19 +174,19 @@ func (x *CheckOrderReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CheckOrderReq.ProtoReflect.Descriptor instead.
-func (*CheckOrderReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use OrderInfoReq.ProtoReflect.Descriptor instead.
+func (*OrderInfoReq) Descriptor() ([]byte, []int) {
 	return file_order_service_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CheckOrderReq) GetId() string {
+func (x *OrderInfoReq) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-type CheckOrderRes struct {
+type OrderInfoRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
@@ -199,20 +199,20 @@ type CheckOrderRes struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CheckOrderRes) Reset() {
-	*x = CheckOrderRes{}
+func (x *OrderInfoRes) Reset() {
+	*x = OrderInfoRes{}
 	mi := &file_order_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CheckOrderRes) String() string {
+func (x *OrderInfoRes) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CheckOrderRes) ProtoMessage() {}
+func (*OrderInfoRes) ProtoMessage() {}
 
-func (x *CheckOrderRes) ProtoReflect() protoreflect.Message {
+func (x *OrderInfoRes) ProtoReflect() protoreflect.Message {
 	mi := &file_order_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -224,54 +224,54 @@ func (x *CheckOrderRes) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CheckOrderRes.ProtoReflect.Descriptor instead.
-func (*CheckOrderRes) Descriptor() ([]byte, []int) {
+// Deprecated: Use OrderInfoRes.ProtoReflect.Descriptor instead.
+func (*OrderInfoRes) Descriptor() ([]byte, []int) {
 	return file_order_service_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CheckOrderRes) GetId() string {
+func (x *OrderInfoRes) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *CheckOrderRes) GetStatus() string {
+func (x *OrderInfoRes) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *CheckOrderRes) GetTargetUrl() string {
+func (x *OrderInfoRes) GetTargetUrl() string {
 	if x != nil {
 		return x.TargetUrl
 	}
 	return ""
 }
 
-func (x *CheckOrderRes) GetServiceUrl() string {
+func (x *OrderInfoRes) GetServiceUrl() string {
 	if x != nil {
 		return x.ServiceUrl
 	}
 	return ""
 }
 
-func (x *CheckOrderRes) GetOrderType() string {
+func (x *OrderInfoRes) GetOrderType() string {
 	if x != nil {
 		return x.OrderType
 	}
 	return ""
 }
 
-func (x *CheckOrderRes) GetCreatedAt() *timestamppb.Timestamp {
+func (x *OrderInfoRes) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return nil
 }
 
-func (x *CheckOrderRes) GetUpdatedAt() *timestamppb.Timestamp {
+func (x *OrderInfoRes) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdatedAt
 	}
@@ -293,10 +293,10 @@ const file_order_service_proto_rawDesc = "" +
 	"\vservice_url\x18\x05 \x01(\tR\n" +
 	"serviceUrl\"\x1d\n" +
 	"\vAddOrderRes\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x1f\n" +
-	"\rCheckOrderReq\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x8c\x02\n" +
-	"\rCheckOrderRes\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x1e\n" +
+	"\fOrderInfoReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x8b\x02\n" +
+	"\fOrderInfoRes\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x1d\n" +
 	"\n" +
@@ -308,11 +308,10 @@ const file_order_service_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt2\x80\x01\n" +
+	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt2}\n" +
 	"\fOrderService\x124\n" +
-	"\bAddOrder\x12\x13.orders.AddOrderReq\x1a\x13.orders.AddOrderRes\x12:\n" +
-	"\n" +
-	"CheckOrder\x12\x15.orders.CheckOrderReq\x1a\x15.orders.CheckOrderResB\x12Z\x10./;ordersserviceb\x06proto3"
+	"\bAddOrder\x12\x13.orders.AddOrderReq\x1a\x13.orders.AddOrderRes\x127\n" +
+	"\tOrderInfo\x12\x14.orders.OrderInfoReq\x1a\x14.orders.OrderInfoResB\x12Z\x10./;ordersserviceb\x06proto3"
 
 var (
 	file_order_service_proto_rawDescOnce sync.Once
@@ -330,17 +329,17 @@ var file_order_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_order_service_proto_goTypes = []any{
 	(*AddOrderReq)(nil),           // 0: orders.AddOrderReq
 	(*AddOrderRes)(nil),           // 1: orders.AddOrderRes
-	(*CheckOrderReq)(nil),         // 2: orders.CheckOrderReq
-	(*CheckOrderRes)(nil),         // 3: orders.CheckOrderRes
+	(*OrderInfoReq)(nil),          // 2: orders.OrderInfoReq
+	(*OrderInfoRes)(nil),          // 3: orders.OrderInfoRes
 	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_order_service_proto_depIdxs = []int32{
-	4, // 0: orders.CheckOrderRes.created_at:type_name -> google.protobuf.Timestamp
-	4, // 1: orders.CheckOrderRes.updated_at:type_name -> google.protobuf.Timestamp
+	4, // 0: orders.OrderInfoRes.created_at:type_name -> google.protobuf.Timestamp
+	4, // 1: orders.OrderInfoRes.updated_at:type_name -> google.protobuf.Timestamp
 	0, // 2: orders.OrderService.AddOrder:input_type -> orders.AddOrderReq
-	2, // 3: orders.OrderService.CheckOrder:input_type -> orders.CheckOrderReq
+	2, // 3: orders.OrderService.OrderInfo:input_type -> orders.OrderInfoReq
 	1, // 4: orders.OrderService.AddOrder:output_type -> orders.AddOrderRes
-	3, // 5: orders.OrderService.CheckOrder:output_type -> orders.CheckOrderRes
+	3, // 5: orders.OrderService.OrderInfo:output_type -> orders.OrderInfoRes
 	4, // [4:6] is the sub-list for method output_type
 	2, // [2:4] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
