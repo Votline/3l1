@@ -4,7 +4,7 @@ go 1.24.5
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
-	github.com/Votline/3l1/protos v0.0.3
+	github.com/Votline/3l1/protos v0.0.4
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/google/uuid v1.6.0
 	github.com/jmoiron/sqlx v1.4.0
@@ -22,5 +22,5 @@ require (
 	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250804133106-a7a43d27e69b // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
+	google.golang.org/protobuf v1.36.10 // indirect
 )

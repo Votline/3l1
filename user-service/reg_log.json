@@ -1,78 +1,61 @@
 [
     {
         "id": "1",
-        "type": "http",
-        "url": "http://localhost:8443/api/users/reg",
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json"
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/HashPswd",
+        "data": {
+            "password": "123"
         },
-        "body": {
-            "name": "viz",
-            "email": "yomi@duck.com",
-            "role": "admin",
-            "password": "pswd"
-        },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI0MjQwMDIsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJlZmZkNDU4Yy0yYTE0LTQxMTctYjMwYy1lMjQ1ZjIyOGFiMjUifQ.qCOElu9uryUwfojVRzVc1oSg_-nZA7Yz_WSbztob--8\"}\n"
+        "response": "{\"passwordHash\":\"$2a$10$R2MXLuclzlMp00Yzhltuz.fre9KW17u6ZDFNkhFE4QFQMI61MY6B2\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
     },
     {
         "id": "2",
-        "type": "http",
-        "url": "http://localhost:8443/api/users/log",
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": {
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/RegUser",
+        "data": {
             "name": "viz",
             "email": "yomi@duck.com",
-            "password": "pswd"
+            "role": "dev",
+            "password_hash": "{RESPONSE id=1 json:passwordHash}"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI0MjQwMDMsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIwMzRhN2M0OS1jZDI0LTRlOTAtODAwNi0yOGUxMTkzNjhmYjgifQ.-Q3y83kHAoQ862u03SCeoJvlqPVJjY0K3GcuTTpRH6g\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI0MzU4MjAsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiZGEwMWY5OTgtYmM4OC00OGE5LTlhMmItYzYxNmVhYmIxNGM1In0.LxvpKqjwh4AacI0ydk4-hL-qD1TkzpkWtkT0Kknza6Y\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
     },
     {
         "id": "3",
-        "type": "http",
-        "url": "http://localhost:8443/api/users/log",
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": {
-            "name": "viza",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/LogUser",
+        "data": {
+            "name": "viz",
             "email": "yomi@duck.com",
-            "password": "pswd"
+            "password": "123"
         },
-        "response": "rpc error: code = Unknown desc = sql: no rows in result set\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI0MzU4MjAsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiZGEwMWY5OTgtYmM4OC00OGE5LTlhMmItYzYxNmVhYmIxNGM1In0.LxvpKqjwh4AacI0ydk4-hL-qD1TkzpkWtkT0Kknza6Y\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
     },
     {
         "id": "4",
-        "type": "http",
-        "url": "http://localhost:8443/api/users/log",
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": {
-            "name": "viz",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/LogUser",
+        "data": {
+            "name": "viza",
             "email": "yomi@duck.com",
-            "password": "pswds"
+            "password": "123"
         },
-        "response": "rpc error: code = Unknown desc = Invalid password\n"
-    },
-    {
-        "id": "5",
-        "type": "http",
-        "url": "http://localhost:8443/api/users/log",
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": {
-            "name": "viz",
-            "email": "syomi@duck.com",
-            "password": "pswd"
-        },
-        "response": "rpc error: code = Unknown desc = sql: no rows in result set\n"
+        "response": "{\"userId\":\"123\",\"status\":\"processed\",\"targetUrl\":\"321\",\"serviceUrl\":\"321\",\"orderType\":\"213\",\"createdAt\":\"2025-11-05T13:09:50.751782Z\",\"updatedAt\":\"2025-11-05T13:09:50.752782Z\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
     }
 ]

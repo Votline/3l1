@@ -71,7 +71,7 @@ func (us *userserver) RegUser(ctx context.Context, req *pb.RegReq) (*pb.RegRes, 
 func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, error) {
 	name := req.GetName()
 	email := req.GetEmail()
-	pswd := req.GetPasswordHash()
+	pswd := req.GetPassword()
 
 	data, err := us.repo.LogUser(name+email, pswd);
 	if err != nil {

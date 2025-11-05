@@ -65,7 +65,7 @@ func (uc usersClient) logUser(w http.ResponseWriter, r *http.Request) {
 	res, err := uc.client.LogUser(c.Context(), &pb.LogReq{
 		Name: req.Name,
 		Email: req.Email,
-		PasswordHash: req.Pswd,
+		Password: req.Pswd,
 	})
 	if err != nil {
 		uc.log.Error("Rpc request failed", zap.Error(err))
