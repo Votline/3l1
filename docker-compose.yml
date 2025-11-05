@@ -26,12 +26,26 @@ services:
     depends_on:
       - postgres
 
+  order-service:
+    build:
+      context: .
+      dockerfile: ./order-service/Dockerfile
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    env_file:
+      - .env
+    ports:
+      - "${OS_PORT}:${OS_PORT}"
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:17
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - ./user-service/init.sql:/docker-entrypoint-initdb.d/1-user.sql:ro
+      - ./order-service/init.sql:/docker-entrypoint-initdb.d/1-order.sql:ro
     env_file:
       - .env
     environment:
