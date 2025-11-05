@@ -44,18 +44,21 @@ func (r *Repo) initDB() *sqlx.DB {
 }
 
 type Order struct {
-	ID string
-	UserID string
-	TargetURL string
-	ServiceURL string
-	OrderType string
-	Quantity int32
+	ID         string    `db:"id"`
+	UserID     string    `db:"user_id"`
+	Status     string    `db:"status"`
+	TargetURL  string    `db:"target_url"`
+	ServiceURL string    `db:"service_url"`
+	OrderType  string    `db:"order_type"`
+	Quantity   int32     `db:"quantity"`
+	CreatedAt  time.Time `db:"created_at"`
+	UpdatedAt  time.Time `db:"updated_at"`
 }
 
 func (r *Repo) AddOrder(order *Order) error {
 	query, args, err := r.bd.
 		Insert("orders").
-		Columns("id", "user_id", "status", "smm_service_url",
+		Columns("id", "user_id", "status", "service_url",
 				"target_url", "order_type", "quantity").
 		Values(order.ID, order.UserID, "processed", order.ServiceURL,
 				order.TargetURL, order.OrderType, order.Quantity).
@@ -71,4 +74,25 @@ func (r *Repo) AddOrder(order *Order) error {
 	}
 
 	return nil
+}
+
+func (r *Repo) OrderInfo(id string) (*Order, error) {
+	query, args, err := r.bd.
+		Select("user_id", "status", "target_url", "service_url",
+				"order_type", "created_at", "updated_at").
+		From("orders").
+		Where(sq.Eq{"id": id}).
+		ToSql()
+	if err != nil {
+		r.log.Error("Failed to create query")
+		return nil, err
+	}
+
+	order := Order{}
+	if err := r.db.QueryRowx(query, args...).StructScan(&order); err != nil {
+		r.log.Error("Failed to execute query")
+		return nil, err
+	}
+
+	return &order, err
 }

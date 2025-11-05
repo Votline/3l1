@@ -1,0 +1,32 @@
+[
+    {
+        "id": "1",
+        "type": "grpc",
+        "target": "localhost:50052",
+        "endpoint": "orders.OrderService/AddOrder",
+        "data": {
+            "user_id": "123",
+            "target_url": "321",
+            "service_url": "321",
+            "order_type": "213",
+            "quantity": "4"
+        },
+        "response": "{\"id\":\"891a3e9e-9ace-4d0f-ae09-bd3a30364ee5\"}",
+        "protofiles": [
+            "../protos/order-service.proto"
+        ]
+    },
+    {
+        "id": "2",
+        "type": "grpc",
+        "target": "localhost:50052",
+        "endpoint": "orders.OrderService/OrderInfo",
+        "data": {
+            "id": "{RESPONSE id=1 json:id}"
+        },
+        "response": "{\"userId\":\"123\",\"status\":\"processed\",\"targetUrl\":\"321\",\"serviceUrl\":\"321\",\"orderType\":\"213\",\"createdAt\":\"2025-11-05T13:09:50.752782Z\",\"updatedAt\":\"2025-11-05T13:09:50.752782Z\"}",
+        "protofiles": [
+            "../protos/order-service.proto"
+        ]
+    }
+]

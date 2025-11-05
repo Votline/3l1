@@ -8,8 +8,10 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"github.com/google/uuid"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"orders/internal/db"
+
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
@@ -48,4 +50,24 @@ func (os *orderservice) AddOrder(ctx context.Context, req *pb.AddOrderReq) (*pb.
 	}
 
 	return &pb.AddOrderRes{Id: order.ID}, nil
+}
+
+func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*pb.OrderInfoRes, error) {
+	id := req.GetId()
+
+	order, err := os.repo.OrderInfo(id)
+	if err != nil {
+		os.log.Error("Failed to extract data")
+		return nil, err
+	}
+
+	return &pb.OrderInfoRes{
+		UserId: order.UserID,
+		Status: order.Status,
+		TargetUrl: order.TargetURL,
+		ServiceUrl: order.ServiceURL,
+		OrderType: order.OrderType,
+		CreatedAt: timestamppb.New(order.CreatedAt),
+		UpdatedAt: timestamppb.New(order.UpdatedAt),
+	}, nil
 }
