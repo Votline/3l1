@@ -92,3 +92,18 @@ func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, 
 
 	return &pb.LogRes{Token: token}, nil
 }
+
+func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*pb.ExtJWTDataRes, error ) {
+	tokenString := req.GetToken()
+	
+	data, err := crypto.ExtJWT(tokenString)
+	if err != nil {
+		us.log.Error("Failed to extract any data from JWT token", zap.Error(err))
+		return nil, err
+	}
+
+	return &pb.ExtJWTDataRes{
+		Role: data.Role,
+		UserId: data.UserID,
+	}, nil
+}

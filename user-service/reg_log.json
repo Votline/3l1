@@ -57,5 +57,18 @@
         "protofiles": [
             "../protos/user-service.proto"
         ]
+    },
+    {
+        "id": "5",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/ExtJWTData",
+        "data": {
+            "token": "{RESPONSE id=2 json:token}"
+        },
+        "response": "{\"userId\":\"123\",\"status\":\"processed\",\"targetUrl\":\"321\",\"serviceUrl\":\"321\",\"orderType\":\"213\",\"createdAt\":\"2025-11-05T13:09:50.751782Z\",\"updatedAt\":\"2025-11-05T13:09:50.752782Z\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
     }
 ]
