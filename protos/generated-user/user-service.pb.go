@@ -423,8 +423,9 @@ func (x *ExtJWTDataRes) GetRole() string {
 
 type DelUserReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Role          string                 `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
+	DelUserId     string                 `protobuf:"bytes,1,opt,name=del_user_id,json=delUserId,proto3" json:"del_user_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -457,6 +458,13 @@ func (x *DelUserReq) ProtoReflect() protoreflect.Message {
 // Deprecated: Use DelUserReq.ProtoReflect.Descriptor instead.
 func (*DelUserReq) Descriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *DelUserReq) GetDelUserId() string {
+	if x != nil {
+		return x.DelUserId
+	}
+	return ""
 }
 
 func (x *DelUserReq) GetUserId() string {
@@ -535,11 +543,12 @@ const file_user_service_proto_rawDesc = "" +
 	"\x05token\x18\x01 \x01(\tR\x05token\"<\n" +
 	"\rExtJWTDataRes\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x12\n" +
-	"\x04role\x18\x02 \x01(\tR\x04role\"9\n" +
+	"\x04role\x18\x02 \x01(\tR\x04role\"Y\n" +
 	"\n" +
-	"DelUserReq\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x12\n" +
-	"\x04role\x18\x02 \x01(\tR\x04role\"\f\n" +
+	"DelUserReq\x12\x1e\n" +
+	"\vdel_user_id\x18\x01 \x01(\tR\tdelUserId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x12\n" +
+	"\x04role\x18\x03 \x01(\tR\x04role\"\f\n" +
 	"\n" +
 	"DelUserRes2\xf6\x01\n" +
 	"\vUserService\x12*\n" +

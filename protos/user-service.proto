@@ -38,8 +38,9 @@ message ExtJWTDataRes {
 }
 
 message DelUserReq {
-  string user_id = 1;
-  string role = 2;
+  string del_user_id = 1;
+  string user_id = 2;
+  string role = 3;
 }
 message DelUserRes{}
 
