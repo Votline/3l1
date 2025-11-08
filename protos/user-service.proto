@@ -29,8 +29,17 @@ message LogRes {
   string token = 1;
 }
 
+message ExtJWTDataReq {
+  string token = 1;
+}
+message ExtJWTDataRes {
+  string user_id = 1;
+  string role = 2;
+}
+
 service UserService {
   rpc HashPswd (HashReq) returns (HashRes);
   rpc RegUser (RegReq) returns (RegRes);
   rpc LogUser (LogReq) returns (LogRes);
+  rpc ExtJWTData (ExtJWTDataReq) returns (ExtJWTDataRes);
 }

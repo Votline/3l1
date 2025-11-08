@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserService_HashPswd_FullMethodName = "/users.UserService/HashPswd"
-	UserService_RegUser_FullMethodName  = "/users.UserService/RegUser"
-	UserService_LogUser_FullMethodName  = "/users.UserService/LogUser"
+	UserService_HashPswd_FullMethodName   = "/users.UserService/HashPswd"
+	UserService_RegUser_FullMethodName    = "/users.UserService/RegUser"
+	UserService_LogUser_FullMethodName    = "/users.UserService/LogUser"
+	UserService_ExtJWTData_FullMethodName = "/users.UserService/ExtJWTData"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -31,6 +32,7 @@ type UserServiceClient interface {
 	HashPswd(ctx context.Context, in *HashReq, opts ...grpc.CallOption) (*HashRes, error)
 	RegUser(ctx context.Context, in *RegReq, opts ...grpc.CallOption) (*RegRes, error)
 	LogUser(ctx context.Context, in *LogReq, opts ...grpc.CallOption) (*LogRes, error)
+	ExtJWTData(ctx context.Context, in *ExtJWTDataReq, opts ...grpc.CallOption) (*ExtJWTDataRes, error)
 }
 
 type userServiceClient struct {
@@ -71,6 +73,16 @@ func (c *userServiceClient) LogUser(ctx context.Context, in *LogReq, opts ...grp
 	return out, nil
 }
 
+func (c *userServiceClient) ExtJWTData(ctx context.Context, in *ExtJWTDataReq, opts ...grpc.CallOption) (*ExtJWTDataRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ExtJWTDataRes)
+	err := c.cc.Invoke(ctx, UserService_ExtJWTData_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type UserServiceServer interface {
 	HashPswd(context.Context, *HashReq) (*HashRes, error)
 	RegUser(context.Context, *RegReq) (*RegRes, error)
 	LogUser(context.Context, *LogReq) (*LogRes, error)
+	ExtJWTData(context.Context, *ExtJWTDataReq) (*ExtJWTDataRes, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedUserServiceServer) RegUser(context.Context, *RegReq) (*RegRes
 }
 func (UnimplementedUserServiceServer) LogUser(context.Context, *LogReq) (*LogRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LogUser not implemented")
+}
+func (UnimplementedUserServiceServer) ExtJWTData(context.Context, *ExtJWTDataReq) (*ExtJWTDataRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExtJWTData not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -172,6 +188,24 @@ func _UserService_LogUser_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_ExtJWTData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExtJWTDataReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).ExtJWTData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_ExtJWTData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).ExtJWTData(ctx, req.(*ExtJWTDataReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LogUser",
 			Handler:    _UserService_LogUser_Handler,
+		},
+		{
+			MethodName: "ExtJWTData",
+			Handler:    _UserService_ExtJWTData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
