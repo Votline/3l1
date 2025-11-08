@@ -37,9 +37,16 @@ message ExtJWTDataRes {
   string role = 2;
 }
 
+message DelUserReq {
+  string user_id = 1;
+  string role = 2;
+}
+message DelUserRes{}
+
 service UserService {
   rpc HashPswd (HashReq) returns (HashRes);
   rpc RegUser (RegReq) returns (RegRes);
   rpc LogUser (LogReq) returns (LogRes);
   rpc ExtJWTData (ExtJWTDataReq) returns (ExtJWTDataRes);
+  rpc DelUser (DelUserReq) returns (DelUserRes);
 }
