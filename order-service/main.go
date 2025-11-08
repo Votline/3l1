@@ -38,6 +38,7 @@ func (os *orderservice) AddOrder(ctx context.Context, req *pb.AddOrderReq) (*pb.
 	order := &db.Order{
 		ID: uuid.New().String(),
 		UserID: req.GetUserId(),
+		UserRl: req.GetUserRole(),
 		TargetURL: req.GetTargetUrl(),
 		ServiceURL: req.GetServiceUrl(),
 		OrderType: req.GetOrderType(),
@@ -54,8 +55,9 @@ func (os *orderservice) AddOrder(ctx context.Context, req *pb.AddOrderReq) (*pb.
 
 func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*pb.OrderInfoRes, error) {
 	id := req.GetId()
+	userID := req.GetUserId()
 
-	order, err := os.repo.OrderInfo(id)
+	order, err := os.repo.OrderInfo(id, userID)
 	if err != nil {
 		os.log.Error("Failed to extract data")
 		return nil, err
@@ -63,6 +65,7 @@ func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*p
 
 	return &pb.OrderInfoRes{
 		UserId: order.UserID,
+		UserRole: order.UserRl,
 		Status: order.Status,
 		TargetUrl: order.TargetURL,
 		ServiceUrl: order.ServiceURL,
@@ -70,4 +73,17 @@ func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*p
 		CreatedAt: timestamppb.New(order.CreatedAt),
 		UpdatedAt: timestamppb.New(order.UpdatedAt),
 	}, nil
+}
+
+func (os *orderservice) DelOrder(ctx context.Context, req *pb.DelOrderReq) (*pb.DelOrderRes, error) {
+	id := req.GetId()
+	userID := req.GetUserId()
+	role := req.GetRole()
+
+	if err := os.repo.DelOrder(id, role, userID); err != nil {
+		os.log.Error("Failed to delete order")
+		return nil, err
+	}
+
+	return &pb.DelOrderRes{}, nil
 }

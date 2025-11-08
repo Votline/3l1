@@ -46,6 +46,7 @@ func (r *Repo) initDB() *sqlx.DB {
 type Order struct {
 	ID         string    `db:"id"`
 	UserID     string    `db:"user_id"`
+	UserRl     string    `db:"user_role"`
 	Status     string    `db:"status"`
 	TargetURL  string    `db:"target_url"`
 	ServiceURL string    `db:"service_url"`
@@ -58,41 +59,63 @@ type Order struct {
 func (r *Repo) AddOrder(order *Order) error {
 	query, args, err := r.bd.
 		Insert("orders").
-		Columns("id", "user_id", "status", "service_url",
-				"target_url", "order_type", "quantity").
-		Values(order.ID, order.UserID, "processed", order.ServiceURL,
-				order.TargetURL, order.OrderType, order.Quantity).
+		Columns("id", "user_id", "user_role", "status",
+				"service_url", "target_url", "order_type", "quantity").
+		Values(order.ID, order.UserID, order.UserRl, "processed",
+				order.ServiceURL, order.TargetURL, order.OrderType,
+				order.Quantity).
 		ToSql()
 	if err != nil {
-		r.log.Error("Failed to create query", zap.Error(err))
+		r.log.Error("Failed to create insert query", zap.Error(err))
 		return err
 	}
 
 	if _, err := r.db.Exec(query, args...); err != nil {
-		r.log.Error("Failed to execute query")
+		r.log.Error("Failed to execute insert query", zap.Error(err))
 		return err
 	}
 
 	return nil
 }
 
-func (r *Repo) OrderInfo(id string) (*Order, error) {
+func (r *Repo) OrderInfo(id, userID string) (*Order, error) {
 	query, args, err := r.bd.
-		Select("user_id", "status", "target_url", "service_url",
-				"order_type", "created_at", "updated_at").
+		Select("user_id", "user_role", "status", "target_url",
+				"service_url", "order_type", "created_at", "updated_at").
 		From("orders").
 		Where(sq.Eq{"id": id}).
+		Where(sq.Eq{"user_id": userID}).
 		ToSql()
 	if err != nil {
-		r.log.Error("Failed to create query")
+		r.log.Error("Failed to create select query", zap.Error(err))
 		return nil, err
 	}
 
 	order := Order{}
 	if err := r.db.QueryRowx(query, args...).StructScan(&order); err != nil {
-		r.log.Error("Failed to execute query")
+		r.log.Error("Failed to execute select query", zap.Error(err))
 		return nil, err
 	}
 
 	return &order, err
+}
+
+func (r *Repo) DelOrder(id, userID, role string) error {
+	q := r.bd.Delete("orders").Where(sq.Eq{"id": id})
+	if role != "admin" {
+		q = q.Where(sq.Eq{"user_id": userID})
+	}
+
+	query, args, err := q.ToSql()
+	if err != nil {
+		r.log.Error("Failed to create delete query", zap.Error(err))
+		return err
+	}
+
+	if _, err := r.db.Exec(query, args...); err != nil {
+		r.log.Error("Failed to execute delete query", zap.Error(err))
+		return err
+	}
+	
+	return nil
 }

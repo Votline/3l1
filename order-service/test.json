@@ -1,0 +1,78 @@
+[
+    {
+        "id": "1",
+        "type": "grpc",
+        "target": "localhost:50052",
+        "endpoint": "orders.OrderService/AddOrder",
+        "data": {
+            "user_id": "123",
+            "target_url": "321",
+            "service_url": "321",
+            "order_type": "213",
+            "quantity": "4"
+        },
+        "response": "{\"id\":\"986b4d30-51eb-40ce-a9fd-9e2958424794\"}",
+        "protofiles": [
+            "../protos/order-service.proto"
+        ]
+    },
+    {
+        "id": "2",
+        "type": "grpc",
+        "target": "localhost:50052",
+        "endpoint": "orders.OrderService/OrderInfo",
+        "data": {
+            "id": "{RESPONSE id=1 json:id}",
+            "user_id": "123"
+        },
+        "response": "{\"userId\":\"123\",\"status\":\"processed\",\"targetUrl\":\"321\",\"serviceUrl\":\"321\",\"orderType\":\"213\",\"createdAt\":\"2025-11-08T17:59:23.687313Z\",\"updatedAt\":\"2025-11-08T17:59:23.687313Z\"}",
+        "protofiles": [
+            "../protos/order-service.proto"
+        ]
+    },
+    {
+        "id": "3",
+        "type": "grpc",
+        "target": "localhost:50052",
+        "endpoint": "orders.OrderService/DelOrder",
+        "data": {
+            "id": "{RESPONSE id=1 json:id}",
+            "user_id": "123"
+        },
+        "response": "{}",
+        "protofiles": [
+            "../protos/order-service.proto"
+        ]
+    },
+    {
+        "id": "4",
+        "type": "grpc",
+        "target": "localhost:50052",
+        "endpoint": "orders.OrderService/AddOrder",
+        "data": {
+            "user_id": "123",
+            "target_url": "321",
+            "service_url": "321",
+            "order_type": "213",
+            "quantity": "4"
+        },
+        "response": "{\"id\":\"aa4fc189-5080-4887-a26b-a4c048c3fd1b\"}",
+        "protofiles": [
+            "../protos/order-service.proto"
+        ]
+    },
+    {
+        "id": "5",
+        "type": "grpc",
+        "target": "localhost:50052",
+        "endpoint": "orders.OrderService/DelOrder",
+        "data": {
+            "id": "{RESPONSE id=4 json:id}",
+            "role": "admin"
+        },
+        "response": "{}",
+        "protofiles": [
+            "../protos/order-service.proto"
+        ]
+    }
+]
