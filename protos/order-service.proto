@@ -6,10 +6,11 @@ import "google/protobuf/timestamp.proto";
 
 message AddOrderReq {
   string user_id = 1;
-  string target_url = 2;
-  string order_type = 3;
-  int32 quantity = 4;
-  string service_url = 5;
+  string user_role = 2;
+  string target_url = 3;
+  string order_type = 4;
+  int32 quantity = 5;
+  string service_url = 6;
 }
 message AddOrderRes {
   string id = 1;
@@ -17,18 +18,27 @@ message AddOrderRes {
 
 message OrderInfoReq {
   string id = 1;
+  string user_id = 2;
 }
 message OrderInfoRes {
   string user_id = 1;
-  string status = 2;
-  string target_url = 3;
-  string service_url = 4;
-  string order_type = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
+  string user_role = 2;
+  string status = 3;
+  string target_url = 4;
+  string service_url = 5;
+  string order_type = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
+
+message DelOrderReq {
+  string id = 1;
+  string user_id = 2;
+}
+message DelOrderRes {}
 
 service OrderService {
   rpc AddOrder (AddOrderReq) returns (AddOrderRes);
   rpc OrderInfo (OrderInfoReq) returns (OrderInfoRes);
+  rpc DelOrder (DelOrderReq) returns (DelOrderRes);
 }
