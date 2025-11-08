@@ -1,14 +1,14 @@
 package orders
 
 import (
-	"gateway/internal/service"
 	"os"
 
 	"go.uber.org/zap"
+	"github.com/go-chi/chi"
 	"google.golang.org/grpc"
 
+	"gateway/internal/service"
 	pb "github.com/Votline/3l1/protos/generated-order"
-	"github.com/go-chi/chi"
 )
 
 type ordersClient struct {

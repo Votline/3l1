@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-chi/chi/middleware"
 
+	"gateway/internal/mdwr"
 	"gateway/internal/users"
 	"gateway/internal/orders"
 	"gateway/internal/service"
@@ -34,12 +35,17 @@ func NewServer(log *zap.Logger) *http.Server {
 		AllowedMethods: corsMethods,
 	}
 
+	uc := users.New(log)
+	a := mdwr.NewAuth(uc.(*users.UsersClient), log)
+
+	r.Use(a.JWTAuth())
 	r.Use(cors.Handler(c))
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Compress(5))
 	r.Use(middleware.Throttle(10))
 
-	routing(r, log)
+	routing(r, uc, log)
+	
 
 	addr := ":"+os.Getenv("API_PORT")
 	return &http.Server{
@@ -51,9 +57,9 @@ func NewServer(log *zap.Logger) *http.Server {
 	}
 }
 
-func routing(r *chi.Mux, log *zap.Logger) {
+func routing(r *chi.Mux, uc service.Service, log *zap.Logger) {
 	services := []service.Service{
-		users.New(log),
+		uc,
 		orders.New(log),
 	}
 

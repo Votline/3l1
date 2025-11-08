@@ -2,9 +2,25 @@
     {
         "id": "1",
         "type": "http",
+        "url": "http://localhost:8443/api/users/reg",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "name": "vizA+",
+            "email": "syfomi@duck.com",
+            "password": "pswd"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3MDY2MzcsInJvbGUiOiIiLCJ1c2VyX2lkIjoiMDM4ZTdjZjktMmQxZS00ZGQ4LWJlYzQtMjQ3YmE0NzNkZDA3In0.V4gvl_rsTVJsXWwkwwbzc3K7dZZsRavsQO8khiaktT8\"}\n"
+    },
+    {
+        "id": "2",
+        "type": "http",
         "url": "http://localhost:8443/api/orders",
         "method": "POST",
         "headers": {
+            "Authorization": "Bearer {RESPONSE id=1 json:token}",
             "Content-Type": "application/json"
         },
         "body": {
@@ -14,21 +30,17 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "rpc error: code = Unknown desc = pq: duplicate key value violates unique constraint \"orders_user_id_key\"\n"
+        "response": "{\"id\":\"ee3920c5-aaab-4b01-bde4-8efd5b3053e2\"}\n"
     },
     {
-        "id": "2",
+        "id": "3",
         "type": "http",
-        "url": "http://localhost:8443/api/orders/{RESPONSE id=1 json:id}",
+        "url": "http://localhost:8443/api/orders/{RESPONSE id=2 json:id}",
         "method": "GET",
         "headers": {
+            "Authorization": "Bearer {RESPONSE id=1 json:token}",
             "Content-Type": "application/json"
         },
-        "body": {
-            "name": "viz",
-            "email": "yomi@duck.com",
-            "password": "pswd"
-        },
-        "response": "{\"created_at\":\"seconds:1762353295 nanos:221553000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1762353295 nanos:221553000\",\"user_id\":\"123\"}\n"
+        "response": "{\"created_at\":\"seconds:1762620237 nanos:257391000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1762620237 nanos:257391000\",\"user_id\":\"038e7cf9-2d1e-4dd8-bec4-247ba473dd07\"}\n"
     }
 ]

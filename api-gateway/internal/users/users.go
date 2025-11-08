@@ -12,7 +12,7 @@ import (
 	pb "github.com/Votline/3l1/protos/generated-user"
 )
 
-type usersClient struct {
+type UsersClient struct {
 	log *zap.Logger
 	name string
 	conn *grpc.ClientConn
@@ -26,7 +26,7 @@ func New(log *zap.Logger) service.Service {
 	if err != nil {
 		log.Fatal("User-service connection failed", zap.Error(err))
 	}
-	return &usersClient{
+	return &UsersClient{
 		log: log,
 		conn: conn,
 		name: "users",
@@ -34,15 +34,15 @@ func New(log *zap.Logger) service.Service {
 	}
 }
 
-func (uc *usersClient) RegisterRoutes(g chi.Router) {
+func (uc *UsersClient) RegisterRoutes(g chi.Router) {
 	g.Post("/reg", uc.regUser)
 	g.Post("/log", uc.logUser)
 }
 
-func (uc *usersClient) GetName() string {
+func (uc *UsersClient) GetName() string {
 	return uc.name
 }
 
-func (uc *usersClient) Close() error {
+func (uc *UsersClient) Close() error {
 	return uc.conn.Close()
 }

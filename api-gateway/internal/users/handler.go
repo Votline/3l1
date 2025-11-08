@@ -1,15 +1,17 @@
 package users
 
 import (
+	"context"
 	"net/http"
 
 	"go.uber.org/zap"
 
 	"gateway/internal/service"
+
 	pb "github.com/Votline/3l1/protos/generated-user"
 )
 
-func (uc *usersClient) regUser(w http.ResponseWriter, r *http.Request) {
+func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
 	req := struct{
 		Name  string `json:"name"`
@@ -49,7 +51,7 @@ func (uc *usersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (uc *usersClient) logUser(w http.ResponseWriter, r *http.Request) {
+func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
 	req := struct {
 		Name  string `json:"name"`
@@ -76,4 +78,23 @@ func (uc *usersClient) logUser(w http.ResponseWriter, r *http.Request) {
 	c.JSON(http.StatusOK, map[string]string{
 		"token": res.Token,
 	})
+}
+
+type UserInfo struct {
+	Role string
+	UserID string
+}
+func (uc *UsersClient) ExtJWTData(tokenString string) (UserInfo, error) {
+	res, err := uc.client.ExtJWTData(context.Background(), &pb.ExtJWTDataReq{
+		Token: tokenString,
+	})
+	if err != nil {
+		uc.log.Error("Rpc request failed", zap.Error(err))
+		return UserInfo{}, err
+	}
+
+	return UserInfo{
+		Role: res.Role,
+		UserID: res.UserId,
+	}, nil
 }

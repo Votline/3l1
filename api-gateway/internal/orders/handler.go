@@ -3,17 +3,18 @@ package orders
 import (
 	"net/http"
 
-	"gateway/internal/service"
-
-	pb "github.com/Votline/3l1/protos/generated-order"
-	"github.com/go-chi/chi"
 	"go.uber.org/zap"
+	"github.com/go-chi/chi"
+
+	"gateway/internal/users"
+	"gateway/internal/service"
+	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
 func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
 	req := struct{
-		UserID string `json:"user_id"`
+		userID string
 		TargetURL string `json:"target_url"`
 		ServiceURL string `json:"service_url"`
 		OrderType string `json:"order_type"`
@@ -24,9 +25,10 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	req.userID = r.Context().Value("userInfo").(users.UserInfo).UserID
 
 	res, err := os.client.AddOrder(c.Context(), &pb.AddOrderReq{
-		UserId: req.UserID,
+		UserId: req.userID,
 		TargetUrl: req.TargetURL,
 		ServiceUrl: req.ServiceURL,
 		OrderType: req.OrderType,
