@@ -107,3 +107,16 @@ func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*p
 		UserId: data.UserID,
 	}, nil
 }
+
+func (us *userserver) DelUser(ctx context.Context, req *pb.DelUserReq) (*pb.DelUserRes, error) {
+	role := req.GetRole()
+	userID := req.GetUserId()
+	delUserID := req.GetDelUserId()
+
+	if err := us.repo.DelUser(userID, role, delUserID); err != nil {
+		us.log.Error("Failed to delete user", zap.Error(err))
+		return nil, err
+	}
+
+	return &pb.DelUserRes{}, nil
+}

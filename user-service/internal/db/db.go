@@ -3,6 +3,7 @@ package db
 import (
 	"os"
 	"time"
+	"errors"
 
 	"go.uber.org/zap"
 	_ "github.com/lib/pq"
@@ -12,16 +13,17 @@ import (
 
 type Repo struct {
 	log *zap.Logger
-	db *sqlx.DB
-	bd sq.StatementBuilderType
+	db  *sqlx.DB
+	bd  sq.StatementBuilderType
 }
+
 func NewRepo(log *zap.Logger) *Repo {
 	r := &Repo{
 		log: log,
-		bd: sq.StatementBuilder.PlaceholderFormat(sq.Dollar),
+		bd:  sq.StatementBuilder.PlaceholderFormat(sq.Dollar),
 	}
 	r.db = r.initDB()
-	
+
 	return r
 }
 func (r *Repo) initDB() *sqlx.DB {
@@ -33,7 +35,7 @@ func (r *Repo) initDB() *sqlx.DB {
 		db, err = sqlx.Connect("postgres", connStr)
 		if err != nil {
 			r.log.Error("Connect PQ error", zap.Error(err))
-			time.Sleep(2*time.Second)
+			time.Sleep(2 * time.Second)
 			continue
 		}
 		r.log.Debug("Successfully connected")
@@ -56,26 +58,26 @@ func (r *Repo) AddUser(id, userName, role, pswd string) error {
 		Values(id, userName, role, pswd).
 		ToSql()
 	if err != nil {
-		r.log.Error("Failed to create query", zap.Error(err))
+		r.log.Error("Failed to create insert query", zap.Error(err))
 		return err
 	}
 
 	if _, err := r.db.Exec(query, args...); err != nil {
-		r.log.Error("Failed to execute query", zap.Error(err))
+		r.log.Error("Failed to execute insert query", zap.Error(err))
 		return err
 	}
 
 	return nil
 }
 
-func (r *Repo) LogUser(userName, pswd string) (*User, error){
+func (r *Repo) LogUser(userName, pswd string) (*User, error) {
 	query, args, err := r.bd.
 		Select("id", "role", "pswd").
 		From("users").
-		Where(sq.Eq{"user_name":userName}).
+		Where(sq.Eq{"user_name": userName}).
 		ToSql()
 	if err != nil {
-		r.log.Error("Failed to create query", zap.Error(err))
+		r.log.Error("Failed to create select query", zap.Error(err))
 		return nil, err
 	}
 
@@ -83,11 +85,65 @@ func (r *Repo) LogUser(userName, pswd string) (*User, error){
 	if err := r.db.QueryRow(query, args...).Scan(
 		&data.ID,
 		&data.Role,
-		&data.Pswd);
-	err != nil {
-		r.log.Error("Failed to execute query", zap.Error(err))
+		&data.Pswd); err != nil {
+		r.log.Error("Failed to execute select query", zap.Error(err))
 		return nil, err
 	}
 
 	return &data, nil
+}
+
+func (r *Repo) getUserRole(userID string) (string, error) {
+	query, args, err := r.bd.
+		Select("role").
+		From("users").
+		Where(sq.Eq{"id": userID}).
+		ToSql()
+	if err != nil {
+		r.log.Error("Failed to create select role query", zap.Error(err))
+		return "", err
+	}
+
+	var role string
+	if err := r.db.QueryRow(query, args...).Scan(&role); err != nil {
+		r.log.Error("Failed to execute select role query", zap.Error(err))
+		return "", err
+	}
+
+	return role, nil
+}
+
+func (r *Repo) DelUser(userID, role, delUserID string) error {
+	q := r.bd.Delete("users").Where(sq.Eq{"id": delUserID})
+
+	if userID != delUserID {
+		if role != "admin" {
+			r.log.Warn("User ID don't match",
+				zap.String("uid", userID),
+				zap.String("duig", delUserID))
+			return errors.New("User ID's don't match")
+		}
+		delRole, err := r.getUserRole(delUserID)
+		if err != nil {
+			r.log.Error("Failed to find deleting user's role", zap.Error(err))
+			return errors.New("Couldn't find deleting user's role")
+		}
+		if delRole == "admin" {
+			r.log.Warn("Admin cannot delete admin")
+			return errors.New("Admin cannot delete admin")
+		}
+	}
+
+	query, args, err := q.ToSql()
+	if err != nil {
+		r.log.Error("Failed to create delete query", zap.Error(err))
+		return err
+	}
+
+	if _, err := r.db.Exec(query, args...); err != nil {
+		r.log.Error("Failed to execute delete query", zap.Error(err))
+		return err
+	}
+
+	return nil
 }

@@ -1,0 +1,203 @@
+[
+    {
+        "id": "1",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/HashPswd",
+        "data": {
+            "password": "123"
+        },
+        "response": "{\"passwordHash\":\"$2a$10$YwqZHaQ9u2sUXX.dikWezOyCks88TrCjpxCgWhgAtGnWFaozsPX.a\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "2",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/RegUser",
+        "data": {
+            "name": "viz",
+            "email": "yomi@duck.com",
+            "role": "dev",
+            "password_hash": "{RESPONSE id=1 json:passwordHash}"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTUsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiODM4NDBlNDUtYmZjNC00YjcyLWEwNDItNGMzZTI4MWI3MGRlIn0.jiVZv5ZmGsYeAwecY3WXxg-aDkPkq_eGWcn4ZdoiKhA\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "3",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/LogUser",
+        "data": {
+            "name": "viz",
+            "email": "yomi@duck.com",
+            "password": "123"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTUsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiODM4NDBlNDUtYmZjNC00YjcyLWEwNDItNGMzZTI4MWI3MGRlIn0.jiVZv5ZmGsYeAwecY3WXxg-aDkPkq_eGWcn4ZdoiKhA\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "4",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/ExtJWTData",
+        "data": {
+            "token": "{RESPONSE id=3 json:token}"
+        },
+        "response": "{\"userId\":\"83840e45-bfc4-4b72-a042-4c3e281b70de\",\"role\":\"dev\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "5",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/DelUser",
+        "data": {
+            "del_user_id": "{RESPONSE id=4 json:userId}",
+            "role": "admin"
+        },
+        "response": "{}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "6",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/RegUser",
+        "data": {
+            "name": "viz",
+            "email": "yomi@duck.com",
+            "role": "dev",
+            "password_hash": "{RESPONSE id=1 json:passwordHash}"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTUsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiYjQyMmYwYmMtN2IwZS00MGVkLWI4ODEtMTRiZTkwN2ZkM2RmIn0.H_Qxky5MzbvY6hOTh_b_w4ZNB-h44DeKfxT1-1dc-6g\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "7",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/ExtJWTData",
+        "data": {
+            "token": "{RESPONSE id=6 json:token}"
+        },
+        "response": "{\"userId\":\"b422f0bc-7b0e-40ed-b881-14be907fd3df\",\"role\":\"dev\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "8",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/DelUser",
+        "data": {
+            "del_user_id": "{RESPONSE id=7 json:userId}",
+            "user_id": "{RESPONSE id=7 json:userId}"
+        },
+        "response": "{}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "9",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/RegUser",
+        "data": {
+            "name": "viz",
+            "email": "yomi@duck.com",
+            "role": "admin",
+            "password_hash": "{RESPONSE id=1 json:passwordHash}"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTYsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIzYjU3YTFiZi1hNzFkLTQyOTAtYWE2Mi0wMjBkNjJjOGQ4NmIifQ.hgHkkAl1m0TPq85DyDHb6uhyQQWXqDFmYL0MW4nVLD4\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "10",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/ExtJWTData",
+        "data": {
+            "token": "{RESPONSE id=9 json:token}"
+        },
+        "response": "{\"userId\":\"3b57a1bf-a71d-4290-aa62-020d62c8d86b\",\"role\":\"admin\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "11",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/DelUser",
+        "data": {
+            "del_user_id": "{RESPONSE id=10 json:userId}",
+            "user_id": "{RESPONSE id=10 json:userId}",
+            "role": "admin"
+        },
+        "response": "{}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "12",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/RegUser",
+        "data": {
+            "name": "viz",
+            "email": "yomi@duck.com",
+            "role": "admin",
+            "password_hash": "{RESPONSE id=1 json:passwordHash}"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTYsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIxOTg0NDEwNC01YjA0LTQ0NmEtYjQ1My1lNTVkYjJmNmJhZmYifQ.t4EycL8xD_kmzM4fkp-nHS2YMeKMF9rGp_G3ocVyNbU\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "13",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/ExtJWTData",
+        "data": {
+            "token": "{RESPONSE id=12 json:token}"
+        },
+        "response": "{\"userId\":\"19844104-5b04-446a-b453-e55db2f6baff\",\"role\":\"admin\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    },
+    {
+        "id": "14",
+        "type": "grpc",
+        "target": "localhost:50051",
+        "endpoint": "users.UserService/DelUser",
+        "data": {
+            "del_user_id": "{RESPONSE id=13 json:userId}",
+            "role": "admin"
+        },
+        "response": "{\"userId\":\"123\",\"status\":\"processed\",\"targetUrl\":\"321\",\"serviceUrl\":\"321\",\"orderType\":\"213\",\"createdAt\":\"2025-11-05T13:09:50.751782Z\",\"updatedAt\":\"2025-11-05T13:09:50.752782Z\"}",
+        "protofiles": [
+            "../protos/user-service.proto"
+        ]
+    }
+]
