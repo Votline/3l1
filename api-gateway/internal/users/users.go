@@ -37,6 +37,8 @@ func New(log *zap.Logger) service.Service {
 func (uc *UsersClient) RegisterRoutes(g chi.Router) {
 	g.Post("/reg", uc.regUser)
 	g.Post("/log", uc.logUser)
+	g.Delete("/del/{delUserId}", uc.delUser)
+	g.Get("/extUserId/{token}", uc.extUserId)
 }
 
 func (uc *UsersClient) GetName() string {

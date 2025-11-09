@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3MDYwODQsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJkMjUwMDAwMS02NWY2LTQxMTYtYWYwOC01YTE2NzdhOThmZjkifQ.A7-zYRhh3riezx8c-v1eyda-6BoeleLyFswluFxrMNw\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODUxNTAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIxMWViZDE0YS1mOGQ0LTQzODctOGY2ZS00OWZlNTA5NmVmYzQifQ.ad1tvjySfcPO6PdXvA42s3MyPv2hL2ulRzYN5TSS-gM\"}\n"
     },
     {
         "id": "2",
@@ -28,51 +28,53 @@
             "email": "yomi@duck.com",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3MDYwODQsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJkMjUwMDAwMS02NWY2LTQxMTYtYWYwOC01YTE2NzdhOThmZjkifQ.A7-zYRhh3riezx8c-v1eyda-6BoeleLyFswluFxrMNw\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODUxNTEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIxMWViZDE0YS1mOGQ0LTQzODctOGY2ZS00OWZlNTA5NmVmYzQifQ.8uVcEI8urMjwNGvJj3iTTQMmRICcYKs3qEvHjv27z0c\"}\n"
     },
     {
         "id": "3",
         "type": "http",
-        "url": "http://localhost:8443/api/users/log",
+        "url": "http://localhost:8443/api/users/reg",
         "method": "POST",
         "headers": {
             "Content-Type": "application/json"
         },
         "body": {
-            "name": "viza",
+            "name": "vizA+",
             "email": "yomi@duck.com",
+            "role": "dev",
             "password": "pswd"
         },
-        "response": "rpc error: code = Unknown desc = sql: no rows in result set\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODUxNTEsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiZTM5YTk3NzAtZGE0OS00NTFkLTgzN2EtYzk2ODA5MDA4NmQ3In0.ZtMWayVex878qe05u4NeKqykk9p9RYdwWVjcTvv06S0\"}\n"
     },
     {
         "id": "4",
         "type": "http",
-        "url": "http://localhost:8443/api/users/log",
-        "method": "POST",
+        "url": "http://localhost:8443/api/users/extUserId/{RESPONSE id=3 json:token}",
+        "method": "GET",
         "headers": {
+            "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
         },
-        "body": {
-            "name": "viz",
-            "email": "yomi@duck.com",
-            "password": "pswds"
-        },
-        "response": "rpc error: code = Unknown desc = Invalid password\n"
+        "response": "{\"user_id\":\"e39a9770-da49-451d-837a-c968090086d7\"}\n"
     },
     {
         "id": "5",
         "type": "http",
-        "url": "http://localhost:8443/api/users/log",
-        "method": "POST",
+        "url": "http://localhost:8443/api/users/del/{RESPONSE id=4 json:user_id}",
+        "method": "DELETE",
         "headers": {
+            "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
-        },
-        "body": {
-            "name": "viz",
-            "email": "syomi@duck.com",
-            "password": "pswd"
-        },
-        "response": "rpc error: code = Unknown desc = sql: no rows in result set\n"
+        }
+    },
+    {
+        "id": "6",
+        "type": "http",
+        "url": "http://localhost:8443/api/users/del/me",
+        "method": "DELETE",
+        "headers": {
+            "Authorization": "Bearer {RESPONSE id=2 json:token}",
+            "Content-Type": "application/json"
+        }
     }
 ]
