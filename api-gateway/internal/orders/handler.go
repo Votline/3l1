@@ -1,13 +1,15 @@
 package orders
 
 import (
+	"context"
 	"net/http"
 
-	"go.uber.org/zap"
 	"github.com/go-chi/chi"
+	"go.uber.org/zap"
 
-	"gateway/internal/users"
 	"gateway/internal/service"
+	"gateway/internal/users"
+
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
@@ -45,12 +47,14 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (os ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
+func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
 	id := chi.URLParam(r, "orderID")
+	userID := r.Context().Value("userInfo").(users.UserInfo).UserID
 
 	res, err := os.client.OrderInfo(c.Context(), &pb.OrderInfoReq{
 		Id: id,
+		UserId: userID,
 	})
 	if err != nil {
 		os.log.Error("Rpc request failed", zap.Error(err))
@@ -67,4 +71,22 @@ func (os ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 		"created_at": res.CreatedAt.String(),
 		"updated_at": res.UpdatedAt.String(),
 	})
+}
+
+func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "orderID")
+	role := r.Context().Value("userInfo").(users.UserInfo).Role
+	userID := r.Context().Value("userInfo").(users.UserInfo).UserID
+
+	if _, err := os.client.DelOrder(context.Background(), &pb.DelOrderReq{
+		Id: id,
+		Role: role,
+		UserId: userID,
+	}); err != nil {
+		os.log.Error("Rpc request failed", zap.Error(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

@@ -35,6 +35,7 @@ func New(log *zap.Logger) service.Service {
 func (os *ordersClient) RegisterRoutes(g chi.Router) {
 	g.Post("/", os.addOrder)
 	g.Get("/{orderID}", os.orderInfo)
+	g.Delete("/del/{orderID}", os.delOrder)
 }
 
 func (os *ordersClient) GetName() string {

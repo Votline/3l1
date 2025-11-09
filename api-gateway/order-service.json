@@ -10,9 +10,10 @@
         "body": {
             "name": "vizA+",
             "email": "syfomi@duck.com",
+            "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3MDY2MzcsInJvbGUiOiIiLCJ1c2VyX2lkIjoiMDM4ZTdjZjktMmQxZS00ZGQ4LWJlYzQtMjQ3YmE0NzNkZDA3In0.V4gvl_rsTVJsXWwkwwbzc3K7dZZsRavsQO8khiaktT8\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODczNTQsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJlMzZlZmJlNC04Njk0LTQ5NTItYmRjMS02NzMyY2RlZDVmMjQifQ.0zGrsbRPOlVgL-OBdGh2_eNX-tfWvt3AoKc1rORcwyM\"}\n"
     },
     {
         "id": "2",
@@ -24,13 +25,12 @@
             "Content-Type": "application/json"
         },
         "body": {
-            "user_id": "123",
             "target_url": "https://lol.com",
             "service_url": "https://nakrutka.com",
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"ee3920c5-aaab-4b01-bde4-8efd5b3053e2\"}\n"
+        "response": "{\"id\":\"b0deda6f-3719-49de-a3e8-09ff4354dc0e\"}\n"
     },
     {
         "id": "3",
@@ -41,6 +41,60 @@
             "Authorization": "Bearer {RESPONSE id=1 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"created_at\":\"seconds:1762620237 nanos:257391000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1762620237 nanos:257391000\",\"user_id\":\"038e7cf9-2d1e-4dd8-bec4-247ba473dd07\"}\n"
+        "response": "{\"created_at\":\"seconds:1762700954  nanos:187776000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1762700954  nanos:187776000\",\"user_id\":\"e36efbe4-8694-4952-bdc1-6732cded5f24\"}\n"
+    },
+    {
+        "id": "4",
+        "type": "http",
+        "url": "http://localhost:8443/api/orders/del/{RESPONSE id=2 json:id}",
+        "method": "DELETE",
+        "headers": {
+            "Authorization": "Bearer {RESPONSE id=1 json:token}",
+            "Content-Type": "application/json"
+        }
+    },
+    {
+        "id": "5",
+        "type": "http",
+        "url": "http://localhost:8443/api/users/reg",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "name": "viz",
+            "email": "syfomi@duck.com",
+            "role": "dev",
+            "password": "pswd"
+        },
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODczNTQsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiMmE0NjZiMzUtYTlhZC00NDdlLTk2YjgtNmQzMzBiMmU3NjA3In0.9L7bTJ8LbhaDcxIJt7PgjGmaMsE0gx1bouXwirKfWB0\"}\n"
+    },
+    {
+        "id": "6",
+        "type": "http",
+        "url": "http://localhost:8443/api/orders",
+        "method": "POST",
+        "headers": {
+            "Authorization": "Bearer {RESPONSE id=5 json:token}",
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "user_id": "123",
+            "target_url": "https://lol.com",
+            "service_url": "https://nakrutka.com",
+            "order_type": "likes",
+            "quantity": 200
+        },
+        "response": "{\"id\":\"f7fc17c9-16cf-4a94-9742-a003f1362263\"}\n"
+    },
+    {
+        "id": "7",
+        "type": "http",
+        "url": "http://localhost:8443/api/orders/del/{RESPONSE id=6 json:id}",
+        "method": "DELETE",
+        "headers": {
+            "Authorization": "Bearer {RESPONSE id=5 json:token}",
+            "Content-Type": "application/json"
+        }
     }
 ]
