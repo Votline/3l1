@@ -10,3 +10,7 @@ CREATE TABLE IF NOT EXISTS orders(
 	created_at TIMESTAMP DEFAULT NOW(),
 	updated_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_user_id ON orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_role ON orders(user_role);
+CREATE INDEX IF NOT EXISTS idx_id_user_id ON orders(id, user_role);

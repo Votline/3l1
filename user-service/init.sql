@@ -4,3 +4,6 @@ CREATE TABLE IF NOT EXISTS users (
 	pswd TEXT NOT NULL,
 	user_name TEXT NOT NULL UNIQUE
 );
+
+CREATE INDEX IF NOT EXISTS idx_id ON users(id);
+CREATE INDEX IF NOT EXISTS idx_user_name ON users(user_name);

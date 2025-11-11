@@ -8,12 +8,12 @@
             "Content-Type": "application/json"
         },
         "body": {
-            "name": "viz",
+            "name": "ziv",
             "email": "yomi@duck.com",
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODUxNTAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIxMWViZDE0YS1mOGQ0LTQzODctOGY2ZS00OWZlNTA5NmVmYzQifQ.ad1tvjySfcPO6PdXvA42s3MyPv2hL2ulRzYN5TSS-gM\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUyNjAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJjYWI0N2JhYi00ZTVkLTQzMzEtYTg4OC1jM2UzNDcyMzNmOTgifQ.64j6X9uJf0rBWHmUEKcVyL0qZBGCYq8yvmfMFwk9Ayo\"}\n"
     },
     {
         "id": "2",
@@ -24,11 +24,11 @@
             "Content-Type": "application/json"
         },
         "body": {
-            "name": "viz",
+            "name": "ziv",
             "email": "yomi@duck.com",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODUxNTEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIxMWViZDE0YS1mOGQ0LTQzODctOGY2ZS00OWZlNTA5NmVmYzQifQ.8uVcEI8urMjwNGvJj3iTTQMmRICcYKs3qEvHjv27z0c\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUyNjAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJjYWI0N2JhYi00ZTVkLTQzMzEtYTg4OC1jM2UzNDcyMzNmOTgifQ.64j6X9uJf0rBWHmUEKcVyL0qZBGCYq8yvmfMFwk9Ayo\"}\n"
     },
     {
         "id": "3",
@@ -39,12 +39,12 @@
             "Content-Type": "application/json"
         },
         "body": {
-            "name": "vizA+",
+            "name": "zivA+",
             "email": "yomi@duck.com",
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODUxNTEsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiZTM5YTk3NzAtZGE0OS00NTFkLTgzN2EtYzk2ODA5MDA4NmQ3In0.ZtMWayVex878qe05u4NeKqykk9p9RYdwWVjcTvv06S0\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUyNjAsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiMzBlMDY4ZTAtZWMxNC00MDFjLWE5NmItNzljNDlmZGU2ZDUxIn0.LQ61qTf7ow4M7r3xtxVoDHdcTzJMQ6XEXQxi1krop_s\"}\n"
     },
     {
         "id": "4",
@@ -55,7 +55,7 @@
             "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"user_id\":\"e39a9770-da49-451d-837a-c968090086d7\"}\n"
+        "response": "{\"user_id\":\"30e068e0-ec14-401c-a96b-79c49fde6d51\"}\n"
     },
     {
         "id": "5",

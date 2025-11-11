@@ -7,7 +7,7 @@
         "data": {
             "password": "123"
         },
-        "response": "{\"passwordHash\":\"$2a$10$YwqZHaQ9u2sUXX.dikWezOyCks88TrCjpxCgWhgAtGnWFaozsPX.a\"}",
+        "response": "{\"passwordHash\":\"$2a$10$RSHs8z4uHEJBBI9mTdcX5uhqSoYFUsWWz1kysEUkJ4iJ9qMtvlkJK\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]
@@ -23,7 +23,7 @@
             "role": "dev",
             "password_hash": "{RESPONSE id=1 json:passwordHash}"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTUsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiODM4NDBlNDUtYmZjNC00YjcyLWEwNDItNGMzZTI4MWI3MGRlIn0.jiVZv5ZmGsYeAwecY3WXxg-aDkPkq_eGWcn4ZdoiKhA\"}",
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUxNzIsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiMDE3MGZmN2MtMzRlMy00MTIxLTg3ZTYtN2NlZjBkMjFlYmY5In0.AmhjTWtcscNmnzhCPS5v8Go3ebGDFj7dMdIcW2dyO_M\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]
@@ -38,7 +38,7 @@
             "email": "yomi@duck.com",
             "password": "123"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTUsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiODM4NDBlNDUtYmZjNC00YjcyLWEwNDItNGMzZTI4MWI3MGRlIn0.jiVZv5ZmGsYeAwecY3WXxg-aDkPkq_eGWcn4ZdoiKhA\"}",
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUxNzIsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiMDE3MGZmN2MtMzRlMy00MTIxLTg3ZTYtN2NlZjBkMjFlYmY5In0.AmhjTWtcscNmnzhCPS5v8Go3ebGDFj7dMdIcW2dyO_M\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]
@@ -51,7 +51,7 @@
         "data": {
             "token": "{RESPONSE id=3 json:token}"
         },
-        "response": "{\"userId\":\"83840e45-bfc4-4b72-a042-4c3e281b70de\",\"role\":\"dev\"}",
+        "response": "{\"userId\":\"0170ff7c-34e3-4121-87e6-7cef0d21ebf9\",\"role\":\"dev\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]
@@ -81,7 +81,7 @@
             "role": "dev",
             "password_hash": "{RESPONSE id=1 json:passwordHash}"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTUsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiYjQyMmYwYmMtN2IwZS00MGVkLWI4ODEtMTRiZTkwN2ZkM2RmIn0.H_Qxky5MzbvY6hOTh_b_w4ZNB-h44DeKfxT1-1dc-6g\"}",
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUxNzIsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiNDdkYjc5OTktM2EyZS00ZGE4LWJhYmYtOTY1NTY0YzBhNTU1In0.eQWSPSmjEpuRwGxtSUW37brJQ00mikA6sO3VD2j57j4\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]
@@ -94,7 +94,7 @@
         "data": {
             "token": "{RESPONSE id=6 json:token}"
         },
-        "response": "{\"userId\":\"b422f0bc-7b0e-40ed-b881-14be907fd3df\",\"role\":\"dev\"}",
+        "response": "{\"userId\":\"47db7999-3a2e-4da8-babf-965564c0a555\",\"role\":\"dev\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]
@@ -124,7 +124,7 @@
             "role": "admin",
             "password_hash": "{RESPONSE id=1 json:passwordHash}"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTYsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIzYjU3YTFiZi1hNzFkLTQyOTAtYWE2Mi0wMjBkNjJjOGQ4NmIifQ.hgHkkAl1m0TPq85DyDHb6uhyQQWXqDFmYL0MW4nVLD4\"}",
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUxNzMsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI0NzAwZDkzNy01ODE4LTQ3ZjgtOTAyMi0wYWIyOGMzM2E0NjEifQ.mx3z_3loJa66J1QprwdaFXcNOeOQlzpTogbu9NFtQ-g\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]
@@ -137,7 +137,7 @@
         "data": {
             "token": "{RESPONSE id=9 json:token}"
         },
-        "response": "{\"userId\":\"3b57a1bf-a71d-4290-aa62-020d62c8d86b\",\"role\":\"admin\"}",
+        "response": "{\"userId\":\"4700d937-5818-47f8-9022-0ab28c33a461\",\"role\":\"admin\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]
@@ -168,7 +168,7 @@
             "role": "admin",
             "password_hash": "{RESPONSE id=1 json:passwordHash}"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3NzEwOTYsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIxOTg0NDEwNC01YjA0LTQ0NmEtYjQ1My1lNTVkYjJmNmJhZmYifQ.t4EycL8xD_kmzM4fkp-nHS2YMeKMF9rGp_G3ocVyNbU\"}",
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUxNzMsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJjMjM1MTA1NC1jYzExLTQ5NTMtYThhZi0yZjA4NzUzOGIwYzYifQ.dTl7vGAVpPyyNpEYYee5YAdhb6AFoMc_dDQh3CRzebg\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]
@@ -181,7 +181,7 @@
         "data": {
             "token": "{RESPONSE id=12 json:token}"
         },
-        "response": "{\"userId\":\"19844104-5b04-446a-b453-e55db2f6baff\",\"role\":\"admin\"}",
+        "response": "{\"userId\":\"c2351054-cc11-4953-a8af-2f087538b0c6\",\"role\":\"admin\"}",
         "protofiles": [
             "../protos/user-service.proto"
         ]

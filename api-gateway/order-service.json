@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODczNTQsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJlMzZlZmJlNC04Njk0LTQ5NTItYmRjMS02NzMyY2RlZDVmMjQifQ.0zGrsbRPOlVgL-OBdGh2_eNX-tfWvt3AoKc1rORcwyM\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDQ5NjEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJiMzU5ZWYwMy1mZjJlLTRlMzktODY3MS0yODNlMWQxMTkxYmMifQ.GLKlelUajisAaeRgVP4igPeQDrFcOpJmoKhNGZEuf38\"}\n"
     },
     {
         "id": "2",
@@ -30,7 +30,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"b0deda6f-3719-49de-a3e8-09ff4354dc0e\"}\n"
+        "response": "{\"id\":\"63fe325f-11e5-4eca-8d70-c47f37389bd8\"}\n"
     },
     {
         "id": "3",
@@ -41,7 +41,7 @@
             "Authorization": "Bearer {RESPONSE id=1 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"created_at\":\"seconds:1762700954  nanos:187776000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1762700954  nanos:187776000\",\"user_id\":\"e36efbe4-8694-4952-bdc1-6732cded5f24\"}\n"
+        "response": "{\"created_at\":\"seconds:1762758562  nanos:118700000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1762758562  nanos:118700000\",\"user_id\":\"b359ef03-ff2e-4e39-8671-283e1d1191bc\"}\n"
     },
     {
         "id": "4",
@@ -67,7 +67,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI3ODczNTQsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiMmE0NjZiMzUtYTlhZC00NDdlLTk2YjgtNmQzMzBiMmU3NjA3In0.9L7bTJ8LbhaDcxIJt7PgjGmaMsE0gx1bouXwirKfWB0\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDQ5NjIsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiOTQ1ZTk0MGMtY2I2Ni00NTEyLWFlOGYtZTllODJmZDQwNGYzIn0.m1LieTPDYoiQtz1fq5ilgdOPF1zLyyys2zM4y0PjDLw\"}\n"
     },
     {
         "id": "6",
@@ -85,7 +85,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"f7fc17c9-16cf-4a94-9742-a003f1362263\"}\n"
+        "response": "{\"id\":\"c0825a33-2fc8-46e8-abbd-51f35270613a\"}\n"
     },
     {
         "id": "7",

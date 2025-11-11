@@ -3,6 +3,7 @@ package db
 import (
 	"os"
 	"time"
+	"errors"
 
 	"go.uber.org/zap"
 	_ "github.com/lib/pq"
@@ -100,10 +101,42 @@ func (r *Repo) OrderInfo(id, userID string) (*Order, error) {
 	return &order, err
 }
 
+func (r *Repo) getUserInfo(orderID string) (string, string, error) {
+	query, args, err := r.bd.
+		Select("user_id", "user_role").
+		From("orders").
+		Where(sq.Eq{"id": orderID}).
+		ToSql()
+	if err != nil {
+		r.log.Error("Failed to create select user info query", zap.Error(err))
+		return "", "", err
+	}
+
+	var userID string
+	var userRole string
+	
+	if err := r.db.QueryRow(query, args...).Scan(&userID, &userRole); err != nil {
+		r.log.Error("Failed to execute select user info query", zap.Error(err))
+		return "", "", err
+	}
+	return userID, userRole, err
+}
+
 func (r *Repo) DelOrder(id, userID, role string) error {
 	q := r.bd.Delete("orders").Where(sq.Eq{"id": id})
+
 	if role != "admin" {
 		q = q.Where(sq.Eq{"user_id": userID})
+	} else {
+		delID, delRole, err := r.getUserInfo(id)
+		if err != nil {
+			r.log.Error("Failed to find deleting order info", zap.Error(err))
+			return err
+		}
+		if userID != delID && role == delRole {
+			r.log.Error("Admin cannot delete admin's order", zap.Error(err))
+			return errors.New("Admin cannot delete admin's order")
+		}
 	}
 
 	query, args, err := q.ToSql()

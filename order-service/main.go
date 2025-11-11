@@ -59,7 +59,7 @@ func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*p
 
 	order, err := os.repo.OrderInfo(id, userID)
 	if err != nil {
-		os.log.Error("Failed to extract data")
+		os.log.Error("Failed to extract data", zap.Error(err))
 		return nil, err
 	}
 
