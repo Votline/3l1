@@ -36,7 +36,7 @@ func (a *Auth) JWTAuth() func(http.Handler) http.Handler {
 
 			parts := strings.Split(authHeader, " ")
 			if len(parts) != 2 || parts[0] != "Bearer" {
-				a.log.Error("Invalid Authorization format")
+				a.log.Error("Invalid Authorization format", zap.Int("len parts", len(parts)), zap.String("Part 0", parts[0]))
 				http.Error(w, "Invalid Authorization format", http.StatusBadRequest)
 				return
 			}

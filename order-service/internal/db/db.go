@@ -101,7 +101,7 @@ func (r *Repo) OrderInfo(id, userID string) (*Order, error) {
 	return &order, err
 }
 
-func (r *Repo) getUserInfo(orderID string) (string, string, error) {
+func (r *Repo) getUserInfo(orderID string, tx *sqlx.Tx) (string, string, error) {
 	query, args, err := r.bd.
 		Select("user_id", "user_role").
 		From("orders").
@@ -112,23 +112,32 @@ func (r *Repo) getUserInfo(orderID string) (string, string, error) {
 		return "", "", err
 	}
 
-	var userID string
-	var userRole string
-	
-	if err := r.db.QueryRow(query, args...).Scan(&userID, &userRole); err != nil {
+	var result struct {
+		userID string `db:"user_id"`
+		userRl string `db:"user_role"`
+	}
+
+	if err := tx.Get(&result, query, args...); err != nil {
 		r.log.Error("Failed to execute select user info query", zap.Error(err))
 		return "", "", err
 	}
-	return userID, userRole, err
+	return result.userID, result.userRl, err
 }
 
 func (r *Repo) DelOrder(id, userID, role string) error {
+	tx, err := r.db.Beginx()
+	if err != nil {
+		r.log.Error("Failed to begin transaction", zap.Error(err))
+		return err
+	}
+	defer tx.Rollback()
+
 	q := r.bd.Delete("orders").Where(sq.Eq{"id": id})
 
 	if role != "admin" {
 		q = q.Where(sq.Eq{"user_id": userID})
 	} else {
-		delID, delRole, err := r.getUserInfo(id)
+		delID, delRole, err := r.getUserInfo(id, tx)
 		if err != nil {
 			r.log.Error("Failed to find deleting order info", zap.Error(err))
 			return err
@@ -145,8 +154,13 @@ func (r *Repo) DelOrder(id, userID, role string) error {
 		return err
 	}
 
-	if _, err := r.db.Exec(query, args...); err != nil {
+	if _, err := tx.Exec(query, args...); err != nil {
 		r.log.Error("Failed to execute delete query", zap.Error(err))
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.log.Error("Failed to commin transaction", zap.Error(err))
 		return err
 	}
 	

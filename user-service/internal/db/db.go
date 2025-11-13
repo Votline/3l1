@@ -93,7 +93,7 @@ func (r *Repo) LogUser(userName, pswd string) (*User, error) {
 	return &data, nil
 }
 
-func (r *Repo) getUserRole(userID string) (string, error) {
+func (r *Repo) getUserRole(userID string, tx *sqlx.Tx) (string, error) {
 	query, args, err := r.bd.
 		Select("role").
 		From("users").
@@ -105,7 +105,7 @@ func (r *Repo) getUserRole(userID string) (string, error) {
 	}
 
 	var role string
-	if err := r.db.QueryRow(query, args...).Scan(&role); err != nil {
+	if err := tx.Get(&role, query, args...); err != nil {
 		r.log.Error("Failed to execute select role query", zap.Error(err))
 		return "", err
 	}
@@ -114,6 +114,12 @@ func (r *Repo) getUserRole(userID string) (string, error) {
 }
 
 func (r *Repo) DelUser(userID, role, delUserID string) error {
+	tx, err := r.db.Beginx()
+	if err != nil {
+		r.log.Error("Failed to create transaction", zap.Error(err))
+		return err
+	}
+
 	q := r.bd.Delete("users").Where(sq.Eq{"id": delUserID})
 
 	if userID != delUserID {
@@ -123,7 +129,7 @@ func (r *Repo) DelUser(userID, role, delUserID string) error {
 				zap.String("duig", delUserID))
 			return errors.New("User ID's don't match")
 		}
-		delRole, err := r.getUserRole(delUserID)
+		delRole, err := r.getUserRole(delUserID, tx)
 		if err != nil {
 			r.log.Error("Failed to find deleting user's role", zap.Error(err))
 			return errors.New("Couldn't find deleting user's role")
@@ -140,8 +146,13 @@ func (r *Repo) DelUser(userID, role, delUserID string) error {
 		return err
 	}
 
-	if _, err := r.db.Exec(query, args...); err != nil {
+	if _, err := tx.Exec(query, args...); err != nil {
 		r.log.Error("Failed to execute delete query", zap.Error(err))
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.log.Error("Failed to commit transaction", zap.Error(err))
 		return err
 	}
 
