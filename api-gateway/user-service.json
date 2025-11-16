@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUyNjAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJjYWI0N2JhYi00ZTVkLTQzMzEtYTg4OC1jM2UzNDcyMzNmOTgifQ.64j6X9uJf0rBWHmUEKcVyL0qZBGCYq8yvmfMFwk9Ayo\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjMzOTMzMTAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIzYWRiYTljMS00NmRkLTQxZTEtYTE5NS1hNmYwZThiMjVhOGIifQ.MQQupRpcI8lTv5LOFMvdh6z3S-HTx7l_TWSVa67zSpQ\"}\n"
     },
     {
         "id": "2",
@@ -28,7 +28,7 @@
             "email": "yomi@duck.com",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUyNjAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJjYWI0N2JhYi00ZTVkLTQzMzEtYTg4OC1jM2UzNDcyMzNmOTgifQ.64j6X9uJf0rBWHmUEKcVyL0qZBGCYq8yvmfMFwk9Ayo\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjMzOTMzMTAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIzYWRiYTljMS00NmRkLTQxZTEtYTE5NS1hNmYwZThiMjVhOGIifQ.MQQupRpcI8lTv5LOFMvdh6z3S-HTx7l_TWSVa67zSpQ\"}\n"
     },
     {
         "id": "3",
@@ -44,7 +44,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDUyNjAsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiMzBlMDY4ZTAtZWMxNC00MDFjLWE5NmItNzljNDlmZGU2ZDUxIn0.LQ61qTf7ow4M7r3xtxVoDHdcTzJMQ6XEXQxi1krop_s\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjMzOTMzMTAsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiYTg1ZmJiM2QtNjQ0MS00MTU5LTg1MmEtMzRkODg0MjBhNmVmIn0.HKZ1M6teaxw3ONA1sDnxvarbw8NNhHQKGTxX_lcgKTw\"}\n"
     },
     {
         "id": "4",
@@ -55,7 +55,7 @@
             "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"user_id\":\"30e068e0-ec14-401c-a96b-79c49fde6d51\"}\n"
+        "response": "{\"user_id\":\"a85fbb3d-6441-4159-852a-34d88420a6ef\"}\n"
     },
     {
         "id": "5",

@@ -11,7 +11,7 @@ import (
 type Service interface{
 	Close() error
 	GetName() string
-	RegisterRoutes(g chi.Router)
+	RegisterRoutes(chi.Router)
 }
 type ctx struct {
 	w http.ResponseWriter

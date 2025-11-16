@@ -6,6 +6,8 @@ import (
 	"go.uber.org/zap"
 	"github.com/go-chi/chi"
 	"google.golang.org/grpc"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gateway/internal/service"
 
@@ -17,9 +19,12 @@ type UsersClient struct {
 	name string
 	conn *grpc.ClientConn
 	client pb.UserServiceClient
+	hist *prometheus.HistogramVec
+	Counter *prometheus.CounterVec
+	Active prometheus.Gauge
 }
 
-func New(log *zap.Logger) service.Service {
+func New(resTime *prometheus.HistogramVec ,log *zap.Logger) service.Service {
 	conn, err := grpc.NewClient(
 		os.Getenv("US_HOST")+":"+os.Getenv("US_PORT"),
 		grpc.WithInsecure())
@@ -31,6 +36,9 @@ func New(log *zap.Logger) service.Service {
 		conn: conn,
 		name: "users",
 		client: pb.NewUserServiceClient(conn),
+		hist: resTime,
+		Counter: newCounter(),
+		Active: newGauge(),
 	}
 }
 
@@ -47,4 +55,25 @@ func (uc *UsersClient) GetName() string {
 
 func (uc *UsersClient) Close() error {
 	return uc.conn.Close()
+}
+
+func (uc *UsersClient) NewTimer(label string) *prometheus.Timer{
+	return prometheus.NewTimer(prometheus.ObserverFunc(func(v float64){
+		uc.hist.WithLabelValues(label).Observe(v)
+	}))
+}
+
+func newCounter() *prometheus.CounterVec {
+	return promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "users_operation_total",
+		Help: "Total number of operations for user service",
+	}, []string{"users_service_operation"})
+}
+
+func newGauge() prometheus.Gauge {
+	gauge := promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "users_active_operations",
+		Help: "Total number of active operations for user service",
+	})
+	return gauge
 }

@@ -10,12 +10,21 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/chi/middleware"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gateway/internal/mdwr"
 	"gateway/internal/users"
 	"gateway/internal/orders"
 	"gateway/internal/service"
 )
+
+var resTime = promauto.NewHistogramVec(prometheus.HistogramOpts{
+	Name: "seconds_for_operation",
+	Help: "Time spent processing requests",
+	Buckets: []float64{0.1, 0.5, 1.0, 2.0, 5.0},
+},[]string{"response_time"})
 
 func NewServer(log *zap.Logger) *http.Server {
 	r := chi.NewRouter()
@@ -35,17 +44,18 @@ func NewServer(log *zap.Logger) *http.Server {
 		AllowedMethods: corsMethods,
 	}
 
-	uc := users.New(log)
-	a := mdwr.NewAuth(uc.(*users.UsersClient), log)
+	uc := users.New(resTime, log)
+	m := mdwr.NewMdwr(uc.(*users.UsersClient), log)
 
-	r.Use(a.JWTAuth())
+	r.Use(m.JWTAuth())
+	r.Use(m.Metrics())
 	r.Use(cors.Handler(c))
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Compress(5))
 	r.Use(middleware.Throttle(10))
 
 	routing(r, uc, log)
-	
+	r.Handle("/metrics", promhttp.Handler())
 
 	addr := ":"+os.Getenv("API_PORT")
 	return &http.Server{

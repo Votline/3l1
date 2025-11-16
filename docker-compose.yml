@@ -11,6 +11,9 @@ services:
       - .env
     ports:
       - "${API_PORT}:${API_PORT}"
+    networks:
+      - monitoring
+      - backend
     restart: unless-stopped
 
   user-service:
@@ -23,6 +26,8 @@ services:
       - .env
     ports:
       - "${US_PORT}:${US_PORT}"
+    networks:
+      - backend
     depends_on:
       - postgres
 
@@ -36,6 +41,8 @@ services:
       - .env
     ports:
       - "${OS_PORT}:${OS_PORT}"
+    networks:
+      - backend
     depends_on:
       - postgres
 
@@ -43,6 +50,8 @@ services:
     image: postgres:17
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    networks:
+      - backend
     volumes:
       - ./user-service/init.sql:/docker-entrypoint-initdb.d/1-user.sql:ro
       - ./order-service/init.sql:/docker-entrypoint-initdb.d/1-order.sql:ro
@@ -52,3 +61,32 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "${PROM_PORT}:${PROM_PORT}"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring
+  
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "${GRAF_PORT}:${GRAF_PORT}"
+    environment:
+      - GL_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - monitoring
+
+volumes:
+  grafana-data:
+
+networks:
+  monitoring:
+    driver: bridge
+  backend:
+    driver: bridge
