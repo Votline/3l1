@@ -70,7 +70,7 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - monitoring
-  
+
   grafana:
     image: grafana/grafana
     ports:

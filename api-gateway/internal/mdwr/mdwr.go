@@ -8,16 +8,18 @@ import (
 
 	"go.uber.org/zap"
 
+	"gateway/internal/service"
 	"gateway/internal/users"
 )
 
 type Mdwr struct {
 	log *zap.Logger
 	uc  *users.UsersClient
+	svc service.Service
 }
 
-func NewMdwr(uc *users.UsersClient, log *zap.Logger) *Mdwr {
-	return &Mdwr{uc: uc, log: log}
+func NewMdwr(svc service.Service, uc *users.UsersClient, log *zap.Logger) *Mdwr {
+	return &Mdwr{svc: svc, uc: uc, log: log}
 }
 
 func (m *Mdwr) JWTAuth() func(http.Handler) http.Handler {
@@ -63,36 +65,49 @@ func isPublicRoute(path string) bool {
 		"/metrics",
 		"/",
 	}
-
 	return slices.Contains(publicRotues, path)
 }
 
 func (m *Mdwr) Metrics() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 
-			oper := strings.SplitN(strings.TrimSuffix(r.URL.Path, "/"), "/", 5)
+			var svcName, oper string
 
-			var mainLabel, operLabel string
-			switch len(oper) { //'/api/serviceName/oper/etc
-			case 0, 1, 2: //"", api
-				mainLabel, operLabel = "api", "api"
-			case 3: //"", api, serviceName
-				mainLabel, operLabel = oper[2], oper[2] //serviceName
-			case 4, 5: //"", api, serviceName, operation, etc will be ignored
-				operLabel = oper[2] + "_" + oper[3] //serviceName+oper
-				mainLabel = oper[2] //serviceName
-			default:
-				m.log.Error("Failed to split url", zap.Int("oper len:", len(oper)))
+			if len(parts) >= 2 && parts[0] == "api" {
+				svcName = parts[1] // /api/service
+			} else if len(parts) >= 1 && parts[0] == "api" {
+				svcName = "api" // /api
+			} else if len(parts) >= 1 && parts[0] != "" {
+				svcName = parts[0] // /something
+			} else {
+				svcName = "root" // /
 			}
 
-			timer := m.uc.NewTimer(operLabel)
+			if len(parts) >= 3 {
+				if len(parts[2]) >= 36 {
+					oper = "by_uuid"
+				} else {
+					oper = parts[2]
+				}
+			} else if len(parts) == 2 && parts[0] == "api" {
+				oper = "root" // /api/service
+			} else if len(parts) == 1 && parts[0] == "api" {
+				oper = "api" // /api
+			} else if len(parts) == 1 && parts[0] != "" {
+				oper = "root" // /something
+			} else {
+				oper = "root" // /
+			}
+
+			timer := m.svc.NewTimer(svcName, oper)
 			defer timer.ObserveDuration()
 
-			m.uc.Counter.WithLabelValues(mainLabel).Inc()
-			m.uc.Counter.WithLabelValues(operLabel).Inc()
-			m.uc.Active.Inc()
-			defer m.uc.Active.Dec()
+			m.svc.GetCounter(svcName).Inc()
+			m.svc.GetCounter(svcName + "_" + oper).Inc()
+			m.svc.GetActive().Inc()
+			defer m.svc.GetActive().Dec()
 
 			next.ServeHTTP(w, r)
 		})

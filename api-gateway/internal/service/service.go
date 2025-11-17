@@ -6,12 +6,16 @@ import (
 	"encoding/json"
 
 	"github.com/go-chi/chi"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 type Service interface{
 	Close() error
 	GetName() string
 	RegisterRoutes(chi.Router)
+	NewTimer(string, string) *prometheus.Timer
+	GetCounter(string) prometheus.Counter
+	GetActive() prometheus.Gauge
 }
 type ctx struct {
 	w http.ResponseWriter

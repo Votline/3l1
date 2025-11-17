@@ -8,12 +8,12 @@
             "Content-Type": "application/json"
         },
         "body": {
-            "name": "vizA+",
+            "name": "vizA++",
             "email": "syfomi@duck.com",
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDQ5NjEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJiMzU5ZWYwMy1mZjJlLTRlMzktODY3MS0yODNlMWQxMTkxYmMifQ.GLKlelUajisAaeRgVP4igPeQDrFcOpJmoKhNGZEuf38\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM0MDE3NzIsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJjOWRhOTUxNC04ZDljLTQwZDgtYTY5My0zOWNmNTg3NmUwMjEifQ.gVCNPU9EkV2GA6-V5hQUIslFnyzYNDOsfaWm9WfVUXo\"}\n"
     },
     {
         "id": "2",
@@ -30,7 +30,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"63fe325f-11e5-4eca-8d70-c47f37389bd8\"}\n"
+        "response": "{\"id\":\"8fb0ab5d-fd22-4b60-baa0-c42eeffe220b\"}\n"
     },
     {
         "id": "3",
@@ -41,7 +41,7 @@
             "Authorization": "Bearer {RESPONSE id=1 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"created_at\":\"seconds:1762758562  nanos:118700000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1762758562  nanos:118700000\",\"user_id\":\"b359ef03-ff2e-4e39-8671-283e1d1191bc\"}\n"
+        "response": "{\"created_at\":\"seconds:1763315372  nanos:147233000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1763315372  nanos:147233000\",\"user_id\":\"c9da9514-8d9c-40d8-a693-39cf5876e021\"}\n"
     },
     {
         "id": "4",
@@ -62,12 +62,12 @@
             "Content-Type": "application/json"
         },
         "body": {
-            "name": "viz",
+            "name": "viz++",
             "email": "syfomi@duck.com",
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjI4NDQ5NjIsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiOTQ1ZTk0MGMtY2I2Ni00NTEyLWFlOGYtZTllODJmZDQwNGYzIn0.m1LieTPDYoiQtz1fq5ilgdOPF1zLyyys2zM4y0PjDLw\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM0MDE3NzIsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiOGJiNDk1NzEtOWUwNS00MjdjLTk3MmItMzdhMWZlYjliYmU2In0.GwgJ9Kr48cqrfOF3MtJt0daGdq42Wbbjg_kL9bGRWvE\"}\n"
     },
     {
         "id": "6",
@@ -85,7 +85,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"c0825a33-2fc8-46e8-abbd-51f35270613a\"}\n"
+        "response": "{\"id\":\"2a7226aa-292d-421d-ad90-557f94c5df32\"}\n"
     },
     {
         "id": "7",
@@ -95,6 +95,23 @@
         "headers": {
             "Authorization": "Bearer {RESPONSE id=5 json:token}",
             "Content-Type": "application/json"
+        }
+    },
+    {
+        "id": "8",
+        "type": "http",
+        "url": "http://localhost:8443/api/users/del/me",
+        "method": "DELETE",
+        "headers": {
+            "Authorization": "Bearer {RESPONSE id=1 json:token}",
+            "Content-Type": "application/json"
+        }
+    },
+    {
+        "type": "repeated",
+        "repeated_id": "8",
+        "replace": {
+            "Authorization": "Bearer {RESPONSE id=5 json:token}"
         }
     }
 ]

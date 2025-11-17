@@ -6,6 +6,8 @@ import (
 	"go.uber.org/zap"
 	"github.com/go-chi/chi"
 	"google.golang.org/grpc"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gateway/internal/service"
 	pb "github.com/Votline/3l1/protos/generated-order"
@@ -16,8 +18,11 @@ type ordersClient struct {
 	name string
 	conn *grpc.ClientConn
 	client pb.OrderServiceClient
+	hist *prometheus.HistogramVec
+	counter *prometheus.CounterVec
+	active prometheus.Gauge
 }
-func New(log *zap.Logger) service.Service {
+func New(resTime *prometheus.HistogramVec, log *zap.Logger) service.Service {
 	conn, err := grpc.NewClient(
 		os.Getenv("OS_HOST")+":"+os.Getenv("OS_PORT"),
 		grpc.WithInsecure())
@@ -29,6 +34,9 @@ func New(log *zap.Logger) service.Service {
 		conn: conn,
 		name: "orders",
 		client: pb.NewOrderServiceClient(conn),
+		hist: resTime,
+		counter: newCounter(),
+		active: newGauge(),
 	}
 }
 
@@ -44,4 +52,32 @@ func (os *ordersClient) GetName() string {
 
 func (os *ordersClient) Close() error {
 	return os.conn.Close()
+}
+
+func (os *ordersClient) NewTimer(svc, oper string) *prometheus.Timer {
+	return prometheus.NewTimer(prometheus.ObserverFunc(func(v float64){
+		os.hist.WithLabelValues(svc, oper).Observe(v)
+	}))
+}
+
+func (os *ordersClient) GetCounter(label string) prometheus.Counter {
+	return os.counter.WithLabelValues(label)
+}
+
+func (os *ordersClient) GetActive() prometheus.Gauge {
+	return os.active
+}
+
+func newCounter() *prometheus.CounterVec {
+	return promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "orders_operation_total",
+		Help: "Total number of operations for order service",
+	}, []string{"operation"})
+}
+
+func newGauge() prometheus.Gauge {
+	return promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "orders_active_operations",
+		Help: "Total number of active operations for order service",
+	})
 }

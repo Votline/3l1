@@ -24,7 +24,7 @@ var resTime = promauto.NewHistogramVec(prometheus.HistogramOpts{
 	Name: "seconds_for_operation",
 	Help: "Time spent processing requests",
 	Buckets: []float64{0.1, 0.5, 1.0, 2.0, 5.0},
-},[]string{"response_time"})
+},[]string{"service", "operation"})
 
 func NewServer(log *zap.Logger) *http.Server {
 	r := chi.NewRouter()
@@ -44,17 +44,14 @@ func NewServer(log *zap.Logger) *http.Server {
 		AllowedMethods: corsMethods,
 	}
 
-	uc := users.New(resTime, log)
-	m := mdwr.NewMdwr(uc.(*users.UsersClient), log)
 
-	r.Use(m.JWTAuth())
-	r.Use(m.Metrics())
+	svcs := activateMdwr(r, log)
 	r.Use(cors.Handler(c))
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Compress(5))
 	r.Use(middleware.Throttle(10))
 
-	routing(r, uc, log)
+	routing(r, svcs, log)
 	r.Handle("/metrics", promhttp.Handler())
 
 	addr := ":"+os.Getenv("API_PORT")
@@ -67,12 +64,21 @@ func NewServer(log *zap.Logger) *http.Server {
 	}
 }
 
-func routing(r *chi.Mux, uc service.Service, log *zap.Logger) {
+func activateMdwr(r *chi.Mux, log *zap.Logger) []service.Service {
+	uc := users.New(resTime, log)
 	services := []service.Service{
 		uc,
-		orders.New(log),
+		orders.New(resTime, log),
 	}
+	for _, svc := range services {
+		m := mdwr.NewMdwr(svc, uc.(*users.UsersClient), log)
+		r.Use(m.JWTAuth())
+		r.Use(m.Metrics())
+	}
+	return services
+}
 
+func routing(r *chi.Mux, services []service.Service, log *zap.Logger) {
 	for _, svc := range services {
 		path := "/api/"+svc.GetName()
 		log.Debug("service: ", zap.String("path", path))

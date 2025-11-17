@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjMzOTMzMTAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIzYWRiYTljMS00NmRkLTQxZTEtYTE5NS1hNmYwZThiMjVhOGIifQ.MQQupRpcI8lTv5LOFMvdh6z3S-HTx7l_TWSVa67zSpQ\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM0MDE3NzEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI2MWE1ZTg0Ni1iOTgwLTQwYWUtYTJmNC1jMGRlZGFjNzc4M2QifQ.0cTyLhP2KfY-vHPZ2Mfion4GlXRZ5qa-NEdLNZJYGss\"}\n"
     },
     {
         "id": "2",
@@ -28,7 +28,7 @@
             "email": "yomi@duck.com",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjMzOTMzMTAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiIzYWRiYTljMS00NmRkLTQxZTEtYTE5NS1hNmYwZThiMjVhOGIifQ.MQQupRpcI8lTv5LOFMvdh6z3S-HTx7l_TWSVa67zSpQ\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM0MDE3NzEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI2MWE1ZTg0Ni1iOTgwLTQwYWUtYTJmNC1jMGRlZGFjNzc4M2QifQ.0cTyLhP2KfY-vHPZ2Mfion4GlXRZ5qa-NEdLNZJYGss\"}\n"
     },
     {
         "id": "3",
@@ -44,7 +44,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjMzOTMzMTAsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiYTg1ZmJiM2QtNjQ0MS00MTU5LTg1MmEtMzRkODg0MjBhNmVmIn0.HKZ1M6teaxw3ONA1sDnxvarbw8NNhHQKGTxX_lcgKTw\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM0MDE3NzEsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiMmY1YjhjNTgtNWQ1Mi00ZDQ5LWE3NDEtYTNiNDExYzUwYWY0In0.omyLUmW2YWqQwBcqN2xfoFYCt6lBkDdDz4dxkraCvis\"}\n"
     },
     {
         "id": "4",
@@ -55,7 +55,7 @@
             "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"user_id\":\"a85fbb3d-6441-4159-852a-34d88420a6ef\"}\n"
+        "response": "{\"user_id\":\"2f5b8c58-5d52-4d49-a741-a3b411c50af4\"}\n"
     },
     {
         "id": "5",
