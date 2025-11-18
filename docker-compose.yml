@@ -14,6 +14,8 @@ services:
     networks:
       - monitoring
       - backend
+    volumes:
+      - ./api-gateway/logs:/api-gateway/logs
     restart: unless-stopped
 
   user-service:

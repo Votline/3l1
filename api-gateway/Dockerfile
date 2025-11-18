@@ -14,5 +14,6 @@ RUN go build -o api-gateway
 
 FROM alpine:3.18
 WORKDIR /api-gateway
+RUN mkdir -p logs
 COPY --from=builder /build/api-gateway/api-gateway .
 CMD ["./api-gateway"]

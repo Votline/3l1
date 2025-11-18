@@ -72,33 +72,45 @@ func (m *Mdwr) Metrics() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+			// /api/serviceName/etc
 
 			var svcName, oper string
-
 			if len(parts) >= 2 && parts[0] == "api" {
-				svcName = parts[1] // /api/service
+				svcName = parts[1]
 			} else if len(parts) >= 1 && parts[0] == "api" {
-				svcName = "api" // /api
+				svcName = "api"
 			} else if len(parts) >= 1 && parts[0] != "" {
-				svcName = parts[0] // /something
+				svcName = parts[0]
 			} else {
-				svcName = "root" // /
+				svcName = "root"
 			}
 
-			if len(parts) >= 3 {
-				if len(parts[2]) >= 36 {
-					oper = "by_uuid"
+			if len(parts) == 1 {
+				// "/" or "/api"
+				if parts[0] == "api" {
+					oper = "api"
 				} else {
-					oper = parts[2]
+					oper = "root"
 				}
 			} else if len(parts) == 2 && parts[0] == "api" {
-				oper = "root" // /api/service
-			} else if len(parts) == 1 && parts[0] == "api" {
-				oper = "api" // /api
-			} else if len(parts) == 1 && parts[0] != "" {
-				oper = "root" // /something
+				// /api/serviceName
+				if r.Method == http.MethodPost {
+					oper = "post"
+				} else {
+					oper = "root"
+				}
+
+			} else if len(parts) >= 3 {
+				// /api/serviceName/etc
+				candidate := parts[2]
+
+				if len(candidate) >= 32 {
+					oper = "by_uuid"
+				} else {
+					oper = candidate
+				}
 			} else {
-				oper = "root" // /
+				oper = "root"
 			}
 
 			timer := m.svc.NewTimer(svcName, oper)
@@ -106,6 +118,7 @@ func (m *Mdwr) Metrics() func(http.Handler) http.Handler {
 
 			m.svc.GetCounter(svcName).Inc()
 			m.svc.GetCounter(svcName + "_" + oper).Inc()
+
 			m.svc.GetActive().Inc()
 			defer m.svc.GetActive().Dec()
 
@@ -113,3 +126,4 @@ func (m *Mdwr) Metrics() func(http.Handler) http.Handler {
 		})
 	}
 }
+

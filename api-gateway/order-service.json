@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM0MDE3NzIsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJjOWRhOTUxNC04ZDljLTQwZDgtYTY5My0zOWNmNTg3NmUwMjEifQ.gVCNPU9EkV2GA6-V5hQUIslFnyzYNDOsfaWm9WfVUXo\"}\n"
+        "response": "rpc error: code = Unknown desc = pq: duplicate key value violates unique constraint \"users_user_name_key\"\n"
     },
     {
         "id": "2",
@@ -30,7 +30,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"8fb0ab5d-fd22-4b60-baa0-c42eeffe220b\"}\n"
+        "response": "{\"id\":\"303c523e-1e39-4e74-b11c-d97d9cc62a4e\"}\n"
     },
     {
         "id": "3",
@@ -41,7 +41,7 @@
             "Authorization": "Bearer {RESPONSE id=1 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"created_at\":\"seconds:1763315372  nanos:147233000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1763315372  nanos:147233000\",\"user_id\":\"c9da9514-8d9c-40d8-a693-39cf5876e021\"}\n"
+        "response": "{\"created_at\":\"seconds:1763394475  nanos:183063000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1763394475  nanos:183063000\",\"user_id\":\"51b6337c-c2c8-4aa9-ab70-c69f5d66a5df\"}\n"
     },
     {
         "id": "4",
@@ -67,7 +67,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM0MDE3NzIsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiOGJiNDk1NzEtOWUwNS00MjdjLTk3MmItMzdhMWZlYjliYmU2In0.GwgJ9Kr48cqrfOF3MtJt0daGdq42Wbbjg_kL9bGRWvE\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM0ODA4NzUsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiOTcyZDA3MjctMzE5Mi00MzI3LWI2ZGItN2ExZWUxNTQ0NDQ5In0.Jx6dd0pi5WpRE8tCscAuKpLmTooHMVqSvWynSgDeNxA\"}\n"
     },
     {
         "id": "6",
@@ -85,7 +85,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"2a7226aa-292d-421d-ad90-557f94c5df32\"}\n"
+        "response": "{\"id\":\"3df7b59a-bf7d-43cd-915a-edbb718fbd62\"}\n"
     },
     {
         "id": "7",
