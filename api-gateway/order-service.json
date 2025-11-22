@@ -30,7 +30,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"303c523e-1e39-4e74-b11c-d97d9cc62a4e\"}\n"
+        "response": "{\"id\":\"0cd07ce7-be0d-4003-b447-23920c346c8e\"}\n"
     },
     {
         "id": "3",
@@ -41,7 +41,7 @@
             "Authorization": "Bearer {RESPONSE id=1 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"created_at\":\"seconds:1763394475  nanos:183063000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1763394475  nanos:183063000\",\"user_id\":\"51b6337c-c2c8-4aa9-ab70-c69f5d66a5df\"}\n"
+        "response": "{\"created_at\":\"seconds:1763485395 nanos:656192000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1763485395 nanos:656192000\",\"user_id\":\"963c189c-3983-432a-bc8e-73ecb814e432\"}\n"
     },
     {
         "id": "4",
@@ -67,7 +67,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM0ODA4NzUsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiOTcyZDA3MjctMzE5Mi00MzI3LWI2ZGItN2ExZWUxNTQ0NDQ5In0.Jx6dd0pi5WpRE8tCscAuKpLmTooHMVqSvWynSgDeNxA\"}\n"
+        "response": "rpc error: code = Unknown desc = pq: duplicate key value violates unique constraint \"users_user_name_key\"\n"
     },
     {
         "id": "6",
@@ -85,7 +85,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"3df7b59a-bf7d-43cd-915a-edbb718fbd62\"}\n"
+        "response": "{\"id\":\"693ef1fe-6425-4e4c-9092-d906972e364b\"}\n"
     },
     {
         "id": "7",

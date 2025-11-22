@@ -3,6 +3,8 @@ package main
 import (
 	"os"
 	"flag"
+	"net/http"
+	_ "net/http/pprof"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -51,6 +53,13 @@ func setupLog() *zap.Logger {
 func main() {
 	log := setupLog()
 	defer log.Sync()
+
+	go func(){
+		log.Debug("Starting pprof server")
+		http.Handle("/debug/pprof", http.DefaultServeMux)
+		log.Error("Pprof server failed",
+			zap.Error(http.ListenAndServe(":"+os.Getenv("PPROF_PORT"), nil)))
+	}()
 
 	srv := routers.NewServer(log)
 	log.Debug("Server starting...")

@@ -11,6 +11,7 @@ services:
       - .env
     ports:
       - "${API_PORT}:${API_PORT}"
+      - "${PPROF_PORT}:${PPROF_PORT}"
     networks:
       - monitoring
       - backend
