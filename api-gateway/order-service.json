@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "rpc error: code = Unknown desc = pq: duplicate key value violates unique constraint \"users_user_name_key\"\n"
+        "response": "Too many requests\n"
     },
     {
         "id": "2",
@@ -30,7 +30,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"0cd07ce7-be0d-4003-b447-23920c346c8e\"}\n"
+        "response": "{\"id\":\"10fea2d1-d962-4837-8305-c7dccc718da2\"}\n"
     },
     {
         "id": "3",
@@ -41,7 +41,7 @@
             "Authorization": "Bearer {RESPONSE id=1 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"created_at\":\"seconds:1763485395 nanos:656192000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1763485395 nanos:656192000\",\"user_id\":\"963c189c-3983-432a-bc8e-73ecb814e432\"}\n"
+        "response": "{\"created_at\":\"seconds:1763992586 nanos:63380000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1763992586 nanos:63380000\",\"user_id\":\"5183c6c8-8199-425d-b7c4-cad362a0d820\"}\n"
     },
     {
         "id": "4",
@@ -67,7 +67,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "rpc error: code = Unknown desc = pq: duplicate key value violates unique constraint \"users_user_name_key\"\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQwNzg5ODYsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiNmYyODNiZjYtMjdlYi00OTEwLThjYzEtOGI2MTBmOTlmNWQ0In0.SMNaJVN72mkxTr_VZX6SdwTnAGORnqCizSJWX49_Hdo\"}\n"
     },
     {
         "id": "6",
@@ -85,7 +85,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"693ef1fe-6425-4e4c-9092-d906972e364b\"}\n"
+        "response": "{\"id\":\"5bf976bd-3ad7-4577-9e37-0228fb4d1776\"}\n"
     },
     {
         "id": "7",

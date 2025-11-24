@@ -1,28 +1,29 @@
 package mdwr
 
 import (
-	"context"
-	"net/http"
 	"slices"
 	"strings"
+	"context"
+	"net/http"
 
 	"go.uber.org/zap"
 
-	"gateway/internal/service"
 	"gateway/internal/users"
+	"gateway/internal/service"
 )
 
-type Mdwr struct {
+type mdwr struct{
 	log *zap.Logger
 	uc  *users.UsersClient
 	svc service.Service
 }
 
-func NewMdwr(svc service.Service, uc *users.UsersClient, log *zap.Logger) *Mdwr {
-	return &Mdwr{svc: svc, uc: uc, log: log}
+func NewMdwr(svc service.Service, uc *users.UsersClient, log *zap.Logger) *mdwr {
+
+	return &mdwr{svc: svc, uc: uc, log: log}
 }
 
-func (m *Mdwr) JWTAuth() func(http.Handler) http.Handler {
+func (m *mdwr) JWTAuth() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if isPublicRoute(r.URL.String()) {
@@ -68,7 +69,7 @@ func isPublicRoute(path string) bool {
 	return slices.Contains(publicRotues, path)
 }
 
-func (m *Mdwr) Metrics() func(http.Handler) http.Handler {
+func (m *mdwr) Metrics() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
@@ -126,4 +127,3 @@ func (m *Mdwr) Metrics() func(http.Handler) http.Handler {
 		})
 	}
 }
-

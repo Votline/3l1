@@ -26,6 +26,11 @@ var resTime = promauto.NewHistogramVec(prometheus.HistogramOpts{
 	Buckets: []float64{0.1, 0.5, 1.0, 2.0, 5.0},
 },[]string{"service", "operation"})
 
+const (
+	gzipLevel = 5
+	maxConcurrencyRequests = 10
+)
+
 func NewServer(log *zap.Logger) *http.Server {
 	r := chi.NewRouter()
 
@@ -44,12 +49,14 @@ func NewServer(log *zap.Logger) *http.Server {
 		AllowedMethods: corsMethods,
 	}
 
+	rl := mdwr.NewRl(log)
+	r.Use(rl.Middleware())
 
 	svcs := activateMdwr(r, log)
 	r.Use(cors.Handler(c))
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.Compress(5))
-	r.Use(middleware.Throttle(10))
+	r.Use(middleware.Compress(gzipLevel))
+	r.Use(middleware.Throttle(maxConcurrencyRequests))
 
 	routing(r, svcs, log)
 	r.Handle("/metrics", promhttp.Handler())
@@ -70,6 +77,7 @@ func activateMdwr(r *chi.Mux, log *zap.Logger) []service.Service {
 		uc,
 		orders.New(resTime, log),
 	}
+	
 	for _, svc := range services {
 		m := mdwr.NewMdwr(svc, uc.(*users.UsersClient), log)
 		r.Use(m.JWTAuth())
