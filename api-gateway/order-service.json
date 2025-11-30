@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "Too many requests\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ1ODQ0NzUsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI2OGI4ODUxMC03NzIzLTQ0NjYtOThkNC01ZWU4NmQ1M2M3ZjEifQ.53W_GbZPCM4mt8epnyXnWEaY1lH19ZdZRkM2JQAv778\"}\n"
     },
     {
         "id": "2",
@@ -30,7 +30,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"10fea2d1-d962-4837-8305-c7dccc718da2\"}\n"
+        "response": "{\"id\":\"abf24518-23e8-469a-98ad-ea9482bcc39d\"}\n"
     },
     {
         "id": "3",
@@ -41,7 +41,7 @@
             "Authorization": "Bearer {RESPONSE id=1 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"created_at\":\"seconds:1763992586 nanos:63380000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1763992586 nanos:63380000\",\"user_id\":\"5183c6c8-8199-425d-b7c4-cad362a0d820\"}\n"
+        "response": "{\"created_at\":\"seconds:1764493805 nanos:540617000\",\"order_type\":\"likes\",\"service_url\":\"https://nakrutka.com\",\"status\":\"processed\",\"target_url\":\"https://lol.com\",\"updated_at\":\"seconds:1764493805 nanos:540617000\",\"user_id\":\"58f929d7-b998-4e1c-9fa2-b477aa2f0afc\"}\n"
     },
     {
         "id": "4",
@@ -67,7 +67,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQwNzg5ODYsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiNmYyODNiZjYtMjdlYi00OTEwLThjYzEtOGI2MTBmOTlmNWQ0In0.SMNaJVN72mkxTr_VZX6SdwTnAGORnqCizSJWX49_Hdo\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ1ODQ0NzYsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiMzYyMTBjMGItMWM5ZS00OWNmLTk5N2EtZWVjNmViNmZlYTljIn0.5Co7CnC0COiqeMszILK1zxyXSLZ6tejyeNg8DVVkPo4\"}\n"
     },
     {
         "id": "6",
@@ -85,7 +85,7 @@
             "order_type": "likes",
             "quantity": 200
         },
-        "response": "{\"id\":\"5bf976bd-3ad7-4577-9e37-0228fb4d1776\"}\n"
+        "response": "{\"id\":\"e82122da-9752-4815-b07b-b75f568ce658\"}\n"
     },
     {
         "id": "7",

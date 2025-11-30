@@ -52,13 +52,13 @@ func NewServer(log *zap.Logger) *http.Server {
 	rl := mdwr.NewRl(log)
 	r.Use(rl.Middleware())
 
-	svcs := activateMdwr(r, log)
+	svcs, groups := activateMdwr(log)
 	r.Use(cors.Handler(c))
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Compress(gzipLevel))
 	r.Use(middleware.Throttle(maxConcurrencyRequests))
 
-	routing(r, svcs, log)
+	routing(r, svcs, groups, log)
 	r.Handle("/metrics", promhttp.Handler())
 
 	addr := ":"+os.Getenv("API_PORT")
@@ -71,27 +71,36 @@ func NewServer(log *zap.Logger) *http.Server {
 	}
 }
 
-func activateMdwr(r *chi.Mux, log *zap.Logger) []service.Service {
-	uc := users.New(resTime, log)
+func activateMdwr(log *zap.Logger) ([]service.Service, []chi.Router) {
+	uc := users.New(resTime, log).(*users.UsersClient)
 	services := []service.Service{
 		uc,
 		orders.New(resTime, log),
 	}
-	
-	for _, svc := range services {
-		m := mdwr.NewMdwr(svc, uc.(*users.UsersClient), log)
-		r.Use(m.JWTAuth())
-		r.Use(m.Metrics())
+
+	groups := make([]chi.Router, len(services))
+
+	for i, svc := range services {
+		g := chi.NewRouter()
+		m := mdwr.NewMdwr(svc, uc, log)
+
+		if svc.GetName() == "users" {
+			g.Use(m.JWTAuth())
+		}
+		g.Use(m.Metrics())
+		groups[i] = g
 	}
-	return services
+	return services, groups
 }
 
-func routing(r *chi.Mux, services []service.Service, log *zap.Logger) {
-	for _, svc := range services {
+func routing(r *chi.Mux, services []service.Service, groups []chi.Router, log *zap.Logger) {
+	for i, svc := range services {
 		path := "/api/"+svc.GetName()
 		log.Debug("service: ", zap.String("path", path))
 
-		r.Route(path, func(g chi.Router){
+		r.Mount(path, groups[i])
+
+		groups[i].Route("/", func(g chi.Router){
 			svc.RegisterRoutes(g)
 		})
 	}

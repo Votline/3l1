@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQwNzg5ODcsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI3YTJmNzg3NS04MmM2LTQ3YzEtYjQ4NS0zN2U3MTdmMzRmMjgifQ.w6qM2layvc4UnzVazp70EKLSpAVDMlWa-6RA-2NflAg\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ1ODQ0ODAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI5Njk1NjgxYS02MzU2LTRjYzQtOWFiMi1iMzRkNzE0YWM3NGEifQ.drc07CfEYJ6tkQmz3G6XB1yrqIZjqQ9kqLCuiSUuwEo\"}\n"
     },
     {
         "id": "2",
@@ -28,7 +28,7 @@
             "email": "yomi@duck.com",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQwNzg5ODcsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI3YTJmNzg3NS04MmM2LTQ3YzEtYjQ4NS0zN2U3MTdmMzRmMjgifQ.w6qM2layvc4UnzVazp70EKLSpAVDMlWa-6RA-2NflAg\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ1ODQ0ODEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI5Njk1NjgxYS02MzU2LTRjYzQtOWFiMi1iMzRkNzE0YWM3NGEifQ.zvh4ODIO1dW-jEY9Bwjctd1f02mAzaDwaIu55VKQb7k\"}\n"
     },
     {
         "id": "3",
@@ -44,7 +44,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQwNzg5ODcsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiNzc3NGI4ZGQtZjQ5OS00NDYwLTgwNDYtMjU0YmUzMWE1OGUwIn0.YAQDD_xZvOPRCEqAgJbBSBkybfbRpf2gYDrz5BE-uIk\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ1ODQ0ODEsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiODRmOWNmNTAtYzhlOC00OWUxLThiMTAtMWY1ZmQ2NTE4MzgyIn0.NPkSu158RaznUwQEL_70poOkzNdr5tJf86_qrCF6clI\"}\n"
     },
     {
         "id": "4",
@@ -55,7 +55,7 @@
             "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"user_id\":\"7774b8dd-f499-4460-8046-254be31a58e0\"}\n"
+        "response": "{\"user_id\":\"84f9cf50-c8e8-49e1-8b10-1f5fd6518382\"}\n"
     },
     {
         "id": "5",
@@ -75,7 +75,6 @@
         "headers": {
             "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
-        },
-        "response": "Too many requests\n"
+        }
     }
 ]

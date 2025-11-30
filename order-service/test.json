@@ -11,7 +11,7 @@
             "order_type": "213",
             "quantity": "4"
         },
-        "response": "{\"id\":\"3cb80390-af59-4a78-9f5d-aa0f1d460f68\"}",
+        "response": "{\"id\":\"af994b05-05be-4667-8a0a-caa122bb3eba\"}",
         "protofiles": [
             "../protos/order-service.proto"
         ]
@@ -25,7 +25,7 @@
             "id": "{RESPONSE id=1 json:id}",
             "user_id": "123"
         },
-        "response": "{\"userId\":\"123\",\"status\":\"processed\",\"targetUrl\":\"321\",\"serviceUrl\":\"321\",\"orderType\":\"213\",\"createdAt\":\"2025-11-13T11:58:22.620149Z\",\"updatedAt\":\"2025-11-13T11:58:22.620149Z\"}",
+        "response": "{\"userId\":\"123\",\"status\":\"processed\",\"targetUrl\":\"321\",\"serviceUrl\":\"321\",\"orderType\":\"213\",\"createdAt\":\"2025-11-29T16:58:56.334967Z\",\"updatedAt\":\"2025-11-29T16:58:56.334967Z\"}",
         "protofiles": [
             "../protos/order-service.proto"
         ]
@@ -56,7 +56,7 @@
             "order_type": "213",
             "quantity": "4"
         },
-        "response": "{\"id\":\"8d1f1673-fc63-46df-8877-3db2d07a079b\"}",
+        "response": "{\"id\":\"0c1c6184-1e10-4d3a-9e3a-126d7e0000c8\"}",
         "protofiles": [
             "../protos/order-service.proto"
         ]
