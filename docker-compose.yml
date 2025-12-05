@@ -17,7 +17,8 @@ services:
       - backend
     volumes:
       - ./api-gateway/logs:/api-gateway/logs
-    restart: unless-stopped
+    depends_on:
+      - redis_rl
 
   user-service:
     build:
@@ -33,6 +34,7 @@ services:
       - backend
     depends_on:
       - postgres
+      - redis_sk
 
   order-service:
     build:
@@ -85,13 +87,27 @@ services:
     networks:
       - monitoring
 
-  redis:
+  redis_rl:
     image: redis:alpine
     ports:
-      - "${REDIS_PORT}:${REDIS_PORT}"
+      - "${REDIS_RL_PORT}:6379"
     networks:
       - backend
-    command: redis-server --requirepass ${REDIS_PSWD}
+    command:
+      - redis-server
+      - "--requirepass"
+      - "${REDIS_RL_PSWD}"
+
+  redis_sk:
+    image: redis:alpine
+    ports:
+      - "${REDIS_SK_PORT}:6379"
+    networks:
+      - backend
+    command:
+      - redis-server
+      - "--requirepass"
+      - "${REDIS_SK_PSWD}"
 
 volumes:
   grafana-data:

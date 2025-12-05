@@ -63,6 +63,7 @@ func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 		zap.String("user role", req.Role),
 		zap.String("token", res.Token))
 
+	c.SetSession(res.SessionKey)
 	c.JSON(http.StatusOK, map[string]string{
 		"token": res.Token,
 	})
@@ -102,6 +103,7 @@ func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 		zap.String("username", req.Name+req.Email),
 		zap.String("token", res.Token))
 
+	c.SetSession(res.SessionKey)
 	c.JSON(http.StatusOK, map[string]string{
 		"token": res.Token,
 	})
@@ -112,6 +114,7 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 		role string
 		userId string
 		delUserId string
+		sessionKey string
 	}{}
 	req.role = r.Context().Value("userInfo").(UserInfo).Role
 	req.userId = r.Context().Value("userInfo").(UserInfo).UserID
@@ -119,18 +122,23 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 	if req.delUserId == "me" {
 		req.delUserId = req.userId
 	}
+	sk, err := r.Cookie("session_key")
+	if err != nil {
+		uc.log.Error("Couldn't get session key from cookies", zap.Error(err))
+		return
+	}
 
 	uc.log.Debug("New del user request",
 		zap.String("user id", req.userId),
 		zap.String("deleting user role", req.role),
 		zap.String("deleted user id", req.delUserId))
 
-	_, err := uc.client.DelUser(context.Background(), &pb.DelUserReq{
+	if _, err := uc.client.DelUser(context.Background(), &pb.DelUserReq{
 		Role: req.role,
 		UserId: req.userId,
 		DelUserId: req.delUserId,
-	})
-	if err != nil {
+		SessionKey: sk.String(),
+	}); err != nil {
 		uc.log.Error("Rpc request failed", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -142,9 +150,10 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (uc *UsersClient) ExtJWTData(tokenString string) (UserInfo, error) {
+func (uc *UsersClient) ExtJWTData(tokenString, sk string) (UserInfo, error) {
 	res, err := uc.client.ExtJWTData(context.Background(), &pb.ExtJWTDataReq{
 		Token: tokenString,
+		SessionKey: sk,
 	})
 
 	uc.log.Debug("New request in need jwt data",
@@ -167,8 +176,12 @@ func (uc *UsersClient) ExtJWTData(tokenString string) (UserInfo, error) {
 
 func (uc *UsersClient) extUserId(w http.ResponseWriter, r *http.Request) {
 	tokenString := chi.URLParam(r, "token")
-	
-	data, err := uc.ExtJWTData(tokenString)
+	sk, err := r.Cookie("session_key")
+	if err != nil {
+		uc.log.Error("Couldn't get session key from cookies", zap.Error(err))
+	}
+
+	data, err := uc.ExtJWTData(tokenString, sk.String())
 	if err != nil {
 		uc.log.Error("Failed to extract jwt data", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)

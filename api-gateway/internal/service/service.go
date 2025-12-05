@@ -1,6 +1,7 @@
 package service
 
 import (
+	"os"
 	"context"
 	"net/http"
 	"encoding/json"
@@ -32,6 +33,17 @@ func (c *ctx) JSON(status int, v any) error {
 	c.w.Header().Set("Content-Type", "application/json")
 	c.w.WriteHeader(status)
 	return json.NewEncoder(c.w).Encode(v)
+}
+func (c *ctx) SetSession(key string) {
+	http.SetCookie(c.w, &http.Cookie{
+		Name: "session_key",
+		Value: key,
+		Path: "/",
+		MaxAge: 86400,
+		HttpOnly: true,
+		Secure: os.Getenv("mode") == "production",
+		SameSite: http.SameSiteLaxMode,
+	})
 }
 
 func (c *ctx) Context() context.Context {

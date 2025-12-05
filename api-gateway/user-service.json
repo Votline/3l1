@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ1ODQ0ODAsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI5Njk1NjgxYS02MzU2LTRjYzQtOWFiMi1iMzRkNzE0YWM3NGEifQ.drc07CfEYJ6tkQmz3G6XB1yrqIZjqQ9kqLCuiSUuwEo\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ5MzQwODEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJhM2NkMGVmOC03ZDc5LTQxMmUtYjRhOS03ZGQzYjQ4NWI5MTMifQ.MHV3Mj6zSZYuBtvcJATcHjSSf6-JYwxmJWWcJ3TTrt8\"}\n"
     },
     {
         "id": "2",
@@ -28,7 +28,7 @@
             "email": "yomi@duck.com",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ1ODQ0ODEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI5Njk1NjgxYS02MzU2LTRjYzQtOWFiMi1iMzRkNzE0YWM3NGEifQ.zvh4ODIO1dW-jEY9Bwjctd1f02mAzaDwaIu55VKQb7k\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ5MzQwODEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJhM2NkMGVmOC03ZDc5LTQxMmUtYjRhOS03ZGQzYjQ4NWI5MTMifQ.MHV3Mj6zSZYuBtvcJATcHjSSf6-JYwxmJWWcJ3TTrt8\"}\n"
     },
     {
         "id": "3",
@@ -44,7 +44,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ1ODQ0ODEsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiODRmOWNmNTAtYzhlOC00OWUxLThiMTAtMWY1ZmQ2NTE4MzgyIn0.NPkSu158RaznUwQEL_70poOkzNdr5tJf86_qrCF6clI\"}\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ5MzQwODEsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiNjU3NzY5ODctODg5ZS00OWQ3LWFiMWMtYTQyZjg2Y2ZiZWVlIn0.YU02Ty2eqnNJ-5bKKEGWJrp4BcHICh4cSGlHXej-lRk\"}\n"
     },
     {
         "id": "4",
@@ -55,7 +55,7 @@
             "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"user_id\":\"84f9cf50-c8e8-49e1-8b10-1f5fd6518382\"}\n"
+        "response": "{\"user_id\":\"65776987-889e-49d7-ab1c-a42f86cfbeee\"}\n"
     },
     {
         "id": "5",
