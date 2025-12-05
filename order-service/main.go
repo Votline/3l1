@@ -3,7 +3,10 @@ package main
 import (
 	"os"
 	"net"
+	"time"
 	"context"
+	"syscall"
+	"os/signal"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -11,7 +14,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"orders/internal/db"
-
+	gc "orders/internal/graceful"
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
@@ -31,7 +34,28 @@ func main() {
 	s := grpc.NewServer()
 	srv := orderservice{log: log, repo: db.NewRepo(log)}
 	pb.RegisterOrderServiceServer(s, &srv)
-	s.Serve(lis)
+	go s.Serve(lis)
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Warn("Shutdown signal received")
+	gracefulShutdown(s, srv, log)
+}
+func gracefulShutdown(s *grpc.Server, srv orderservice, log *zap.Logger) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	log.Info("Shutting down gRPC server")
+	if err := gc.Shutdown(
+	func() error {s.Stop(); return nil}, ctx); err != nil {
+		log.Error("gRPC server shutdown error", zap.Error(err))
+	}
+
+	log.Info("Shutting down postgreSQL")
+	if err := srv.repo.Stop(ctx); err != nil {
+		log.Error("Postgres shutdown error", zap.Error(err))
+	}
 }
 
 func (os *orderservice) AddOrder(ctx context.Context, req *pb.AddOrderReq) (*pb.AddOrderRes, error) {
@@ -80,7 +104,7 @@ func (os *orderservice) DelOrder(ctx context.Context, req *pb.DelOrderReq) (*pb.
 	userID := req.GetUserId()
 	role := req.GetRole()
 
-	if err := os.repo.DelOrder(id, role, userID); err != nil {
+	if err := os.repo.DelOrder(id, userID, role); err != nil {
 		os.log.Error("Failed to delete order")
 		return nil, err
 	}

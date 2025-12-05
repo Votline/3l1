@@ -7,11 +7,12 @@ import (
 	"encoding/json"
 
 	"github.com/go-chi/chi"
+	"github.com/go-playground/validator/v10"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 type Service interface{
-	Close() error
+	Close(context.Context) error
 	GetName() string
 	RegisterRoutes(chi.Router)
 	NewTimer(string, string) *prometheus.Timer
@@ -44,6 +45,16 @@ func (c *ctx) SetSession(key string) {
 		Secure: os.Getenv("mode") == "production",
 		SameSite: http.SameSiteLaxMode,
 	})
+}
+func (c *ctx) Validate(req any) error {
+	validate := validator.New()
+	if err := validate.Struct(req); err != nil {
+		if c.w != nil {
+			http.Error(c.w, err.Error(), http.StatusBadRequest)
+		}
+		return err
+	}
+	return nil
 }
 
 func (c *ctx) Context() context.Context {

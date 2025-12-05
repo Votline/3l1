@@ -4,22 +4,26 @@ import (
 	"os"
 	"time"
 	"errors"
+	"context"
 
 	"go.uber.org/zap"
 	_ "github.com/lib/pq"
 	"github.com/jmoiron/sqlx"
 	sq "github.com/Masterminds/squirrel"
+
+	gc "orders/internal/graceful"
 )
 
 type Repo struct {
 	log *zap.Logger
-	db *sqlx.DB
-	bd sq.StatementBuilderType
+	db  *sqlx.DB
+	bd  sq.StatementBuilderType
 }
+
 func NewRepo(log *zap.Logger) *Repo {
 	r := &Repo{
 		log: log,
-		bd: sq.StatementBuilder.PlaceholderFormat(sq.Dollar),
+		bd:  sq.StatementBuilder.PlaceholderFormat(sq.Dollar),
 	}
 	r.db = r.initDB()
 	return r
@@ -33,17 +37,25 @@ func (r *Repo) initDB() *sqlx.DB {
 		db, err = sqlx.Connect("postgres", connStr)
 		if err != nil {
 			r.log.Error("Connect PQ error", zap.Error(err))
-			time.Sleep(2*time.Second)
+			time.Sleep(2 * time.Second)
 			continue
 		}
+
+		db.SetMaxOpenConns(20)
+		db.SetMaxIdleConns(10)
+		db.SetConnMaxLifetime(time.Hour)
+		db.SetConnMaxIdleTime(10 * time.Minute)
+
 		r.log.Debug("Successfully connected")
 		return db
 	}
-	
+
 	r.log.Fatal("Couldn't connect to DB")
 	return nil
 }
-
+func (r *Repo) Stop(ctx context.Context) error {
+	return gc.Shutdown(r.db.Close, ctx)
+}
 type Order struct {
 	ID         string    `db:"id"`
 	UserID     string    `db:"user_id"`
@@ -61,10 +73,10 @@ func (r *Repo) AddOrder(order *Order) error {
 	query, args, err := r.bd.
 		Insert("orders").
 		Columns("id", "user_id", "user_role", "status",
-				"service_url", "target_url", "order_type", "quantity").
+			"service_url", "target_url", "order_type", "quantity").
 		Values(order.ID, order.UserID, order.UserRl, "processed",
-				order.ServiceURL, order.TargetURL, order.OrderType,
-				order.Quantity).
+			order.ServiceURL, order.TargetURL, order.OrderType,
+			order.Quantity).
 		ToSql()
 	if err != nil {
 		r.log.Error("Failed to create insert query", zap.Error(err))
@@ -82,7 +94,7 @@ func (r *Repo) AddOrder(order *Order) error {
 func (r *Repo) OrderInfo(id, userID string) (*Order, error) {
 	query, args, err := r.bd.
 		Select("user_id", "user_role", "status", "target_url",
-				"service_url", "order_type", "created_at", "updated_at").
+			"service_url", "order_type", "created_at", "updated_at").
 		From("orders").
 		Where(sq.Eq{"id": id}).
 		Where(sq.Eq{"user_id": userID}).
@@ -163,6 +175,6 @@ func (r *Repo) DelOrder(id, userID, role string) error {
 		r.log.Error("Failed to commin transaction", zap.Error(err))
 		return err
 	}
-	
+
 	return nil
 }

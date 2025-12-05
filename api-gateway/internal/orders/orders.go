@@ -2,6 +2,7 @@ package orders
 
 import (
 	"os"
+	"context"
 
 	"go.uber.org/zap"
 	"github.com/go-chi/chi"
@@ -10,6 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gateway/internal/service"
+	gc "gateway/internal/graceful"
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
@@ -50,8 +52,8 @@ func (os *ordersClient) GetName() string {
 	return os.name
 }
 
-func (os *ordersClient) Close() error {
-	return os.conn.Close()
+func (os *ordersClient) Close(ctx context.Context) error {
+	return gc.Shutdown(os.conn.Close, ctx)
 }
 
 func (os *ordersClient) NewTimer(svc, oper string) *prometheus.Timer {

@@ -2,7 +2,9 @@ package routers
 
 import (
 	"os"
+	"sync"
 	"time"
+	"context"
 	"strings"
 	"net/http"
 
@@ -31,8 +33,15 @@ const (
 	maxConcurrencyRequests = 10
 )
 
-func NewServer(log *zap.Logger) *http.Server {
+type Server struct{
+	log *zap.Logger
+	Srv *http.Server
+	svcs []service.Service
+}
+
+func NewServer(log *zap.Logger) *Server {
 	r := chi.NewRouter()
+	s := Server{log: log}
 
 	corsOrigins := strings.Split(os.Getenv("CORS_ORIGINS"), ",")
 	corsMethods := strings.Split(os.Getenv("CORS_METHODS"), ",")
@@ -52,37 +61,39 @@ func NewServer(log *zap.Logger) *http.Server {
 	rl := mdwr.NewRl(log)
 	r.Use(rl.Middleware())
 
-	svcs, groups := activateMdwr(log)
+	groups := s.activateMdwr()
 	r.Use(cors.Handler(c))
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Compress(gzipLevel))
 	r.Use(middleware.Throttle(maxConcurrencyRequests))
 
-	routing(r, svcs, groups, log)
+	s.routing(r, groups)
 	r.Handle("/metrics", promhttp.Handler())
 
 	addr := ":"+os.Getenv("API_PORT")
-	return &http.Server{
+	s.Srv = &http.Server{
 		Handler: r,
 		Addr: addr,
 		ReadTimeout: 20*time.Second,
 		WriteTimeout: 20*time.Second,
 		IdleTimeout: 60*time.Second,
 	}
+
+	return &s
 }
 
-func activateMdwr(log *zap.Logger) ([]service.Service, []chi.Router) {
-	uc := users.New(resTime, log).(*users.UsersClient)
+func (s *Server) activateMdwr() ([]chi.Router) {
+	uc := users.New(resTime, s.log).(*users.UsersClient)
 	services := []service.Service{
 		uc,
-		orders.New(resTime, log),
+		orders.New(resTime, s.log),
 	}
 
 	groups := make([]chi.Router, len(services))
 
 	for i, svc := range services {
 		g := chi.NewRouter()
-		m := mdwr.NewMdwr(svc, uc, log)
+		m := mdwr.NewMdwr(svc, uc, s.log)
 
 		if svc.GetName() == "users" {
 			g.Use(m.JWTAuth())
@@ -90,13 +101,14 @@ func activateMdwr(log *zap.Logger) ([]service.Service, []chi.Router) {
 		g.Use(m.Metrics())
 		groups[i] = g
 	}
-	return services, groups
+	s.svcs = services
+	return groups
 }
 
-func routing(r *chi.Mux, services []service.Service, groups []chi.Router, log *zap.Logger) {
-	for i, svc := range services {
+func (s *Server) routing(r *chi.Mux, groups []chi.Router) {
+	for i, svc := range s.svcs {
 		path := "/api/"+svc.GetName()
-		log.Debug("service: ", zap.String("path", path))
+		s.log.Debug("service: ", zap.String("path", path))
 
 		r.Mount(path, groups[i])
 
@@ -108,4 +120,29 @@ func routing(r *chi.Mux, services []service.Service, groups []chi.Router, log *z
 	r.Get("/", func(w http.ResponseWriter, r *http.Request){
 		w.Write([]byte("root"))
 	})
+}
+
+func (s *Server) ShutdownServices(ctx context.Context) error {
+	var wg sync.WaitGroup
+	done := make(chan struct{})
+	for _, svc := range s.svcs {
+		wg.Add(1)
+		s.log.Info("Shutting down " + svc.GetName() + " service")
+		go func(){
+			defer wg.Done()
+			svc.Close(ctx)
+		}()
+	}
+
+	go func(){
+		wg.Wait()
+		close(done)
+	}()
+
+	select{
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-done:
+		return nil
+	}
 }

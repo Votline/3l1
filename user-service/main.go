@@ -3,14 +3,18 @@ package main
 import (
 	"os"
 	"net"
+	"time"
 	"errors"
 	"context"
+	"syscall"
+	"os/signal"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"users/internal/db"
 	"users/internal/crypto"
+	gc "users/internal/graceful"
 
 	"github.com/google/uuid"
 	pb "github.com/Votline/3l1/protos/generated-user"
@@ -37,7 +41,35 @@ func main() {
 		redisRepo: db.NewRR(log),
 	}
 	pb.RegisterUserServiceServer(s, &srv)
-	s.Serve(lis)
+
+	go s.Serve(lis)
+	
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
+	<-quit
+	log.Warn("Shutdown signal received")
+	gracefulShutdown(s, srv, log)
+}
+
+func gracefulShutdown(s *grpc.Server, srv userserver, log *zap.Logger) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	log.Info("Shutting down gRPC server")
+	if err := gc.Shutdown(
+	func() error {s.Stop(); return nil}, ctx); err != nil {
+		log.Error("gRPC server shutdown error", zap.Error(err))
+	}
+
+	log.Info("Shutting down postgreSQL")
+	if err := srv.repo.Stop(ctx); err != nil {
+		log.Error("Postgres shutdown error", zap.Error(err))
+	}
+
+	log.Info("Shutting down redis")
+	if err := srv.redisRepo.Stop(ctx); err != nil {
+		log.Error("Redis shutdown error", zap.Error(err))
+	}
 }
 
 func (us *userserver) HashPswd(ctx context.Context, req *pb.HashReq) (*pb.HashRes, error) {

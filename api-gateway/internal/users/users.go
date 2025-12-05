@@ -2,6 +2,7 @@ package users
 
 import (
 	"os"
+	"context"
 
 	"go.uber.org/zap"
 	"github.com/go-chi/chi"
@@ -10,6 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gateway/internal/service"
+	gc "gateway/internal/graceful"
 
 	pb "github.com/Votline/3l1/protos/generated-user"
 )
@@ -53,8 +55,8 @@ func (uc *UsersClient) GetName() string {
 	return uc.name
 }
 
-func (uc *UsersClient) Close() error {
-	return uc.conn.Close()
+func (uc *UsersClient) Close(ctx context.Context) error {
+	return gc.Shutdown(uc.conn.Close, ctx)
 }
 
 func (uc *UsersClient) NewTimer(svc, oper string) *prometheus.Timer{

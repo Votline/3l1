@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ5MzQwODEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJhM2NkMGVmOC03ZDc5LTQxMmUtYjRhOS03ZGQzYjQ4NWI5MTMifQ.MHV3Mj6zSZYuBtvcJATcHjSSf6-JYwxmJWWcJ3TTrt8\"}\n"
+        "response": "Key: 'Pswd' Error:Field validation for 'Pswd' failed on the 'min' tag\n"
     },
     {
         "id": "2",
@@ -28,7 +28,7 @@
             "email": "yomi@duck.com",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ5MzQwODEsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJhM2NkMGVmOC03ZDc5LTQxMmUtYjRhOS03ZGQzYjQ4NWI5MTMifQ.MHV3Mj6zSZYuBtvcJATcHjSSf6-JYwxmJWWcJ3TTrt8\"}\n"
+        "response": "rpc error: code = Unknown desc = sql: no rows in result set\n"
     },
     {
         "id": "3",
@@ -44,7 +44,7 @@
             "role": "dev",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ5MzQwODEsInJvbGUiOiJkZXYiLCJ1c2VyX2lkIjoiNjU3NzY5ODctODg5ZS00OWQ3LWFiMWMtYTQyZjg2Y2ZiZWVlIn0.YU02Ty2eqnNJ-5bKKEGWJrp4BcHICh4cSGlHXej-lRk\"}\n"
+        "response": "Key: 'Pswd' Error:Field validation for 'Pswd' failed on the 'min' tag\n"
     },
     {
         "id": "4",

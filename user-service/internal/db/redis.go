@@ -5,9 +5,11 @@ import (
 	"errors"
 	"context"
 
-	"github.com/go-redis/redis/v8"
-	"github.com/google/uuid"
 	"go.uber.org/zap"
+	"github.com/google/uuid"
+	"github.com/go-redis/redis/v8"
+
+	gc "users/internal/graceful"
 )
 
 type RedisRepo struct {
@@ -29,6 +31,9 @@ func NewRR(log *zap.Logger) *RedisRepo {
 	}
 
 	return &RedisRepo{rdb: rdb, log: log, ctx: ctx}
+}
+func (r *RedisRepo) Stop(ctx context.Context) error {
+	return gc.Shutdown(r.rdb.Close, ctx)
 }
 
 func (r *RedisRepo) NewSession(id, role string) (string, error) {
@@ -53,7 +58,7 @@ func (r *RedisRepo) Validate(id, role, sk string) error {
 		r.log.Error("Different data",
 			zap.String("Original id", id),
 			zap.String("Original role", role),
-			zap.String("Session id", fields[id]),
+			zap.String("Session id", fields["id"]),
 			zap.String("Session role", fields[role]))
 		return errors.New("Data are different")
 	}

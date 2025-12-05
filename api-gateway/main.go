@@ -2,14 +2,19 @@ package main
 
 import (
 	"os"
+	"time"
 	"flag"
+	"syscall"
+	"context"
 	"net/http"
+	"os/signal"
 	_ "net/http/pprof"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
 	"gateway/internal/routers"
+	gc "gateway/internal/graceful"
 )
 
 func setupLog() *zap.Logger {
@@ -32,11 +37,11 @@ func setupLog() *zap.Logger {
 	fileEn := zapcore.NewJSONEncoder(cfgEn)
 	consEn := zapcore.NewConsoleEncoder(cfgEn)
 
-	logFile, err := os.OpenFile("logs/all.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logFile, err := os.OpenFile("logs/all.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		panic("Failed to open all.log: " + err.Error())
 	}
-	errFile, err := os.OpenFile("logs/error.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	errFile, err := os.OpenFile("logs/error.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		panic("Failed to open error.log: " + err.Error())
 	}
@@ -62,6 +67,31 @@ func main() {
 	}()
 
 	srv := routers.NewServer(log)
-	log.Debug("Server starting...")
-	log.Fatal("Fatal server failure", zap.Any("Error", srv.ListenAndServe()))
+	go func(){
+		log.Debug("Server starting on " + srv.Srv.Addr)
+		if err := srv.Srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal("HTTP server error", zap.Error(err))
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
+	<-quit
+	log.Warn("Shutdown signal received")
+	gracefulShutdown(srv, log)
+}
+
+func gracefulShutdown(srv *routers.Server, log *zap.Logger) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	log.Info("Shutting down HTTP server")
+	if err := gc.Shutdown(srv.Srv.Close, ctx); err != nil {
+		log.Error("HTTP server shutdown error", zap.Error(err))
+	}
+
+	log.Info("Shutting down services")
+	if err := srv.ShutdownServices(ctx); err != nil {
+		log.Error("Services shutdown error", zap.Error(err))
+	}
 }

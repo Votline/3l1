@@ -4,11 +4,14 @@ import (
 	"os"
 	"time"
 	"errors"
+	"context"
 
 	"go.uber.org/zap"
 	_ "github.com/lib/pq"
 	"github.com/jmoiron/sqlx"
 	sq "github.com/Masterminds/squirrel"
+
+	gc "users/internal/graceful"
 )
 
 type Repo struct {
@@ -38,11 +41,20 @@ func (r *Repo) initDB() *sqlx.DB {
 			time.Sleep(2 * time.Second)
 			continue
 		}
+
+		db.SetMaxOpenConns(20)
+		db.SetMaxIdleConns(10)
+		db.SetConnMaxLifetime(time.Hour)
+		db.SetConnMaxIdleTime(10 * time.Minute)
+
 		r.log.Debug("Successfully connected")
 		return db
 	}
 	r.log.Fatal("Couldn't connect to DB")
 	return nil
+}
+func (r *Repo) Stop(ctx context.Context) error {
+	return gc.Shutdown(r.db.Close, ctx)
 }
 
 type User struct {

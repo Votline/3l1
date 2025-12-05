@@ -4,11 +4,11 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/go-chi/chi"
 	"go.uber.org/zap"
+	"github.com/go-chi/chi"
 
-	"gateway/internal/service"
 	"gateway/internal/users"
+	"gateway/internal/service"
 
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
@@ -16,11 +16,11 @@ import (
 func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
 	req := struct{
-		userID string
-		TargetURL string `json:"target_url"`
-		ServiceURL string `json:"service_url"`
-		OrderType string `json:"order_type"`
-		Quantity int32 `json:"quantity"`
+		userID string `validator:"required,len=36"`
+		TargetURL string `json:"target_url" validator:"url"`
+		ServiceURL string `json:"service_url" validator:"url"`
+		OrderType string `json:"order_type" validator:"oneof=comments likes views"`
+		Quantity int32 `json:"quantity" validator:"min=1"`
 	}{}
 
 	os.log.Debug("New add order request")
@@ -31,6 +31,11 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req.userID = r.Context().Value("userInfo").(users.UserInfo).UserID
+
+	if err := c.Validate(req); err != nil {
+		os.log.Error("Failed to validate request data", zap.Error(err))
+		return
+	}
 
 	os.log.Debug("Extracted data for add order",
 		zap.String("user id", req.userID),
@@ -62,16 +67,26 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 
 func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
-	id := chi.URLParam(r, "orderID")
-	userID := r.Context().Value("userInfo").(users.UserInfo).UserID
+	req := struct{
+		id     string `validator:"required,len=36"`
+		userID string `validator:"required,len=36"`
+	}{}
+
+	req.id = chi.URLParam(r, "orderID")
+	req.userID = r.Context().Value("userInfo").(users.UserInfo).UserID
+
+	if err := c.Validate(req); err != nil {
+		os.log.Error("Failed to validate request data", zap.Error(err))
+		return
+	}
 
 	os.log.Debug("New order info request",
-		zap.String("user id", userID),
-		zap.String("order id", id))
+		zap.String("user id", req.userID),
+		zap.String("order id", req.id))
 
 	res, err := os.client.OrderInfo(c.Context(), &pb.OrderInfoReq{
-		Id: id,
-		UserId: userID,
+		Id: req.id,
+		UserId: req.userID,
 	})
 	if err != nil {
 		os.log.Error("Rpc request failed", zap.Error(err))
@@ -80,8 +95,8 @@ func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	os.log.Debug("Successfully extracted order data",
-		zap.String("user id", userID),
-		zap.String("order id", id))
+		zap.String("user id", req.userID),
+		zap.String("order id", req.id))
 
 	c.JSON(http.StatusOK, map[string]string{
 		"user_id": res.UserId,
@@ -95,19 +110,31 @@ func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "orderID")
-	role := r.Context().Value("userInfo").(users.UserInfo).Role
-	userID := r.Context().Value("userInfo").(users.UserInfo).UserID
+	c := service.NewContext(w, r)
+	req := struct{
+		id string `validator:"required,len=36"`
+		role string `validator:"oneof=admin user guest dev"`
+		userID string `validator:"required,len=36"`
+	}{}
+
+	req.id = chi.URLParam(r, "orderID")
+	req.role = r.Context().Value("userInfo").(users.UserInfo).Role
+	req.userID = r.Context().Value("userInfo").(users.UserInfo).UserID
+
+	if err := c.Validate(req); err != nil {
+		os.log.Error("Failed to validate request data", zap.Error(err))
+		return
+	}
 
 	os.log.Debug("New delete order request",
-		zap.String("user id", userID),
-		zap.String("user role", role),
-		zap.String("order id", id))
+		zap.String("user id", req.userID),
+		zap.String("user role", req.role),
+		zap.String("order id", req.id))
 
 	if _, err := os.client.DelOrder(context.Background(), &pb.DelOrderReq{
-		Id: id,
-		Role: role,
-		UserId: userID,
+		Id: req.id,
+		Role: req.role,
+		UserId: req.userID,
 	}); err != nil {
 		os.log.Error("Rpc request failed", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -115,9 +142,9 @@ func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	os.log.Debug("Successfully deleted order",
-		zap.String("user id", userID),
-		zap.String("user role", role),
-		zap.String("order id", id))
+		zap.String("user id", req.userID),
+		zap.String("user role", req.role),
+		zap.String("order id", req.id))
 
 	w.WriteHeader(http.StatusOK)
 }
