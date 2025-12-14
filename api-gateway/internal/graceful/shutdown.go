@@ -7,11 +7,11 @@ import (
 func Shutdown(stop func() error, ctx context.Context) error {
 	done := make(chan error, 1)
 
-	go func(){
-		done <-stop()
+	go func() {
+		done <- stop()
 	}()
 
-	select{
+	select {
 	case <-ctx.Done():
 		return ctx.Err()
 	case err := <-done:

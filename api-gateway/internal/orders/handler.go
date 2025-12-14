@@ -4,23 +4,23 @@ import (
 	"context"
 	"net/http"
 
-	"go.uber.org/zap"
 	"github.com/go-chi/chi"
+	"go.uber.org/zap"
 
-	"gateway/internal/users"
 	"gateway/internal/service"
+	"gateway/internal/users"
 
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
 func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
-	req := struct{
-		userID string `validator:"required,len=36"`
-		TargetURL string `json:"target_url" validator:"url"`
-		ServiceURL string `json:"service_url" validator:"url"`
-		OrderType string `json:"order_type" validator:"oneof=comments likes views"`
-		Quantity int32 `json:"quantity" validator:"min=1"`
+	req := struct {
+		userID     string `validate:"required,len=36"`
+		TargetURL  string `json:"target_url" validate:"url"`
+		ServiceURL string `json:"service_url" validate:"url"`
+		OrderType  string `json:"order_type" validate:"oneof=comments likes views"`
+		Quantity   int32  `json:"quantity" validate:"min=1"`
 	}{}
 
 	os.log.Debug("New add order request")
@@ -44,11 +44,11 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 		zap.Int32("quantity", req.Quantity))
 
 	res, err := os.client.AddOrder(c.Context(), &pb.AddOrderReq{
-		UserId: req.userID,
-		TargetUrl: req.TargetURL,
+		UserId:     req.userID,
+		TargetUrl:  req.TargetURL,
 		ServiceUrl: req.ServiceURL,
-		OrderType: req.OrderType,
-		Quantity: req.Quantity,
+		OrderType:  req.OrderType,
+		Quantity:   req.Quantity,
 	})
 	if err != nil {
 		os.log.Error("Rpc request failed", zap.Error(err))
@@ -67,9 +67,9 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 
 func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
-	req := struct{
-		id     string `validator:"required,len=36"`
-		userID string `validator:"required,len=36"`
+	req := struct {
+		id     string `validate:"required,len=36"`
+		userID string `validate:"required,len=36"`
 	}{}
 
 	req.id = chi.URLParam(r, "orderID")
@@ -85,7 +85,7 @@ func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 		zap.String("order id", req.id))
 
 	res, err := os.client.OrderInfo(c.Context(), &pb.OrderInfoReq{
-		Id: req.id,
+		Id:     req.id,
 		UserId: req.userID,
 	})
 	if err != nil {
@@ -99,22 +99,22 @@ func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 		zap.String("order id", req.id))
 
 	c.JSON(http.StatusOK, map[string]string{
-		"user_id": res.UserId,
-		"status": res.Status,
-		"target_url": res.TargetUrl,
+		"user_id":     res.UserId,
+		"status":      res.Status,
+		"target_url":  res.TargetUrl,
 		"service_url": res.ServiceUrl,
-		"order_type": res.OrderType,
-		"created_at": res.CreatedAt.String(),
-		"updated_at": res.UpdatedAt.String(),
+		"order_type":  res.OrderType,
+		"created_at":  res.CreatedAt.String(),
+		"updated_at":  res.UpdatedAt.String(),
 	})
 }
 
 func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
-	req := struct{
-		id string `validator:"required,len=36"`
-		role string `validator:"oneof=admin user guest dev"`
-		userID string `validator:"required,len=36"`
+	req := struct {
+		id     string `validate:"required,len=36"`
+		role   string `validate:"oneof=admin user guest dev"`
+		userID string `validate:"required,len=36"`
 	}{}
 
 	req.id = chi.URLParam(r, "orderID")
@@ -132,8 +132,8 @@ func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
 		zap.String("order id", req.id))
 
 	if _, err := os.client.DelOrder(context.Background(), &pb.DelOrderReq{
-		Id: req.id,
-		Role: req.role,
+		Id:     req.id,
+		Role:   req.role,
 		UserId: req.userID,
 	}); err != nil {
 		os.log.Error("Rpc request failed", zap.Error(err))

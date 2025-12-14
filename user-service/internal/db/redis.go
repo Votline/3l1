@@ -1,13 +1,14 @@
 package db
 
 import (
-	"os"
-	"errors"
 	"context"
+	"errors"
+	"os"
+	"time"
 
-	"go.uber.org/zap"
-	"github.com/google/uuid"
 	"github.com/go-redis/redis/v8"
+	"github.com/google/uuid"
+	"go.uber.org/zap"
 
 	gc "users/internal/graceful"
 )
@@ -17,11 +18,12 @@ type RedisRepo struct {
 	log *zap.Logger
 	rdb *redis.Client
 }
+
 func NewRR(log *zap.Logger) *RedisRepo {
 	rdb := redis.NewClient(&redis.Options{
-		Addr: os.Getenv("REDIS_SK_HOST")+":6379",
+		Addr:     os.Getenv("REDIS_SK_HOST") + ":6379",
 		Password: os.Getenv("REDIS_SK_PSWD"),
-		DB: 0,
+		DB:       0,
 	})
 
 	ctx := context.Background()
@@ -38,18 +40,31 @@ func (r *RedisRepo) Stop(ctx context.Context) error {
 
 func (r *RedisRepo) NewSession(id, role string) (string, error) {
 	sk := uuid.NewString()
-	if err := r.rdb.HSet(r.ctx, sk, map[string]string{
-		"id": id,
+	tx := r.rdb.TxPipeline()
+
+	if err := tx.HSet(r.ctx, sk, map[string]string{
+		"id":   id,
 		"role": role,
 	}).Err(); err != nil {
 		r.log.Error("Failed to add new redis hash entry", zap.Error(err))
 		return "", err
 	}
+
+	if err := tx.Expire(r.ctx, sk, time.Hour*720).Err(); err != nil {
+		r.log.Error("Failed to expire new session", zap.Error(err))
+		return "", err
+	}
+
+	if _, err := tx.Exec(r.ctx); err != nil {
+		r.log.Error("Failed to create session", zap.Error(err))
+		return "", err
+	}
+
 	return sk, nil
 }
 
 func (r *RedisRepo) Validate(id, role, sk string) error {
-	fields, err := r.rdb.HGetAll(r.ctx, sk).Result();
+	fields, err := r.rdb.HGetAll(r.ctx, sk).Result()
 	if err != nil {
 		r.log.Error("Failed to get all fields", zap.Error(err))
 		return err

@@ -1,20 +1,20 @@
 package main
 
 import (
-	"os"
-	"time"
-	"flag"
-	"syscall"
 	"context"
+	"flag"
 	"net/http"
-	"os/signal"
 	_ "net/http/pprof"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"gateway/internal/routers"
 	gc "gateway/internal/graceful"
+	"gateway/internal/routers"
 )
 
 func setupLog() *zap.Logger {
@@ -24,10 +24,14 @@ func setupLog() *zap.Logger {
 
 	var level zapcore.Level
 	switch logLevel {
-	case "debug": level = zapcore.DebugLevel
-	case "warn": level = zapcore.WarnLevel
-	case "error": level = zapcore.ErrorLevel
-	default: level = zapcore.DebugLevel
+	case "debug":
+		level = zapcore.DebugLevel
+	case "warn":
+		level = zapcore.WarnLevel
+	case "error":
+		level = zapcore.ErrorLevel
+	default:
+		level = zapcore.DebugLevel
 	}
 	if err := os.MkdirAll("logs", 0755); err != nil {
 		panic("Failed to create logs directory: " + err.Error())
@@ -59,7 +63,7 @@ func main() {
 	log := setupLog()
 	defer log.Sync()
 
-	go func(){
+	go func() {
 		log.Debug("Starting pprof server")
 		http.Handle("/debug/pprof", http.DefaultServeMux)
 		log.Error("Pprof server failed",
@@ -67,7 +71,7 @@ func main() {
 	}()
 
 	srv := routers.NewServer(log)
-	go func(){
+	go func() {
 		log.Debug("Server starting on " + srv.Srv.Addr)
 		if err := srv.Srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatal("HTTP server error", zap.Error(err))

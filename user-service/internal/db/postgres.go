@@ -1,15 +1,15 @@
 package db
 
 import (
+	"context"
+	"errors"
 	"os"
 	"time"
-	"errors"
-	"context"
 
-	"go.uber.org/zap"
-	_ "github.com/lib/pq"
-	"github.com/jmoiron/sqlx"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
+	"go.uber.org/zap"
 
 	gc "users/internal/graceful"
 )

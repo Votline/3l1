@@ -1,25 +1,25 @@
 package main
 
 import (
-	"os"
-	"net"
-	"time"
 	"context"
-	"syscall"
+	"net"
+	"os"
 	"os/signal"
+	"syscall"
+	"time"
 
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	pb "github.com/Votline/3l1/protos/generated-order"
 	"orders/internal/db"
 	gc "orders/internal/graceful"
-	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
 type orderservice struct {
-	log *zap.Logger
+	log  *zap.Logger
 	repo *db.Repo
 	pb.UnimplementedOrderServiceServer
 }
@@ -48,7 +48,7 @@ func gracefulShutdown(s *grpc.Server, srv orderservice, log *zap.Logger) {
 
 	log.Info("Shutting down gRPC server")
 	if err := gc.Shutdown(
-	func() error {s.Stop(); return nil}, ctx); err != nil {
+		func() error { s.Stop(); return nil }, ctx); err != nil {
 		log.Error("gRPC server shutdown error", zap.Error(err))
 	}
 
@@ -60,15 +60,15 @@ func gracefulShutdown(s *grpc.Server, srv orderservice, log *zap.Logger) {
 
 func (os *orderservice) AddOrder(ctx context.Context, req *pb.AddOrderReq) (*pb.AddOrderRes, error) {
 	order := &db.Order{
-		ID: uuid.New().String(),
-		UserID: req.GetUserId(),
-		UserRl: req.GetUserRole(),
-		TargetURL: req.GetTargetUrl(),
+		ID:         uuid.New().String(),
+		UserID:     req.GetUserId(),
+		UserRl:     req.GetUserRole(),
+		TargetURL:  req.GetTargetUrl(),
 		ServiceURL: req.GetServiceUrl(),
-		OrderType: req.GetOrderType(),
-		Quantity: req.GetQuantity(),
+		OrderType:  req.GetOrderType(),
+		Quantity:   req.GetQuantity(),
 	}
-	
+
 	if err := os.repo.AddOrder(order); err != nil {
 		os.log.Error("Failed to add order into db", zap.Error(err))
 		return nil, err
@@ -88,14 +88,14 @@ func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*p
 	}
 
 	return &pb.OrderInfoRes{
-		UserId: order.UserID,
-		UserRole: order.UserRl,
-		Status: order.Status,
-		TargetUrl: order.TargetURL,
+		UserId:     order.UserID,
+		UserRole:   order.UserRl,
+		Status:     order.Status,
+		TargetUrl:  order.TargetURL,
 		ServiceUrl: order.ServiceURL,
-		OrderType: order.OrderType,
-		CreatedAt: timestamppb.New(order.CreatedAt),
-		UpdatedAt: timestamppb.New(order.UpdatedAt),
+		OrderType:  order.OrderType,
+		CreatedAt:  timestamppb.New(order.CreatedAt),
+		UpdatedAt:  timestamppb.New(order.UpdatedAt),
 	}, nil
 }
 
@@ -105,7 +105,7 @@ func (os *orderservice) DelOrder(ctx context.Context, req *pb.DelOrderReq) (*pb.
 	role := req.GetRole()
 
 	if err := os.repo.DelOrder(id, userID, role); err != nil {
-		os.log.Error("Failed to delete order")
+		os.log.Error("Failed to delete order", zap.Error(err))
 		return nil, err
 	}
 

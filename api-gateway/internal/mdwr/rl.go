@@ -1,29 +1,30 @@
 package mdwr
 
 import (
-	"os"
-	"time"
-	"strings"
 	"context"
 	"net/http"
+	"os"
+	"strings"
+	"time"
 
-	"go.uber.org/zap"
 	"github.com/go-redis/redis/v8"
+	"go.uber.org/zap"
 )
 
 const exp = time.Minute
 
 type rateLimiter struct {
-	maxRate  int64
-	log *zap.Logger
-	rdb *redis.Client
-	ctx context.Context
+	maxRate int64
+	log     *zap.Logger
+	rdb     *redis.Client
+	ctx     context.Context
 }
+
 func NewRl(log *zap.Logger) *rateLimiter {
 	rdb := redis.NewClient(&redis.Options{
-		Addr: os.Getenv("REDIS_RL_HOST") + ":6379",
+		Addr:     os.Getenv("REDIS_RL_HOST") + ":6379",
 		Password: os.Getenv("REDIS_RL_PSWD"),
-		DB: 0,
+		DB:       0,
 	})
 
 	ctx := context.Background()
@@ -32,9 +33,9 @@ func NewRl(log *zap.Logger) *rateLimiter {
 	}
 
 	return &rateLimiter{
-		rdb: rdb,
-		ctx: ctx,
-		log: log,
+		rdb:     rdb,
+		ctx:     ctx,
+		log:     log,
 		maxRate: 50,
 	}
 }

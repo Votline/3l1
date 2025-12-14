@@ -1,29 +1,30 @@
 package orders
 
 import (
-	"os"
 	"context"
+	"os"
 
-	"go.uber.org/zap"
 	"github.com/go-chi/chi"
-	"google.golang.org/grpc"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
 
-	"gateway/internal/service"
 	gc "gateway/internal/graceful"
+	"gateway/internal/service"
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
 type ordersClient struct {
-	log *zap.Logger
-	name string
-	conn *grpc.ClientConn
-	client pb.OrderServiceClient
-	hist *prometheus.HistogramVec
+	log     *zap.Logger
+	name    string
+	conn    *grpc.ClientConn
+	client  pb.OrderServiceClient
+	hist    *prometheus.HistogramVec
 	counter *prometheus.CounterVec
-	active prometheus.Gauge
+	active  prometheus.Gauge
 }
+
 func New(resTime *prometheus.HistogramVec, log *zap.Logger) service.Service {
 	conn, err := grpc.NewClient(
 		os.Getenv("OS_HOST")+":"+os.Getenv("OS_PORT"),
@@ -32,13 +33,13 @@ func New(resTime *prometheus.HistogramVec, log *zap.Logger) service.Service {
 		log.Fatal("Order-service connection failed")
 	}
 	return &ordersClient{
-		log: log,
-		conn: conn,
-		name: "orders",
-		client: pb.NewOrderServiceClient(conn),
-		hist: resTime,
+		log:     log,
+		conn:    conn,
+		name:    "orders",
+		client:  pb.NewOrderServiceClient(conn),
+		hist:    resTime,
 		counter: newCounter(),
-		active: newGauge(),
+		active:  newGauge(),
 	}
 }
 
@@ -57,7 +58,7 @@ func (os *ordersClient) Close(ctx context.Context) error {
 }
 
 func (os *ordersClient) NewTimer(svc, oper string) *prometheus.Timer {
-	return prometheus.NewTimer(prometheus.ObserverFunc(func(v float64){
+	return prometheus.NewTimer(prometheus.ObserverFunc(func(v float64) {
 		os.hist.WithLabelValues(svc, oper).Observe(v)
 	}))
 }

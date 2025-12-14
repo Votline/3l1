@@ -1,41 +1,41 @@
 package routers
 
 import (
+	"context"
+	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
-	"context"
-	"strings"
-	"net/http"
 
-	"go.uber.org/zap"
 	"github.com/go-chi/chi"
-	"github.com/go-chi/cors"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.uber.org/zap"
 
 	"gateway/internal/mdwr"
-	"gateway/internal/users"
 	"gateway/internal/orders"
 	"gateway/internal/service"
+	"gateway/internal/users"
 )
 
 var resTime = promauto.NewHistogramVec(prometheus.HistogramOpts{
-	Name: "seconds_for_operation",
-	Help: "Time spent processing requests",
+	Name:    "seconds_for_operation",
+	Help:    "Time spent processing requests",
 	Buckets: []float64{0.1, 0.5, 1.0, 2.0, 5.0},
-},[]string{"service", "operation"})
+}, []string{"service", "operation"})
 
 const (
-	gzipLevel = 5
+	gzipLevel              = 5
 	maxConcurrencyRequests = 10
 )
 
-type Server struct{
-	log *zap.Logger
-	Srv *http.Server
+type Server struct {
+	log  *zap.Logger
+	Srv  *http.Server
 	svcs []service.Service
 }
 
@@ -52,10 +52,10 @@ func NewServer(log *zap.Logger) *Server {
 		corsMethods = []string{"*"}
 	}
 	c := cors.Options{
-		MaxAge: 3600,
+		MaxAge:           3600,
 		AllowCredentials: true,
-		AllowedOrigins: corsOrigins,
-		AllowedMethods: corsMethods,
+		AllowedOrigins:   corsOrigins,
+		AllowedMethods:   corsMethods,
 	}
 
 	rl := mdwr.NewRl(log)
@@ -70,19 +70,20 @@ func NewServer(log *zap.Logger) *Server {
 	s.routing(r, groups)
 	r.Handle("/metrics", promhttp.Handler())
 
-	addr := ":"+os.Getenv("API_PORT")
+	addr := ":" + os.Getenv("API_PORT")
 	s.Srv = &http.Server{
-		Handler: r,
-		Addr: addr,
-		ReadTimeout: 20*time.Second,
-		WriteTimeout: 20*time.Second,
-		IdleTimeout: 60*time.Second,
+		Handler:      r,
+		Addr:         addr,
+		ReadTimeout:  20 * time.Second,
+		WriteTimeout: 20 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
+	s.Srv.SetKeepAlivesEnabled(true)
 
 	return &s
 }
 
-func (s *Server) activateMdwr() ([]chi.Router) {
+func (s *Server) activateMdwr() []chi.Router {
 	uc := users.New(resTime, s.log).(*users.UsersClient)
 	services := []service.Service{
 		uc,
@@ -107,17 +108,17 @@ func (s *Server) activateMdwr() ([]chi.Router) {
 
 func (s *Server) routing(r *chi.Mux, groups []chi.Router) {
 	for i, svc := range s.svcs {
-		path := "/api/"+svc.GetName()
+		path := "/api/" + svc.GetName()
 		s.log.Debug("service: ", zap.String("path", path))
 
 		r.Mount(path, groups[i])
 
-		groups[i].Route("/", func(g chi.Router){
+		groups[i].Route("/", func(g chi.Router) {
 			svc.RegisterRoutes(g)
 		})
 	}
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request){
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("root"))
 	})
 }
@@ -128,18 +129,18 @@ func (s *Server) ShutdownServices(ctx context.Context) error {
 	for _, svc := range s.svcs {
 		wg.Add(1)
 		s.log.Info("Shutting down " + svc.GetName() + " service")
-		go func(){
+		go func() {
 			defer wg.Done()
 			svc.Close(ctx)
 		}()
 	}
 
-	go func(){
+	go func() {
 		wg.Wait()
 		close(done)
 	}()
 
-	select{
+	select {
 	case <-ctx.Done():
 		return ctx.Err()
 	case <-done:

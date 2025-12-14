@@ -1,18 +1,18 @@
 package mdwr
 
 import (
-	"slices"
-	"strings"
 	"context"
 	"net/http"
+	"slices"
+	"strings"
 
 	"go.uber.org/zap"
 
-	"gateway/internal/users"
 	"gateway/internal/service"
+	"gateway/internal/users"
 )
 
-type mdwr struct{
+type mdwr struct {
 	log *zap.Logger
 	uc  *users.UsersClient
 	svc service.Service
@@ -49,6 +49,7 @@ func (m *mdwr) JWTAuth() func(http.Handler) http.Handler {
 			sk, err := r.Cookie("session_key")
 			if err != nil {
 				m.log.Error("Failed to extract jwt data", zap.Error(err))
+				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
 			data, err := m.uc.ExtJWTData(tokenString, sk.String())

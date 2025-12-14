@@ -1,28 +1,28 @@
 package main
 
 import (
-	"os"
-	"net"
-	"time"
-	"errors"
 	"context"
-	"syscall"
+	"errors"
+	"net"
+	"os"
 	"os/signal"
+	"syscall"
+	"time"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"users/internal/db"
 	"users/internal/crypto"
+	"users/internal/db"
 	gc "users/internal/graceful"
 
-	"github.com/google/uuid"
 	pb "github.com/Votline/3l1/protos/generated-user"
+	"github.com/google/uuid"
 )
 
 type userserver struct {
-	log *zap.Logger
-	repo *db.Repo
+	log       *zap.Logger
+	repo      *db.Repo
 	redisRepo *db.RedisRepo
 	pb.UnimplementedUserServiceServer
 }
@@ -36,14 +36,14 @@ func main() {
 
 	s := grpc.NewServer()
 	srv := userserver{
-		log: log,
-		repo: db.NewRepo(log),
+		log:       log,
+		repo:      db.NewRepo(log),
 		redisRepo: db.NewRR(log),
 	}
 	pb.RegisterUserServiceServer(s, &srv)
 
 	go s.Serve(lis)
-	
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-quit
@@ -57,7 +57,7 @@ func gracefulShutdown(s *grpc.Server, srv userserver, log *zap.Logger) {
 
 	log.Info("Shutting down gRPC server")
 	if err := gc.Shutdown(
-	func() error {s.Stop(); return nil}, ctx); err != nil {
+		func() error { s.Stop(); return nil }, ctx); err != nil {
 		log.Error("gRPC server shutdown error", zap.Error(err))
 	}
 
@@ -74,7 +74,7 @@ func gracefulShutdown(s *grpc.Server, srv userserver, log *zap.Logger) {
 
 func (us *userserver) HashPswd(ctx context.Context, req *pb.HashReq) (*pb.HashRes, error) {
 	pswd := req.GetPassword()
-	
+
 	hashed, err := crypto.Hash(pswd)
 	if err != nil {
 		us.log.Error("Failed to hash password", zap.Error(err))
@@ -85,11 +85,11 @@ func (us *userserver) HashPswd(ctx context.Context, req *pb.HashReq) (*pb.HashRe
 }
 
 func (us *userserver) RegUser(ctx context.Context, req *pb.RegReq) (*pb.RegRes, error) {
-	name  := req.GetName()
+	name := req.GetName()
 	email := req.GetEmail()
-	role  := req.GetRole()
-	pswd  := req.GetPasswordHash()
-	id    := uuid.New().String()
+	role := req.GetRole()
+	pswd := req.GetPasswordHash()
+	id := uuid.New().String()
 
 	token, err := crypto.GenJWT(id, role)
 	if err != nil {
@@ -116,7 +116,7 @@ func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, 
 	email := req.GetEmail()
 	pswd := req.GetPassword()
 
-	data, err := us.repo.LogUser(name+email, pswd);
+	data, err := us.repo.LogUser(name+email, pswd)
 	if err != nil {
 		us.log.Error("Failed extract data", zap.Error(err))
 		return nil, err
@@ -126,7 +126,7 @@ func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, 
 		us.log.Error("Failed login user")
 		return nil, errors.New("Invalid password")
 	}
-	
+
 	sessionKey, err := us.redisRepo.NewSession(data.ID, data.Role)
 	if err != nil {
 		us.log.Error("Failed to create session key", zap.Error(err))
@@ -142,13 +142,13 @@ func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, 
 	return &pb.LogRes{Token: token, SessionKey: sessionKey}, nil
 }
 
-func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*pb.ExtJWTDataRes, error ) {
+func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*pb.ExtJWTDataRes, error) {
 	sk := req.GetSessionKey()
 	tokenString := req.GetToken()
-	
+
 	data, err := crypto.ExtJWT(tokenString)
 	id, role := data.UserID, data.Role
-	if id != "" && role != "" && err != nil {
+	if id != "" && role != "" && err == nil {
 		if err := us.redisRepo.Validate(id, role, sk); err != nil {
 			us.log.Error("Failed to falidate data", zap.Error(err))
 			return nil, err
@@ -164,9 +164,9 @@ func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*p
 	}
 
 	return &pb.ExtJWTDataRes{
-		Role: data.Role,
+		Role:   data.Role,
 		UserId: data.UserID,
-		Token: tokenString,
+		Token:  tokenString,
 	}, nil
 }
 

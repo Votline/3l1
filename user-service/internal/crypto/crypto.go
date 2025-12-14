@@ -1,12 +1,12 @@
 package crypto
 
 import (
+	"errors"
 	"os"
 	"time"
-	"errors"
 
-	"golang.org/x/crypto/bcrypt"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Hash(source string) (string, error) {
@@ -23,14 +23,15 @@ func CheckPswd(hash, password string) bool {
 }
 
 type UserInfo struct {
-	Role string
+	Role   string
 	UserID string
 }
+
 func GenJWT(userID, role string) (string, error) {
 	claims := jwt.MapClaims{
-		"role": role,
+		"role":    role,
 		"user_id": userID,
-		"exp": time.Now().Add(15*time.Minute).Unix(),
+		"exp":     time.Now().Add(15 * time.Minute).Unix(),
 	}
 
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(os.Getenv("JWT_SECRET")))
@@ -57,12 +58,16 @@ func ExtJWT(tokenString string) (UserInfo, error) {
 	info := UserInfo{}
 	if userID, ok := claims["user_id"].(string); !ok {
 		return info, errors.New("Failed to extract user_id from JWT token")
-	} else { info.UserID = userID }
+	} else {
+		info.UserID = userID
+	}
 
 	if role, ok := claims["role"].(string); !ok {
 		return info, errors.New("Failed to extract role from JWT token")
-	} else { info.Role = role }
-	
+	} else {
+		info.Role = role
+	}
+
 	if exp, ok := claims["exp"].(float64); !ok {
 		return UserInfo{}, errors.New("Failed to extract exp from JWT token")
 	} else if time.Now().Unix() > int64(exp) {

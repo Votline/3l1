@@ -1,15 +1,15 @@
 package db
 
 import (
+	"context"
+	"errors"
 	"os"
 	"time"
-	"errors"
-	"context"
 
-	"go.uber.org/zap"
-	_ "github.com/lib/pq"
-	"github.com/jmoiron/sqlx"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
+	"go.uber.org/zap"
 
 	gc "orders/internal/graceful"
 )
@@ -56,6 +56,7 @@ func (r *Repo) initDB() *sqlx.DB {
 func (r *Repo) Stop(ctx context.Context) error {
 	return gc.Shutdown(r.db.Close, ctx)
 }
+
 type Order struct {
 	ID         string    `db:"id"`
 	UserID     string    `db:"user_id"`
