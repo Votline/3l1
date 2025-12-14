@@ -7,14 +7,10 @@ import (
 	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 
+	ck "gateway/internal/contextKeys"
 	"gateway/internal/service"
 	pb "github.com/Votline/3l1/protos/generated-user"
 )
-
-type UserInfo struct {
-	Role   string
-	UserID string
-}
 
 func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	c := service.NewContext(w, r)
@@ -121,8 +117,8 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 		delUserId string `validate:"required,len=36"`
 	}{}
 
-	req.role = r.Context().Value("userInfo").(UserInfo).Role
-	req.userId = r.Context().Value("userInfo").(UserInfo).UserID
+	req.role = r.Context().Value(ck.UserKey).(ck.UserInfo).Role
+	req.userId = r.Context().Value(ck.UserKey).(ck.UserInfo).UserID
 	req.delUserId = chi.URLParam(r, "delUserId")
 	if req.delUserId == "me" {
 		req.delUserId = req.userId
@@ -161,7 +157,7 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (uc *UsersClient) ExtJWTData(tokenString, sk string) (UserInfo, error) {
+func (uc *UsersClient) ExtJWTData(tokenString, sk string) (ck.UserInfo, error) {
 	c := service.NewContext(nil, nil)
 	req := struct {
 		token string `validator:"required,min=100"`
@@ -172,7 +168,7 @@ func (uc *UsersClient) ExtJWTData(tokenString, sk string) (UserInfo, error) {
 
 	if err := c.Validate(req); err != nil {
 		uc.log.Error("Failed to validate request data", zap.Error(err))
-		return UserInfo{}, err
+		return ck.UserInfo{}, err
 	}
 
 	res, err := uc.client.ExtJWTData(context.Background(), &pb.ExtJWTDataReq{
@@ -184,14 +180,14 @@ func (uc *UsersClient) ExtJWTData(tokenString, sk string) (UserInfo, error) {
 
 	if err != nil {
 		uc.log.Error("Rpc request failed", zap.Error(err))
-		return UserInfo{}, err
+		return ck.UserInfo{}, err
 	}
 
 	uc.log.Debug("Successfully extracted data from jwt token",
 		zap.String("user id", res.UserId),
 		zap.String("role", res.Role))
 
-	return UserInfo{
+	return ck.UserInfo{
 		Role:   res.Role,
 		UserID: res.UserId,
 	}, nil

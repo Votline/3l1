@@ -7,8 +7,8 @@ import (
 	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 
+	ck "gateway/internal/contextKeys"
 	"gateway/internal/service"
-	"gateway/internal/users"
 
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
@@ -30,7 +30,7 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	req.userID = r.Context().Value("userInfo").(users.UserInfo).UserID
+	req.userID = r.Context().Value("userInfo").(ck.UserInfo).UserID
 
 	if err := c.Validate(req); err != nil {
 		os.log.Error("Failed to validate request data", zap.Error(err))
@@ -73,7 +73,7 @@ func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 	}{}
 
 	req.id = chi.URLParam(r, "orderID")
-	req.userID = r.Context().Value("userInfo").(users.UserInfo).UserID
+	req.userID = r.Context().Value("userInfo").(ck.UserInfo).UserID
 
 	if err := c.Validate(req); err != nil {
 		os.log.Error("Failed to validate request data", zap.Error(err))
@@ -118,8 +118,8 @@ func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
 	}{}
 
 	req.id = chi.URLParam(r, "orderID")
-	req.role = r.Context().Value("userInfo").(users.UserInfo).Role
-	req.userID = r.Context().Value("userInfo").(users.UserInfo).UserID
+	req.role = r.Context().Value("userInfo").(ck.UserInfo).Role
+	req.userID = r.Context().Value("userInfo").(ck.UserInfo).UserID
 
 	if err := c.Validate(req); err != nil {
 		os.log.Error("Failed to validate request data", zap.Error(err))

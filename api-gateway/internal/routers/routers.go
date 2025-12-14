@@ -94,7 +94,7 @@ func (s *Server) activateMdwr() []chi.Router {
 
 	for i, svc := range services {
 		g := chi.NewRouter()
-		m := mdwr.NewMdwr(svc, uc, s.log)
+		m := mdwr.NewMdwr(svc, uc.ExtJWTData, s.log)
 
 		if svc.GetName() == "users" {
 			g.Use(m.JWTAuth())
