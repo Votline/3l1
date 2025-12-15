@@ -27,7 +27,6 @@ type RegReq struct {
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
 	Password      string                 `protobuf:"bytes,4,opt,name=password,proto3" json:"password,omitempty"`
-	RequestId     string                 `protobuf:"bytes,5,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -90,13 +89,6 @@ func (x *RegReq) GetPassword() string {
 	return ""
 }
 
-func (x *RegReq) GetRequestId() string {
-	if x != nil {
-		return x.RequestId
-	}
-	return ""
-}
-
 type RegRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
@@ -154,7 +146,6 @@ type LogReq struct {
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Password      string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
-	RequestId     string                 `protobuf:"bytes,4,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -206,13 +197,6 @@ func (x *LogReq) GetEmail() string {
 func (x *LogReq) GetPassword() string {
 	if x != nil {
 		return x.Password
-	}
-	return ""
-}
-
-func (x *LogReq) GetRequestId() string {
-	if x != nil {
-		return x.RequestId
 	}
 	return ""
 }
@@ -273,7 +257,6 @@ type ExtJWTDataReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	SessionKey    string                 `protobuf:"bytes,2,opt,name=session_key,json=sessionKey,proto3" json:"session_key,omitempty"`
-	RequestId     string                 `protobuf:"bytes,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -318,13 +301,6 @@ func (x *ExtJWTDataReq) GetToken() string {
 func (x *ExtJWTDataReq) GetSessionKey() string {
 	if x != nil {
 		return x.SessionKey
-	}
-	return ""
-}
-
-func (x *ExtJWTDataReq) GetRequestId() string {
-	if x != nil {
-		return x.RequestId
 	}
 	return ""
 }
@@ -395,7 +371,6 @@ type DelUserReq struct {
 	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	DelUserId     string                 `protobuf:"bytes,3,opt,name=del_user_id,json=delUserId,proto3" json:"del_user_id,omitempty"`
 	SessionKey    string                 `protobuf:"bytes,4,opt,name=session_key,json=sessionKey,proto3" json:"session_key,omitempty"`
-	RequestId     string                 `protobuf:"bytes,5,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -458,13 +433,6 @@ func (x *DelUserReq) GetSessionKey() string {
 	return ""
 }
 
-func (x *DelUserReq) GetRequestId() string {
-	if x != nil {
-		return x.RequestId
-	}
-	return ""
-}
-
 type DelUserRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -505,47 +473,39 @@ var File_user_service_proto protoreflect.FileDescriptor
 
 const file_user_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12user-service.proto\x12\x05users\"\x81\x01\n" +
+	"\x12user-service.proto\x12\x05users\"b\n" +
 	"\x06RegReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
 	"\x04role\x18\x03 \x01(\tR\x04role\x12\x1a\n" +
-	"\bpassword\x18\x04 \x01(\tR\bpassword\x12\x1d\n" +
-	"\n" +
-	"request_id\x18\x05 \x01(\tR\trequestId\"?\n" +
+	"\bpassword\x18\x04 \x01(\tR\bpassword\"?\n" +
 	"\x06RegRes\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x1f\n" +
 	"\vsession_key\x18\x02 \x01(\tR\n" +
-	"sessionKey\"m\n" +
+	"sessionKey\"N\n" +
 	"\x06LogReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x1d\n" +
-	"\n" +
-	"request_id\x18\x04 \x01(\tR\trequestId\"?\n" +
+	"\bpassword\x18\x03 \x01(\tR\bpassword\"?\n" +
 	"\x06LogRes\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x1f\n" +
 	"\vsession_key\x18\x02 \x01(\tR\n" +
-	"sessionKey\"e\n" +
+	"sessionKey\"F\n" +
 	"\rExtJWTDataReq\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x1f\n" +
 	"\vsession_key\x18\x02 \x01(\tR\n" +
-	"sessionKey\x12\x1d\n" +
-	"\n" +
-	"request_id\x18\x03 \x01(\tR\trequestId\"R\n" +
+	"sessionKey\"R\n" +
 	"\rExtJWTDataRes\x12\x12\n" +
 	"\x04role\x18\x01 \x01(\tR\x04role\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x14\n" +
-	"\x05token\x18\x03 \x01(\tR\x05token\"\x99\x01\n" +
+	"\x05token\x18\x03 \x01(\tR\x05token\"z\n" +
 	"\n" +
 	"DelUserReq\x12\x12\n" +
 	"\x04role\x18\x01 \x01(\tR\x04role\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1e\n" +
 	"\vdel_user_id\x18\x03 \x01(\tR\tdelUserId\x12\x1f\n" +
 	"\vsession_key\x18\x04 \x01(\tR\n" +
-	"sessionKey\x12\x1d\n" +
-	"\n" +
-	"request_id\x18\x05 \x01(\tR\trequestId\"\f\n" +
+	"sessionKey\"\f\n" +
 	"\n" +
 	"DelUserRes2\xca\x01\n" +
 	"\vUserService\x12'\n" +

@@ -8,7 +8,6 @@ message RegReq {
   string email = 2;
   string role  = 3;
   string password = 4;
-  string request_id = 5;
 }
 message RegRes {
   string token = 1;
@@ -19,7 +18,6 @@ message LogReq {
   string name  = 1;
   string email = 2;
   string password = 3;
-  string request_id = 4;
 }
 message LogRes {
   string token = 1;
@@ -29,7 +27,6 @@ message LogRes {
 message ExtJWTDataReq {
   string token = 1;
   string session_key = 2;
-  string request_id = 3;
 }
 message ExtJWTDataRes {
   string role = 1;
@@ -42,7 +39,6 @@ message DelUserReq {
   string user_id = 2;
   string del_user_id = 3;
   string session_key = 4;
-  string request_id = 5;
 }
 message DelUserRes{}
 

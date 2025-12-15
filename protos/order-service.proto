@@ -11,7 +11,6 @@ message AddOrderReq {
   string order_type = 4;
   int32 quantity = 5;
   string service_url = 6;
-  string request_id = 7;
 }
 message AddOrderRes {
   string id = 1;
@@ -20,7 +19,6 @@ message AddOrderRes {
 message OrderInfoReq {
   string id = 1;
   string user_id = 2;
-  string request_id = 3;
 }
 message OrderInfoRes {
   string user_id = 1;
@@ -37,7 +35,6 @@ message DelOrderReq {
   string id = 1;
   string user_id = 2;
   string role = 3;
-  string request_id = 4;
 }
 message DelOrderRes {}
 
