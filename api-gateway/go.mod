@@ -3,7 +3,7 @@ module gateway
 go 1.24.5
 
 require (
-	github.com/Votline/3l1/protos v0.0.8
+	github.com/Votline/3l1/protos v0.0.9
 	github.com/go-chi/chi v1.5.5
 	github.com/go-chi/cors v1.2.2
 	github.com/go-playground/validator/v10 v10.28.0

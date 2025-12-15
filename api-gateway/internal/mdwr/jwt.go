@@ -14,11 +14,11 @@ import (
 
 type mdwr struct {
 	log *zap.Logger
-	ext func(string, string) (ck.UserInfo, error)
+	ext func(string, string, string) (ck.UserInfo, error)
 	svc service.Service
 }
 
-func NewMdwr(svc service.Service, ext func(string, string) (ck.UserInfo, error), log *zap.Logger) *mdwr {
+func NewMdwr(svc service.Service, ext func(string, string, string) (ck.UserInfo, error), log *zap.Logger) *mdwr {
 
 	return &mdwr{svc: svc, ext: ext, log: log}
 }
@@ -52,7 +52,9 @@ func (m *mdwr) JWTAuth() func(http.Handler) http.Handler {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
-			data, err := m.ext(tokenString, sk.String())
+
+			rq := r.Context().Value(ck.ReqKey).(string)
+			data, err := m.ext(tokenString, sk.String(), rq)
 			if err != nil {
 				m.log.Error("Failed to extract data from JWT token", zap.Error(err))
 				http.Error(w, err.Error(), http.StatusInternalServerError)

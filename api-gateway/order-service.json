@@ -13,7 +13,7 @@
             "role": "admin",
             "password": "pswd"
         },
-        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ1ODQ0NzUsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiI2OGI4ODUxMC03NzIzLTQ0NjYtOThkNC01ZWU4NmQ1M2M3ZjEifQ.53W_GbZPCM4mt8epnyXnWEaY1lH19ZdZRkM2JQAv778\"}\n"
+        "response": "Key: 'Pswd' Error:Field validation for 'Pswd' failed on the 'min' tag\n"
     },
     {
         "id": "2",

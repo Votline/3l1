@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"os"
 	"time"
 
@@ -64,26 +64,23 @@ func (r *RedisRepo) NewSession(id, role string) (string, error) {
 }
 
 func (r *RedisRepo) Validate(id, role, sk string) error {
+	const op = "UserRedisRepository.AddUser"
+
 	fields, err := r.rdb.HGetAll(r.ctx, sk).Result()
 	if err != nil {
-		r.log.Error("Failed to get all fields", zap.Error(err))
-		return err
+		return fmt.Errorf("%s: get all: %w", op, err)
 	}
 	if fields["id"] != id || fields["role"] != role {
-		r.log.Error("Different data",
-			zap.String("Original id", id),
-			zap.String("Original role", role),
-			zap.String("Session id", fields["id"]),
-			zap.String("Session role", fields[role]))
-		return errors.New("Data are different")
+		return fmt.Errorf("%s: match data: %s", op, "Data are different")
 	}
 	return nil
 }
 
 func (r *RedisRepo) DelSession(sk string) error {
+	const op = "UserRedisRepository.DelSession"
+
 	if err := r.rdb.Del(r.ctx, sk).Err(); err != nil {
-		r.log.Error("Failed to delete session key", zap.Error(err))
-		return err
+		return fmt.Errorf("%s: delete session: %w", op, err)
 	}
 	return nil
 }

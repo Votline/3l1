@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"os"
 	"time"
 
@@ -71,6 +71,8 @@ type Order struct {
 }
 
 func (r *Repo) AddOrder(order *Order) error {
+	const op = "OrderRepository.AddOrder"
+
 	query, args, err := r.bd.
 		Insert("orders").
 		Columns("id", "user_id", "user_role", "status",
@@ -80,19 +82,19 @@ func (r *Repo) AddOrder(order *Order) error {
 			order.Quantity).
 		ToSql()
 	if err != nil {
-		r.log.Error("Failed to create insert query", zap.Error(err))
-		return err
+		return fmt.Errorf("%s: create query: %w", op, err)
 	}
 
 	if _, err := r.db.Exec(query, args...); err != nil {
-		r.log.Error("Failed to execute insert query", zap.Error(err))
-		return err
+		return fmt.Errorf("%s: execure query: %w", op, err)
 	}
 
 	return nil
 }
 
 func (r *Repo) OrderInfo(id, userID string) (*Order, error) {
+	const op = "OrderRepository.OrderInfo"
+
 	query, args, err := r.bd.
 		Select("user_id", "user_role", "status", "target_url",
 			"service_url", "order_type", "created_at", "updated_at").
@@ -101,28 +103,27 @@ func (r *Repo) OrderInfo(id, userID string) (*Order, error) {
 		Where(sq.Eq{"user_id": userID}).
 		ToSql()
 	if err != nil {
-		r.log.Error("Failed to create select query", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: create query: %w", op, err)
 	}
 
 	order := Order{}
 	if err := r.db.QueryRowx(query, args...).StructScan(&order); err != nil {
-		r.log.Error("Failed to execute select query", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: execute query: %w", op, err)
 	}
 
 	return &order, err
 }
 
 func (r *Repo) getUserInfo(orderID string, tx *sqlx.Tx) (string, string, error) {
+	const op = "OrderRepository.getUserInfo"
+
 	query, args, err := r.bd.
 		Select("user_id", "user_role").
 		From("orders").
 		Where(sq.Eq{"id": orderID}).
 		ToSql()
 	if err != nil {
-		r.log.Error("Failed to create select user info query", zap.Error(err))
-		return "", "", err
+		return "", "", fmt.Errorf("%s: create tx query: %w", op, err)
 	}
 
 	var result struct {
@@ -131,17 +132,18 @@ func (r *Repo) getUserInfo(orderID string, tx *sqlx.Tx) (string, string, error) 
 	}
 
 	if err := tx.Get(&result, query, args...); err != nil {
-		r.log.Error("Failed to execute select user info query", zap.Error(err))
-		return "", "", err
+		return "", "", fmt.Errorf("%s: execute tx query: %w", op, err)
 	}
+
 	return result.userID, result.userRl, err
 }
 
 func (r *Repo) DelOrder(id, userID, role string) error {
+	const op = "OrderRepository.DelOrder"
+
 	tx, err := r.db.Beginx()
 	if err != nil {
-		r.log.Error("Failed to begin transaction", zap.Error(err))
-		return err
+		return fmt.Errorf("%s: create transaction: %w", op, err)
 	}
 	defer tx.Rollback()
 
@@ -152,12 +154,10 @@ func (r *Repo) DelOrder(id, userID, role string) error {
 	} else {
 		delID, delRole, err := r.getUserInfo(id, tx)
 		if err != nil {
-			r.log.Error("Failed to find deleting order info", zap.Error(err))
-			return err
+			return fmt.Errorf("%s: get user info: %w", op, err)
 		}
 		if userID != delID && role == delRole {
-			r.log.Error("Admin cannot delete admin's order", zap.Error(err))
-			return errors.New("Admin cannot delete admin's order")
+			return fmt.Errorf("%s: match role's: %s", op, "Admin cannot delete admin's order")
 		}
 	}
 

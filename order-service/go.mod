@@ -4,7 +4,7 @@ go 1.25.4
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
-	github.com/Votline/3l1/protos v0.0.8
+	github.com/Votline/3l1/protos v0.0.9
 	github.com/google/uuid v1.6.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9

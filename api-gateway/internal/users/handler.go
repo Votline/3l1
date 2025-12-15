@@ -13,6 +13,8 @@ import (
 )
 
 func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
+	const op = "usersClient.regUser"
+
 	c := service.NewContext(w, r)
 	req := struct {
 		Name  string `json:"name"     validate:"required,min=2,max=50"`
@@ -21,39 +23,43 @@ func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 		Pswd  string `json:"password" validate:"required,min=8"`
 	}{}
 
-	uc.log.Debug("New reg user request")
+	rq := r.Context().Value(ck.ReqKey).(string)
+	uc.log.Debug("New request",
+		zap.String("op", op),
+		zap.String("request id", rq))
 
 	if err := c.Bind(&req); err != nil {
-		uc.log.Error("Failed to bind reg request", zap.Error(err))
+		uc.log.Error("Failed to bind reg request",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	if err := c.Validate(req); err != nil {
-		uc.log.Error("Failed to validate request data", zap.Error(err))
+		uc.log.Error("Failed to validate request data",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		return
 	}
 
 	uc.log.Debug("Extracted data for reg user",
 		zap.String("role", req.Role))
 
-	hashRes, err := uc.client.HashPswd(c.Context(), &pb.HashReq{
-		Password: req.Pswd,
-	})
-	if err != nil {
-		uc.log.Error("Failed to hash password", zap.Error(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	res, err := uc.client.RegUser(c.Context(), &pb.RegReq{
-		Name:         req.Name,
-		Email:        req.Email,
-		Role:         req.Role,
-		PasswordHash: hashRes.PasswordHash,
+		Name:      req.Name,
+		Email:     req.Email,
+		Role:      req.Role,
+		Password:  req.Pswd,
+		RequestId: rq,
 	})
 	if err != nil {
-		uc.log.Error("Rpc request failed", zap.Error(err))
+		uc.log.Error("Rpc request failed",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -68,6 +74,8 @@ func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
+	const op = "usersClient.logUser"
+
 	c := service.NewContext(w, r)
 	req := struct {
 		Name  string `json:"name"     validate:"required,min=2,max=50"`
@@ -75,27 +83,40 @@ func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 		Pswd  string `json:"password" validate:"required,min=8"`
 	}{}
 
-	uc.log.Debug("New login request")
+	rq := r.Context().Value(ck.ReqKey).(string)
+	uc.log.Debug("New request",
+		zap.String("op", op),
+		zap.String("request id", rq))
 
 	if err := c.Bind(&req); err != nil {
-		uc.log.Error("Failed to bind request", zap.Error(err))
+		uc.log.Error("Failed to bind request",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	if err := c.Validate(req); err != nil {
-		uc.log.Error("Failed to validate request data", zap.Error(err))
+		uc.log.Error("Failed to validate request data",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		return
 	}
 
 	uc.log.Debug("Successfully extract data")
 
 	res, err := uc.client.LogUser(c.Context(), &pb.LogReq{
-		Name:     req.Name,
-		Email:    req.Email,
-		Password: req.Pswd,
+		Name:      req.Name,
+		Email:     req.Email,
+		Password:  req.Pswd,
+		RequestId: rq,
 	})
 	if err != nil {
-		uc.log.Error("Rpc request failed", zap.Error(err))
+		uc.log.Error("Rpc request failed",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -109,6 +130,8 @@ func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
+	const op = "usersClient.delUser"
+
 	c := service.NewContext(w, r)
 	req := struct {
 		sk        string `validate:"required,len=36"`
@@ -116,6 +139,8 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 		userId    string `validate:"required,len=36"`
 		delUserId string `validate:"required,len=36"`
 	}{}
+
+	rq := r.Context().Value(ck.ReqKey).(string)
 
 	req.role = r.Context().Value(ck.UserKey).(ck.UserInfo).Role
 	req.userId = r.Context().Value(ck.UserKey).(ck.UserInfo).UserID
@@ -125,28 +150,37 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 	}
 	sk, err := r.Cookie("session_key")
 	if err != nil {
-		uc.log.Error("Couldn't get session key from cookies", zap.Error(err))
+		uc.log.Error("Couldn't get session key from cookies",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		return
 	}
 	req.sk = sk.Value
 
 	if err := c.Validate(req); err != nil {
-		uc.log.Error("Failed to validate request data", zap.Error(err))
+		uc.log.Error("Failed to validate request data",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		return
 	}
 
-	uc.log.Debug("New del user request",
-		zap.String("user id", req.userId),
-		zap.String("deleting user role", req.role),
-		zap.String("deleted user id", req.delUserId))
+	uc.log.Debug("New request",
+		zap.String("op", op),
+		zap.String("request id", rq))
 
 	if _, err := uc.client.DelUser(context.Background(), &pb.DelUserReq{
 		Role:       req.role,
 		UserId:     req.userId,
 		DelUserId:  req.delUserId,
 		SessionKey: req.sk,
+		RequestId:  rq,
 	}); err != nil {
-		uc.log.Error("Rpc request failed", zap.Error(err))
+		uc.log.Error("Rpc request failed",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -157,7 +191,9 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (uc *UsersClient) ExtJWTData(tokenString, sk string) (ck.UserInfo, error) {
+func (uc *UsersClient) ExtJWTData(tokenString, sk, rq string) (ck.UserInfo, error) {
+	const op = "usersClient.ExtJWTData"
+
 	c := service.NewContext(nil, nil)
 	req := struct {
 		token string `validator:"required,min=100"`
@@ -167,19 +203,28 @@ func (uc *UsersClient) ExtJWTData(tokenString, sk string) (ck.UserInfo, error) {
 	req.token, req.sk = tokenString, sk
 
 	if err := c.Validate(req); err != nil {
-		uc.log.Error("Failed to validate request data", zap.Error(err))
+		uc.log.Error("Failed to validate request data",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		return ck.UserInfo{}, err
 	}
+
+	uc.log.Debug("New request",
+		zap.String("op", op),
+		zap.String("request id", rq))
 
 	res, err := uc.client.ExtJWTData(context.Background(), &pb.ExtJWTDataReq{
 		Token:      req.token,
 		SessionKey: req.sk,
+		RequestId:  rq,
 	})
 
-	uc.log.Debug("New request in need jwt data")
-
 	if err != nil {
-		uc.log.Error("Rpc request failed", zap.Error(err))
+		uc.log.Error("Rpc request failed",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		return ck.UserInfo{}, err
 	}
 
@@ -194,17 +239,30 @@ func (uc *UsersClient) ExtJWTData(tokenString, sk string) (ck.UserInfo, error) {
 }
 
 func (uc *UsersClient) extUserId(w http.ResponseWriter, r *http.Request) {
+	const op = "usersClient.extUserId"
+
+	rq := r.Context().Value(ck.ReqKey).(string)
+	uc.log.Debug("New request",
+		zap.String("op", op),
+		zap.String("request id", rq))
+
 	tokenString := chi.URLParam(r, "token")
 	sk, err := r.Cookie("session_key")
 	if err != nil {
-		uc.log.Error("Couldn't get session key from cookies", zap.Error(err))
+		uc.log.Error("Couldn't get session key from cookies",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	data, err := uc.ExtJWTData(tokenString, sk.Value)
+	data, err := uc.ExtJWTData(tokenString, sk.Value, rq)
 	if err != nil {
-		uc.log.Error("Failed to extract jwt data", zap.Error(err))
+		uc.log.Error("Failed to extract jwt data",
+			zap.String("op", op),
+			zap.String("request id", rq),
+			zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

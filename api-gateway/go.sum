@@ -1,5 +1,7 @@
 github.com/Votline/3l1/protos v0.0.8 h1:thAEsj91zlTFZxuWOx5Sl+c+d8hfiEL4l92b/vSqNuY=
 github.com/Votline/3l1/protos v0.0.8/go.mod h1:JMBjLvmFxABNr1TDkbCsuOIIMSH8wV/aIpEhKJ3D5Tg=
+github.com/Votline/3l1/protos v0.0.9 h1:T6kpkIVybPne8E5UgrF1UhFlRTxNRujacDJHf2ttw6M=
+github.com/Votline/3l1/protos v0.0.9/go.mod h1:JMBjLvmFxABNr1TDkbCsuOIIMSH8wV/aIpEhKJ3D5Tg=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=

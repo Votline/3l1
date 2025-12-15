@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"os"
 	"os/signal"
@@ -13,9 +14,10 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "github.com/Votline/3l1/protos/generated-order"
 	"orders/internal/db"
 	gc "orders/internal/graceful"
+
+	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
 type orderservice struct {
@@ -59,6 +61,8 @@ func gracefulShutdown(s *grpc.Server, srv orderservice, log *zap.Logger) {
 }
 
 func (os *orderservice) AddOrder(ctx context.Context, req *pb.AddOrderReq) (*pb.AddOrderRes, error) {
+	const op = "OrderService.ReqUser"
+
 	order := &db.Order{
 		ID:         uuid.New().String(),
 		UserID:     req.GetUserId(),
@@ -70,21 +74,21 @@ func (os *orderservice) AddOrder(ctx context.Context, req *pb.AddOrderReq) (*pb.
 	}
 
 	if err := os.repo.AddOrder(order); err != nil {
-		os.log.Error("Failed to add order into db", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: add order: %w", op, err)
 	}
 
 	return &pb.AddOrderRes{Id: order.ID}, nil
 }
 
 func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*pb.OrderInfoRes, error) {
+	const op = "OrderService.OrderInfo"
+
 	id := req.GetId()
 	userID := req.GetUserId()
 
 	order, err := os.repo.OrderInfo(id, userID)
 	if err != nil {
-		os.log.Error("Failed to extract data", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: order info: %w", op, err)
 	}
 
 	return &pb.OrderInfoRes{
@@ -100,13 +104,14 @@ func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*p
 }
 
 func (os *orderservice) DelOrder(ctx context.Context, req *pb.DelOrderReq) (*pb.DelOrderRes, error) {
+	const op = "OrderService.DelOrder"
+
 	id := req.GetId()
 	userID := req.GetUserId()
 	role := req.GetRole()
 
 	if err := os.repo.DelOrder(id, userID, role); err != nil {
-		os.log.Error("Failed to delete order", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: delete order: %w", op, err)
 	}
 
 	return &pb.DelOrderRes{}, nil

@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"net"
 	"os"
 	"os/signal"
@@ -72,77 +72,69 @@ func gracefulShutdown(s *grpc.Server, srv userserver, log *zap.Logger) {
 	}
 }
 
-func (us *userserver) HashPswd(ctx context.Context, req *pb.HashReq) (*pb.HashRes, error) {
-	pswd := req.GetPassword()
-
-	hashed, err := crypto.Hash(pswd)
-	if err != nil {
-		us.log.Error("Failed to hash password", zap.Error(err))
-		return nil, err
-	}
-
-	return &pb.HashRes{PasswordHash: hashed}, nil
-}
-
 func (us *userserver) RegUser(ctx context.Context, req *pb.RegReq) (*pb.RegRes, error) {
+	const op = "UserService.ReqUser"
+
 	name := req.GetName()
 	email := req.GetEmail()
 	role := req.GetRole()
-	pswd := req.GetPasswordHash()
+	pswd := req.GetPassword()
 	id := uuid.New().String()
+
+	hashed, err := crypto.Hash(pswd)
+	if err != nil {
+		return nil, fmt.Errorf("%s: hash password: %w", op, err)
+	}
 
 	token, err := crypto.GenJWT(id, role)
 	if err != nil {
-		us.log.Error("Failed create jwt token", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: generate jwt: %w", op, err)
 	}
 
 	sessionKey, err := us.redisRepo.NewSession(id, role)
 	if err != nil {
-		us.log.Error("Failed to create session key", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: new session: %w", op, err)
 	}
 
-	if err := us.repo.AddUser(id, name+email, role, pswd); err != nil {
-		us.log.Error("Failed to add user into db", zap.Error(err))
-		return nil, err
+	if err := us.repo.AddUser(id, name+email, role, hashed); err != nil {
+		return nil, fmt.Errorf("%s: add user: %w", op, err)
 	}
 
 	return &pb.RegRes{Token: token, SessionKey: sessionKey}, nil
 }
 
 func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, error) {
+	const op = "UserService.LogUser"
+
 	name := req.GetName()
 	email := req.GetEmail()
 	pswd := req.GetPassword()
 
 	data, err := us.repo.LogUser(name+email, pswd)
 	if err != nil {
-		us.log.Error("Failed extract data", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: login user: %w", op, err)
 	}
 
 	if !crypto.CheckPswd(data.Pswd, pswd) {
-		us.log.Error("Failed login user")
-		return nil, errors.New("Invalid password")
+		return nil, fmt.Errorf("%s: check password: %s", op, "Invalid password")
 	}
 
 	sessionKey, err := us.redisRepo.NewSession(data.ID, data.Role)
 	if err != nil {
-		us.log.Error("Failed to create session key", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: new session: %w", op, err)
 	}
 
 	token, err := crypto.GenJWT(data.ID, data.Role)
 	if err != nil {
-		us.log.Error("Failed create jwt token", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: generate jwt: %w", op, err)
 	}
 
 	return &pb.LogRes{Token: token, SessionKey: sessionKey}, nil
 }
 
 func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*pb.ExtJWTDataRes, error) {
+	const op = "UserService.ExtJWTData"
+
 	sk := req.GetSessionKey()
 	tokenString := req.GetToken()
 
@@ -150,17 +142,14 @@ func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*p
 	id, role := data.UserID, data.Role
 	if id != "" && role != "" && err == nil {
 		if err := us.redisRepo.Validate(id, role, sk); err != nil {
-			us.log.Error("Failed to falidate data", zap.Error(err))
-			return nil, err
+			return nil, fmt.Errorf("%s: validate: %w", op, err)
 		}
 		tokenString, err = crypto.GenJWT(id, role)
 		if err != nil {
-			us.log.Error("Failed to create new JWT token", zap.Error(err))
-			return nil, err
+			return nil, fmt.Errorf("%s: generate jwt: %w", op, err)
 		}
 	} else if err != nil {
-		us.log.Error("Failed to extract any data from JWT token", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: extract jwt: %w", op, err)
 	}
 
 	return &pb.ExtJWTDataRes{
@@ -171,19 +160,19 @@ func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*p
 }
 
 func (us *userserver) DelUser(ctx context.Context, req *pb.DelUserReq) (*pb.DelUserRes, error) {
+	const op = "UserService.DelUser"
+
 	role := req.GetRole()
 	userID := req.GetUserId()
 	delUserID := req.GetDelUserId()
 	sk := req.GetSessionKey()
 
 	if err := us.redisRepo.DelSession(sk); err != nil {
-		us.log.Error("Failed to delete user's session key", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: delete session: %w", op, err)
 	}
 
 	if err := us.repo.DelUser(userID, role, delUserID); err != nil {
-		us.log.Error("Failed to delete user", zap.Error(err))
-		return nil, err
+		return nil, fmt.Errorf("%s: delete user: %w", op, err)
 	}
 
 	return &pb.DelUserRes{}, nil
