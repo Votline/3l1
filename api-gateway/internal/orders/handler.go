@@ -56,14 +56,15 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 		zap.String("service url", req.ServiceURL),
 		zap.Int32("quantity", req.Quantity))
 
-	res, err := os.client.AddOrder(c.Context(), &pb.AddOrderReq{
-		UserId:     req.userID,
-		TargetUrl:  req.TargetURL,
-		ServiceUrl: req.ServiceURL,
-		OrderType:  req.OrderType,
-		Quantity:   req.Quantity,
-		RequestId:  rq,
-	})
+	res, err := service.Rpc(func() (*pb.AddOrderRes, error) {
+		return os.client.AddOrder(c.Context(), &pb.AddOrderReq{
+			UserId:     req.userID,
+			TargetUrl:  req.TargetURL,
+			ServiceUrl: req.ServiceURL,
+			OrderType:  req.OrderType,
+			Quantity:   req.Quantity,
+			RequestId:  rq,
+	})})
 	if err != nil {
 		os.log.Error("Rpc request failed",
 			zap.String("op", op),
@@ -111,11 +112,12 @@ func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 		zap.String("user id", req.userID),
 		zap.String("order id", req.id))
 
-	res, err := os.client.OrderInfo(c.Context(), &pb.OrderInfoReq{
-		Id:        req.id,
-		UserId:    req.userID,
-		RequestId: rq,
-	})
+	res, err := service.Rpc(func() (*pb.OrderInfoRes, error) {
+		return os.client.OrderInfo(c.Context(), &pb.OrderInfoReq{
+			Id:        req.id,
+			UserId:    req.userID,
+			RequestId: rq,
+	})})
 	if err != nil {
 		os.log.Error("Rpc request failed",
 			zap.String("op", op),
@@ -173,12 +175,13 @@ func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
 		zap.String("user role", req.role),
 		zap.String("order id", req.id))
 
-	if _, err := os.client.DelOrder(context.Background(), &pb.DelOrderReq{
-		Id:        req.id,
-		Role:      req.role,
-		UserId:    req.userID,
-		RequestId: rq,
-	}); err != nil {
+	if _, err := service.Rpc(func() (*pb.DelOrderRes, error) {
+		return os.client.DelOrder(context.Background(), &pb.DelOrderReq{
+			Id:        req.id,
+			Role:      req.role,
+			UserId:    req.userID,
+			RequestId: rq,
+	})}); err != nil {
 		os.log.Error("Rpc request failed",
 			zap.String("op", op),
 			zap.String("request id", rq),

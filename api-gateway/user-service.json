@@ -11,9 +11,9 @@
             "name": "ziv",
             "email": "yomi@duck.com",
             "role": "admin",
-            "password": "pswd"
+            "password": "password"
         },
-        "response": "Key: 'Pswd' Error:Field validation for 'Pswd' failed on the 'min' tag\n"
+        "response": "rpc error: code = Unknown desc = UserService.ReqUser: add user: UserPostgresRepository.AddUser: execute query: pq: duplicate key value violates unique constraint \"users_user_name_key\"\n"
     },
     {
         "id": "2",
@@ -26,9 +26,9 @@
         "body": {
             "name": "ziv",
             "email": "yomi@duck.com",
-            "password": "pswd"
+            "password": "password"
         },
-        "response": "rpc error: code = Unknown desc = sql: no rows in result set\n"
+        "response": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjU5NDc1MTQsInJvbGUiOiJhZG1pbiIsInVzZXJfaWQiOiJhODRlM2E1Ni0wYWMzLTQwN2MtYmFlZi1hOTg5NWMxMWM0NWIifQ.2seRjddoBnUGUjWEo5yrnvjX0BRA7Ivde6XqfzqxDuM\"}\n"
     },
     {
         "id": "3",
@@ -42,9 +42,9 @@
             "name": "zivA+",
             "email": "yomi@duck.com",
             "role": "dev",
-            "password": "pswd"
+            "password": "password"
         },
-        "response": "Key: 'Pswd' Error:Field validation for 'Pswd' failed on the 'min' tag\n"
+        "response": "rpc error: code = Unknown desc = UserService.ReqUser: add user: UserPostgresRepository.AddUser: execute query: pq: duplicate key value violates unique constraint \"users_user_name_key\"\n"
     },
     {
         "id": "4",
@@ -55,7 +55,7 @@
             "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
         },
-        "response": "{\"user_id\":\"65776987-889e-49d7-ab1c-a42f86cfbeee\"}\n"
+        "response": "rpc error: code = Unknown desc = UserService.ExtJWTData: validate: UserRedisRepository.AddUser: match data: Data are different\n"
     },
     {
         "id": "5",
@@ -75,6 +75,7 @@
         "headers": {
             "Authorization": "Bearer {RESPONSE id=2 json:token}",
             "Content-Type": "application/json"
-        }
+        },
+        "response": "rpc error: code = Unknown desc = UserService.ExtJWTData: validate: UserRedisRepository.AddUser: match data: Data are different\n"
     }
 ]

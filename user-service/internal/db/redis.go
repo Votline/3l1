@@ -39,6 +39,8 @@ func (r *RedisRepo) Stop(ctx context.Context) error {
 }
 
 func (r *RedisRepo) NewSession(id, role string) (string, error) {
+	const op = "UserRedisRepository.NewSession"
+	
 	sk := uuid.NewString()
 	tx := r.rdb.TxPipeline()
 
@@ -46,32 +48,31 @@ func (r *RedisRepo) NewSession(id, role string) (string, error) {
 		"id":   id,
 		"role": role,
 	}).Err(); err != nil {
-		r.log.Error("Failed to add new redis hash entry", zap.Error(err))
-		return "", err
+		return "", fmt.Errorf("%s: tx add entry: %w", op, err)
 	}
 
 	if err := tx.Expire(r.ctx, sk, time.Hour*720).Err(); err != nil {
-		r.log.Error("Failed to expire new session", zap.Error(err))
-		return "", err
+		return "", fmt.Errorf("%s: tx expire entry: %w", op, err)
 	}
 
 	if _, err := tx.Exec(r.ctx); err != nil {
-		r.log.Error("Failed to create session", zap.Error(err))
-		return "", err
+		return "", fmt.Errorf("%s: new session: %w", op, err)
 	}
 
 	return sk, nil
 }
 
 func (r *RedisRepo) Validate(id, role, sk string) error {
-	const op = "UserRedisRepository.AddUser"
+	const op = "UserRedisRepository.Validate"
 
 	fields, err := r.rdb.HGetAll(r.ctx, sk).Result()
 	if err != nil {
 		return fmt.Errorf("%s: get all: %w", op, err)
 	}
 	if fields["id"] != id || fields["role"] != role {
-		return fmt.Errorf("%s: match data: %s", op, "Data are different")
+		err := fmt.Errorf("Data are different: %s: %s | %s: %s",
+			id, fields["id"], role, fields["role"])
+		return fmt.Errorf("%s: match data: %w", op, err)
 	}
 	return nil
 }

@@ -3,13 +3,19 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-playground/validator/v10"
 	"github.com/prometheus/client_golang/prometheus"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
+
+const maxRetries = 3
 
 type Service interface {
 	Close(context.Context) error
@@ -28,14 +34,20 @@ func NewContext(w http.ResponseWriter, r *http.Request) *ctx {
 	return &ctx{w: w, r: r}
 }
 
+func (c *ctx) Context() context.Context {
+	return c.r.Context()
+}
+
 func (c *ctx) Bind(v any) error {
 	return json.NewDecoder(c.r.Body).Decode(v)
 }
+
 func (c *ctx) JSON(status int, v any) error {
 	c.w.Header().Set("Content-Type", "application/json")
 	c.w.WriteHeader(status)
 	return json.NewEncoder(c.w).Encode(v)
 }
+
 func (c *ctx) SetSession(key string) {
 	http.SetCookie(c.w, &http.Cookie{
 		Name:     "session_key",
@@ -47,6 +59,7 @@ func (c *ctx) SetSession(key string) {
 		SameSite: http.SameSiteLaxMode,
 	})
 }
+
 func (c *ctx) Validate(req any) error {
 	validate := validator.New()
 	if err := validate.Struct(req); err != nil {
@@ -58,6 +71,54 @@ func (c *ctx) Validate(req any) error {
 	return nil
 }
 
-func (c *ctx) Context() context.Context {
-	return c.r.Context()
+func Rpc[T any](fn func() (T, error)) (T, error) {
+	var zero T
+	for i := 0; i < maxRetries; i++ {
+		res, err := fn()
+		if err == nil {
+			return res, nil
+		}
+
+		if !shouldRetry(err) {
+			return zero, err
+		}
+
+		time.Sleep(time.Duration(i+1) * time.Second)
+	}
+
+	return zero, fmt.Errorf("max retries exceeded")
+}
+
+func shouldRetry(err error) bool {
+	st, ok := status.FromError(err)
+	if ok {
+		switch st.Code() {
+		case
+			codes.Canceled,
+			codes.DeadlineExceeded,
+			codes.ResourceExhausted,
+			codes.Aborted,
+			codes.Unavailable,
+			codes.DataLoss:
+
+			return true
+		case
+			codes.InvalidArgument,
+			codes.NotFound,
+			codes.AlreadyExists,
+			codes.PermissionDenied,
+			codes.FailedPrecondition,
+			codes.OutOfRange,
+			codes.Unimplemented,
+			codes.Internal,
+			codes.Unauthenticated:
+
+			return false
+
+		default:
+			return false
+		}
+	}
+
+	return false
 }

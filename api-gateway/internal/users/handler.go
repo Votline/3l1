@@ -48,13 +48,16 @@ func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	uc.log.Debug("Extracted data for reg user",
 		zap.String("role", req.Role))
 
-	res, err := uc.client.RegUser(c.Context(), &pb.RegReq{
-		Name:      req.Name,
-		Email:     req.Email,
-		Role:      req.Role,
-		Password:  req.Pswd,
-		RequestId: rq,
+	res, err := service.Rpc(func() (*pb.RegRes, error) {
+		return uc.client.RegUser(c.Context(), &pb.RegReq{
+			Name:      req.Name,
+			Email:     req.Email,
+			Role:      req.Role,
+			Password:  req.Pswd,
+			RequestId: rq,
+		})
 	})
+
 	if err != nil {
 		uc.log.Error("Rpc request failed",
 			zap.String("op", op),
@@ -106,11 +109,13 @@ func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 
 	uc.log.Debug("Successfully extract data")
 
-	res, err := uc.client.LogUser(c.Context(), &pb.LogReq{
-		Name:      req.Name,
-		Email:     req.Email,
-		Password:  req.Pswd,
-		RequestId: rq,
+	res, err := service.Rpc(func() (*pb.LogRes, error){
+		return uc.client.LogUser(c.Context(), &pb.LogReq{
+			Name:      req.Name,
+			Email:     req.Email,
+			Password:  req.Pswd,
+			RequestId: rq,
+		})
 	})
 	if err != nil {
 		uc.log.Error("Rpc request failed",
@@ -170,13 +175,14 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 		zap.String("op", op),
 		zap.String("request id", rq))
 
-	if _, err := uc.client.DelUser(context.Background(), &pb.DelUserReq{
-		Role:       req.role,
-		UserId:     req.userId,
-		DelUserId:  req.delUserId,
-		SessionKey: req.sk,
-		RequestId:  rq,
-	}); err != nil {
+	if _, err := service.Rpc(func() (*pb.DelUserRes, error) {
+		return uc.client.DelUser(context.Background(), &pb.DelUserReq{
+			Role:       req.role,
+			UserId:     req.userId,
+			DelUserId:  req.delUserId,
+			SessionKey: req.sk,
+			RequestId:  rq,
+	})}); err != nil {
 		uc.log.Error("Rpc request failed",
 			zap.String("op", op),
 			zap.String("request id", rq),
@@ -214,11 +220,12 @@ func (uc *UsersClient) ExtJWTData(tokenString, sk, rq string) (ck.UserInfo, erro
 		zap.String("op", op),
 		zap.String("request id", rq))
 
-	res, err := uc.client.ExtJWTData(context.Background(), &pb.ExtJWTDataReq{
-		Token:      req.token,
-		SessionKey: req.sk,
-		RequestId:  rq,
-	})
+	res, err := service.Rpc(func() (*pb.ExtJWTDataRes, error) {
+		return uc.client.ExtJWTData(context.Background(), &pb.ExtJWTDataReq{
+			Token:      req.token,
+			SessionKey: req.sk,
+			RequestId:  rq,
+	})})
 
 	if err != nil {
 		uc.log.Error("Rpc request failed",
