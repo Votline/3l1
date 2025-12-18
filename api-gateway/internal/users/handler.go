@@ -48,7 +48,7 @@ func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	uc.log.Debug("Extracted data for reg user",
 		zap.String("role", req.Role))
 
-	res, err := service.Rpc(func() (*pb.RegRes, error) {
+	res, err := service.Execute(uc.cb, func() (*pb.RegRes, error) {
 		return uc.client.RegUser(c.Context(), &pb.RegReq{
 			Name:      req.Name,
 			Email:     req.Email,
@@ -109,7 +109,7 @@ func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 
 	uc.log.Debug("Successfully extract data")
 
-	res, err := service.Rpc(func() (*pb.LogRes, error){
+	res, err := service.Execute(uc.cb, func() (*pb.LogRes, error) {
 		return uc.client.LogUser(c.Context(), &pb.LogReq{
 			Name:      req.Name,
 			Email:     req.Email,
@@ -175,14 +175,15 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 		zap.String("op", op),
 		zap.String("request id", rq))
 
-	if _, err := service.Rpc(func() (*pb.DelUserRes, error) {
+	if _, err := service.Execute(uc.cb, func() (*pb.DelUserRes, error) {
 		return uc.client.DelUser(context.Background(), &pb.DelUserReq{
 			Role:       req.role,
 			UserId:     req.userId,
 			DelUserId:  req.delUserId,
 			SessionKey: req.sk,
 			RequestId:  rq,
-	})}); err != nil {
+		})
+	}); err != nil {
 		uc.log.Error("Rpc request failed",
 			zap.String("op", op),
 			zap.String("request id", rq),
@@ -220,12 +221,13 @@ func (uc *UsersClient) ExtJWTData(tokenString, sk, rq string) (ck.UserInfo, erro
 		zap.String("op", op),
 		zap.String("request id", rq))
 
-	res, err := service.Rpc(func() (*pb.ExtJWTDataRes, error) {
+	res, err := service.Execute(uc.cb, func() (*pb.ExtJWTDataRes, error) {
 		return uc.client.ExtJWTData(context.Background(), &pb.ExtJWTDataReq{
 			Token:      req.token,
 			SessionKey: req.sk,
 			RequestId:  rq,
-	})})
+		})
+	})
 
 	if err != nil {
 		uc.log.Error("Rpc request failed",

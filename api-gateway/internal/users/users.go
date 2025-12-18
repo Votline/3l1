@@ -7,11 +7,13 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/sony/gobreaker/v2"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	gc "gateway/internal/graceful"
 	"gateway/internal/service"
+	"gateway/internal/cbreaker"
 
 	pb "github.com/Votline/3l1/protos/generated-user"
 )
@@ -24,6 +26,7 @@ type UsersClient struct {
 	hist    *prometheus.HistogramVec
 	counter *prometheus.CounterVec
 	active  prometheus.Gauge
+	cb *gobreaker.CircuitBreaker[any]
 }
 
 func New(resTime *prometheus.HistogramVec, log *zap.Logger) service.Service {
@@ -33,6 +36,7 @@ func New(resTime *prometheus.HistogramVec, log *zap.Logger) service.Service {
 	if err != nil {
 		log.Fatal("User-service connection failed", zap.Error(err))
 	}
+	
 	return &UsersClient{
 		log:     log,
 		conn:    conn,
@@ -41,6 +45,7 @@ func New(resTime *prometheus.HistogramVec, log *zap.Logger) service.Service {
 		hist:    resTime,
 		counter: newCounter(),
 		active:  newGauge(),
+		cb: cbreaker.NewCb("UserService", log),
 	}
 }
 
@@ -86,3 +91,5 @@ func newGauge() prometheus.Gauge {
 		Help: "Total number of active operations for user service",
 	})
 }
+
+

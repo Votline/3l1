@@ -13,7 +13,7 @@ import (
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
-func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
+func (oc *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 	const op = "ordersClient.addOrder"
 
 	c := service.NewContext(w, r)
@@ -26,12 +26,12 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 	}{}
 
 	rq := r.Context().Value(ck.ReqKey).(string)
-	os.log.Debug("New add order request",
+	oc.log.Debug("New add order request",
 		zap.String("op", op),
 		zap.String("request id", rq))
 
 	if err := c.Bind(&req); err != nil {
-		os.log.Error("Failed to bind add order req",
+		oc.log.Error("Failed to bind add order req",
 			zap.String("op", op),
 			zap.String("request id", rq),
 			zap.Error(err))
@@ -41,14 +41,14 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 	req.userID = r.Context().Value("userInfo").(ck.UserInfo).UserID
 
 	if err := c.Validate(req); err != nil {
-		os.log.Error("Failed to validate request data",
+		oc.log.Error("Failed to validate request data",
 			zap.String("op", op),
 			zap.String("request id", rq),
 			zap.Error(err))
 		return
 	}
 
-	os.log.Debug("Extracted data for add order",
+	oc.log.Debug("Extracted data for add order",
 		zap.String("op", op),
 		zap.String("request id", rq),
 		zap.String("user id", req.userID),
@@ -56,17 +56,18 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 		zap.String("service url", req.ServiceURL),
 		zap.Int32("quantity", req.Quantity))
 
-	res, err := service.Rpc(func() (*pb.AddOrderRes, error) {
-		return os.client.AddOrder(c.Context(), &pb.AddOrderReq{
+	res, err := service.Execute(oc.cb, func() (*pb.AddOrderRes, error) {
+		return oc.client.AddOrder(c.Context(), &pb.AddOrderReq{
 			UserId:     req.userID,
 			TargetUrl:  req.TargetURL,
 			ServiceUrl: req.ServiceURL,
 			OrderType:  req.OrderType,
 			Quantity:   req.Quantity,
 			RequestId:  rq,
-	})})
+		})
+	})
 	if err != nil {
-		os.log.Error("Rpc request failed",
+		oc.log.Error("Rpc request failed",
 			zap.String("op", op),
 			zap.String("request id", rq),
 			zap.Error(err))
@@ -74,7 +75,7 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	os.log.Debug("Successfully added order",
+	oc.log.Debug("Successfully added order",
 		zap.String("op", op),
 		zap.String("request id", rq),
 		zap.String("user id", req.userID),
@@ -85,7 +86,7 @@ func (os *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
+func (oc *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 	const op = "ordersClient.orderInfo"
 
 	c := service.NewContext(w, r)
@@ -99,27 +100,28 @@ func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 	rq := r.Context().Value(ck.ReqKey).(string)
 
 	if err := c.Validate(req); err != nil {
-		os.log.Error("Failed to validate request data",
+		oc.log.Error("Failed to validate request data",
 			zap.String("op", op),
 			zap.String("request id", rq),
 			zap.Error(err))
 		return
 	}
 
-	os.log.Debug("New order info request",
+	oc.log.Debug("New order info request",
 		zap.String("op", op),
 		zap.String("request id", rq),
 		zap.String("user id", req.userID),
 		zap.String("order id", req.id))
 
-	res, err := service.Rpc(func() (*pb.OrderInfoRes, error) {
-		return os.client.OrderInfo(c.Context(), &pb.OrderInfoReq{
+	res, err := service.Execute(oc.cb, func() (*pb.OrderInfoRes, error) {
+		return oc.client.OrderInfo(c.Context(), &pb.OrderInfoReq{
 			Id:        req.id,
 			UserId:    req.userID,
 			RequestId: rq,
-	})})
+		})
+	})
 	if err != nil {
-		os.log.Error("Rpc request failed",
+		oc.log.Error("Rpc request failed",
 			zap.String("op", op),
 			zap.String("request id", rq),
 			zap.Error(err))
@@ -127,7 +129,7 @@ func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	os.log.Debug("Successfully extracted order data",
+	oc.log.Debug("Successfully extracted order data",
 		zap.String("op", op),
 		zap.String("request id", rq),
 		zap.String("user id", req.userID),
@@ -144,7 +146,7 @@ func (os *ordersClient) orderInfo(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
+func (oc *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
 	const op = "ordersClient.delOrder"
 
 	c := service.NewContext(w, r)
@@ -160,7 +162,7 @@ func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
 	rq := r.Context().Value(ck.ReqKey).(string)
 
 	if err := c.Validate(req); err != nil {
-		os.log.Error("Failed to validate request data",
+		oc.log.Error("Failed to validate request data",
 			zap.String("op", op),
 			zap.String("request id", rq),
 			zap.Error(err))
@@ -168,21 +170,22 @@ func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	os.log.Debug("New delete order request",
+	oc.log.Debug("New delete order request",
 		zap.String("op", op),
 		zap.String("request id", rq),
 		zap.String("user id", req.userID),
 		zap.String("user role", req.role),
 		zap.String("order id", req.id))
 
-	if _, err := service.Rpc(func() (*pb.DelOrderRes, error) {
-		return os.client.DelOrder(context.Background(), &pb.DelOrderReq{
+	if _, err := service.Execute(oc.cb, func() (*pb.DelOrderRes, error) {
+		return oc.client.DelOrder(context.Background(), &pb.DelOrderReq{
 			Id:        req.id,
 			Role:      req.role,
 			UserId:    req.userID,
 			RequestId: rq,
-	})}); err != nil {
-		os.log.Error("Rpc request failed",
+		})
+	}); err != nil {
+		oc.log.Error("Rpc request failed",
 			zap.String("op", op),
 			zap.String("request id", rq),
 			zap.Error(err))
@@ -190,7 +193,7 @@ func (os *ordersClient) delOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	os.log.Debug("Successfully deleted order",
+	oc.log.Debug("Successfully deleted order",
 		zap.String("op", op),
 		zap.String("request id", rq),
 		zap.String("user id", req.userID),

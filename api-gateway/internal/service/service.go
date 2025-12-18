@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-playground/validator/v10"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/sony/gobreaker/v2"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -71,7 +72,7 @@ func (c *ctx) Validate(req any) error {
 	return nil
 }
 
-func Rpc[T any](fn func() (T, error)) (T, error) {
+func rpc[T any](fn func() (T, error)) (T, error) {
 	var zero T
 	for i := 0; i < maxRetries; i++ {
 		res, err := fn()
@@ -114,11 +115,30 @@ func shouldRetry(err error) bool {
 			codes.Unauthenticated:
 
 			return false
-
 		default:
 			return false
 		}
 	}
 
 	return false
+}
+
+func Execute[T any](cb *gobreaker.CircuitBreaker[any], fn func() (T, error)) (T, error) {
+	var zero T
+
+	resCb, err := cb.Execute(func() (any, error) {
+		return rpc(func() (T, error) {
+			return fn()
+		})
+	})
+
+	if err != nil {
+		return zero, err
+	}
+
+	res, ok := resCb.(T)
+	if !ok {
+		return zero, fmt.Errorf("Failed parse response to needed type")
+	}
+	return res, nil
 }

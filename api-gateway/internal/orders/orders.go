@@ -7,11 +7,14 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/sony/gobreaker/v2"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
+	"gateway/internal/cbreaker"
 	gc "gateway/internal/graceful"
 	"gateway/internal/service"
+
 	pb "github.com/Votline/3l1/protos/generated-order"
 )
 
@@ -23,6 +26,7 @@ type ordersClient struct {
 	hist    *prometheus.HistogramVec
 	counter *prometheus.CounterVec
 	active  prometheus.Gauge
+	cb      *gobreaker.CircuitBreaker[any]
 }
 
 func New(resTime *prometheus.HistogramVec, log *zap.Logger) service.Service {
@@ -40,6 +44,7 @@ func New(resTime *prometheus.HistogramVec, log *zap.Logger) service.Service {
 		hist:    resTime,
 		counter: newCounter(),
 		active:  newGauge(),
+		cb:      cbreaker.NewCb("OrderService", log),
 	}
 }
 
