@@ -1,3 +1,4 @@
 .env
 logs/
 *.json
+protoc-gen-validate/

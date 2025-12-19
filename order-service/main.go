@@ -63,6 +63,10 @@ func gracefulShutdown(s *grpc.Server, srv orderservice, log *zap.Logger) {
 func (os *orderservice) AddOrder(ctx context.Context, req *pb.AddOrderReq) (*pb.AddOrderRes, error) {
 	const op = "OrderService.ReqUser"
 
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("%s validate: %w", op, err)
+	}
+
 	order := &db.Order{
 		ID:         uuid.New().String(),
 		UserID:     req.GetUserId(),
@@ -82,6 +86,10 @@ func (os *orderservice) AddOrder(ctx context.Context, req *pb.AddOrderReq) (*pb.
 
 func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*pb.OrderInfoRes, error) {
 	const op = "OrderService.OrderInfo"
+
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("%s validate: %w", op, err)
+	}
 
 	id := req.GetId()
 	userID := req.GetUserId()
@@ -105,6 +113,10 @@ func (os *orderservice) OrderInfo(ctx context.Context, req *pb.OrderInfoReq) (*p
 
 func (os *orderservice) DelOrder(ctx context.Context, req *pb.DelOrderReq) (*pb.DelOrderRes, error) {
 	const op = "OrderService.DelOrder"
+
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("%s validate: %w", op, err)
+	}
 
 	id := req.GetId()
 	userID := req.GetUserId()

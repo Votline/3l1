@@ -75,6 +75,10 @@ func gracefulShutdown(s *grpc.Server, srv userserver, log *zap.Logger) {
 func (us *userserver) RegUser(ctx context.Context, req *pb.RegReq) (*pb.RegRes, error) {
 	const op = "UserService.ReqUser"
 
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("%s validate: %w", op, err)
+	}
+
 	name := req.GetName()
 	email := req.GetEmail()
 	role := req.GetRole()
@@ -106,6 +110,10 @@ func (us *userserver) RegUser(ctx context.Context, req *pb.RegReq) (*pb.RegRes, 
 func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, error) {
 	const op = "UserService.LogUser"
 
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("%s validate: %w", op, err)
+	}
+
 	name := req.GetName()
 	email := req.GetEmail()
 	pswd := req.GetPassword()
@@ -135,6 +143,10 @@ func (us *userserver) LogUser(ctx context.Context, req *pb.LogReq) (*pb.LogRes, 
 func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*pb.ExtJWTDataRes, error) {
 	const op = "UserService.ExtJWTData"
 
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("%s validate: %w", op, err)
+	}
+
 	sk := req.GetSessionKey()
 	tokenString := req.GetToken()
 
@@ -161,6 +173,10 @@ func (us *userserver) ExtJWTData(ctx context.Context, req *pb.ExtJWTDataReq) (*p
 
 func (us *userserver) DelUser(ctx context.Context, req *pb.DelUserReq) (*pb.DelUserRes, error) {
 	const op = "UserService.DelUser"
+
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("%s validate: %w", op, err)
+	}
 
 	role := req.GetRole()
 	userID := req.GetUserId()

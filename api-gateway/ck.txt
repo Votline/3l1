@@ -1,0 +1,20 @@
+{
+    "localhost:8443": [
+        {
+            "Name": "session_key",
+            "Value": "e2026bfc-3c8f-4317-8dce-67a8dfed6767",
+            "Quoted": false,
+            "Path": "/",
+            "Domain": "",
+            "Expires": "0001-01-01T00:00:00Z",
+            "RawExpires": "",
+            "MaxAge": 86400,
+            "Secure": false,
+            "HttpOnly": true,
+            "SameSite": 2,
+            "Partitioned": false,
+            "Raw": "session_key=e2026bfc-3c8f-4317-8dce-67a8dfed6767; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax",
+            "Unparsed": null
+        }
+    ]
+}

@@ -22,7 +22,7 @@ func (oc *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 		TargetURL  string `json:"target_url" validate:"url"`
 		ServiceURL string `json:"service_url" validate:"url"`
 		OrderType  string `json:"order_type" validate:"oneof=comments likes views"`
-		Quantity   int32  `json:"quantity" validate:"min=1"`
+		Quantity   int32  `json:"quantity" validate:"gt=1"`
 	}{}
 
 	rq := r.Context().Value(ck.ReqKey).(string)
