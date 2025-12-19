@@ -7,6 +7,7 @@
 package userservice
 
 import (
+	_ "github.com/envoyproxy/protoc-gen-validate/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -473,38 +474,38 @@ var File_user_service_proto protoreflect.FileDescriptor
 
 const file_user_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12user-service.proto\x12\x05users\"b\n" +
-	"\x06RegReq\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
-	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
-	"\x04role\x18\x03 \x01(\tR\x04role\x12\x1a\n" +
-	"\bpassword\x18\x04 \x01(\tR\bpassword\"?\n" +
-	"\x06RegRes\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\x12\x1f\n" +
-	"\vsession_key\x18\x02 \x01(\tR\n" +
-	"sessionKey\"N\n" +
-	"\x06LogReq\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
-	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x03 \x01(\tR\bpassword\"?\n" +
-	"\x06LogRes\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\x12\x1f\n" +
-	"\vsession_key\x18\x02 \x01(\tR\n" +
-	"sessionKey\"F\n" +
-	"\rExtJWTDataReq\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\x12\x1f\n" +
-	"\vsession_key\x18\x02 \x01(\tR\n" +
-	"sessionKey\"R\n" +
-	"\rExtJWTDataRes\x12\x12\n" +
-	"\x04role\x18\x01 \x01(\tR\x04role\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x14\n" +
-	"\x05token\x18\x03 \x01(\tR\x05token\"z\n" +
+	"\x12user-service.proto\x12\x05users\x1a\x17validate/validate.proto\"\x99\x01\n" +
+	"\x06RegReq\x12\x1d\n" +
+	"\x04name\x18\x01 \x01(\tB\t\xfaB\x06r\x04\x10\x02\x182R\x04name\x12\x1d\n" +
+	"\x05email\x18\x02 \x01(\tB\a\xfaB\x04r\x02`\x01R\x05email\x12,\n" +
+	"\x04role\x18\x03 \x01(\tB\x18\xfaB\x15r\x13R\x05adminR\x03devR\x05guestR\x04role\x12#\n" +
+	"\bpassword\x18\x04 \x01(\tB\a\xfaB\x04r\x02\x10\bR\bpassword\"R\n" +
+	"\x06RegRes\x12\x1d\n" +
+	"\x05token\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10dR\x05token\x12)\n" +
+	"\vsession_key\x18\x02 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\n" +
+	"sessionKey\"k\n" +
+	"\x06LogReq\x12\x1d\n" +
+	"\x04name\x18\x01 \x01(\tB\t\xfaB\x06r\x04\x10\x02\x182R\x04name\x12\x1d\n" +
+	"\x05email\x18\x02 \x01(\tB\a\xfaB\x04r\x02`\x01R\x05email\x12#\n" +
+	"\bpassword\x18\x03 \x01(\tB\a\xfaB\x04r\x02\x10\bR\bpassword\"R\n" +
+	"\x06LogRes\x12\x1d\n" +
+	"\x05token\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10dR\x05token\x12)\n" +
+	"\vsession_key\x18\x02 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\n" +
+	"sessionKey\"Y\n" +
+	"\rExtJWTDataReq\x12\x1d\n" +
+	"\x05token\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10dR\x05token\x12)\n" +
+	"\vsession_key\x18\x02 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\n" +
+	"sessionKey\"u\n" +
+	"\rExtJWTDataRes\x12,\n" +
+	"\x04role\x18\x01 \x01(\tB\x18\xfaB\x15r\x13R\x05adminR\x03devR\x05guestR\x04role\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1d\n" +
+	"\x05token\x18\x03 \x01(\tB\a\xfaB\x04r\x02\x10dR\x05token\"\xa8\x01\n" +
 	"\n" +
-	"DelUserReq\x12\x12\n" +
-	"\x04role\x18\x01 \x01(\tR\x04role\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1e\n" +
-	"\vdel_user_id\x18\x03 \x01(\tR\tdelUserId\x12\x1f\n" +
-	"\vsession_key\x18\x04 \x01(\tR\n" +
+	"DelUserReq\x12,\n" +
+	"\x04role\x18\x01 \x01(\tB\x18\xfaB\x15r\x13R\x05adminR\x03devR\x05guestR\x04role\x12!\n" +
+	"\auser_id\x18\x02 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x06userId\x12\x1e\n" +
+	"\vdel_user_id\x18\x03 \x01(\tR\tdelUserId\x12)\n" +
+	"\vsession_key\x18\x04 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\n" +
 	"sessionKey\"\f\n" +
 	"\n" +
 	"DelUserRes2\xca\x01\n" +

@@ -7,6 +7,7 @@
 package ordersservice
 
 import (
+	_ "github.com/envoyproxy/protoc-gen-validate/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -402,40 +403,41 @@ var File_order_service_proto protoreflect.FileDescriptor
 
 const file_order_service_proto_rawDesc = "" +
 	"\n" +
-	"\x13order-service.proto\x12\x06orders\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbe\x01\n" +
-	"\vAddOrderReq\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
-	"\tuser_role\x18\x02 \x01(\tR\buserRole\x12\x1d\n" +
+	"\x13order-service.proto\x12\x06orders\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17validate/validate.proto\"\x9e\x02\n" +
+	"\vAddOrderReq\x12!\n" +
+	"\auser_id\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x06userId\x125\n" +
+	"\tuser_role\x18\x02 \x01(\tB\x18\xfaB\x15r\x13R\x05adminR\x03devR\x05guestR\buserRole\x12'\n" +
 	"\n" +
-	"target_url\x18\x03 \x01(\tR\ttargetUrl\x12\x1d\n" +
+	"target_url\x18\x03 \x01(\tB\b\xfaB\x05r\x03\x88\x01\x01R\ttargetUrl\x12<\n" +
 	"\n" +
-	"order_type\x18\x04 \x01(\tR\torderType\x12\x1a\n" +
-	"\bquantity\x18\x05 \x01(\x05R\bquantity\x12\x1f\n" +
-	"\vservice_url\x18\x06 \x01(\tR\n" +
-	"serviceUrl\"\x1d\n" +
-	"\vAddOrderRes\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"7\n" +
-	"\fOrderInfoReq\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\"\xb1\x02\n" +
-	"\fOrderInfoRes\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
-	"\tuser_role\x18\x02 \x01(\tR\buserRole\x12\x16\n" +
-	"\x06status\x18\x03 \x01(\tR\x06status\x12\x1d\n" +
+	"order_type\x18\x04 \x01(\tB\x1d\xfaB\x1ar\x18R\bcommentsR\x05likesR\x05viewsR\torderType\x12#\n" +
+	"\bquantity\x18\x05 \x01(\x05B\a\xfaB\x04\x1a\x02 \x00R\bquantity\x12)\n" +
+	"\vservice_url\x18\x06 \x01(\tB\b\xfaB\x05r\x03\x88\x01\x01R\n" +
+	"serviceUrl\"'\n" +
+	"\vAddOrderRes\x12\x18\n" +
+	"\x02id\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x02id\"K\n" +
+	"\fOrderInfoReq\x12\x18\n" +
+	"\x02id\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x02id\x12!\n" +
+	"\auser_id\x18\x02 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x06userId\"\xc0\x03\n" +
+	"\fOrderInfoRes\x12!\n" +
+	"\auser_id\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x06userId\x125\n" +
+	"\tuser_role\x18\x02 \x01(\tB\x18\xfaB\x15r\x13R\x05adminR\x03devR\x05guestR\buserRole\x12:\n" +
+	"\x06status\x18\x03 \x01(\tB\"\xfaB\x1fr\x1dR\x04doneR\tcancelledR\n" +
+	"processingR\x06status\x12'\n" +
 	"\n" +
-	"target_url\x18\x04 \x01(\tR\ttargetUrl\x12\x1f\n" +
-	"\vservice_url\x18\x05 \x01(\tR\n" +
-	"serviceUrl\x12\x1d\n" +
+	"target_url\x18\x04 \x01(\tB\b\xfaB\x05r\x03\x88\x01\x01R\ttargetUrl\x12)\n" +
+	"\vservice_url\x18\x05 \x01(\tB\b\xfaB\x05r\x03\x88\x01\x01R\n" +
+	"serviceUrl\x12<\n" +
 	"\n" +
-	"order_type\x18\x06 \x01(\tR\torderType\x129\n" +
+	"order_type\x18\x06 \x01(\tB\x1d\xfaB\x1ar\x18R\bcommentsR\x05likesR\x05viewsR\torderType\x12C\n" +
 	"\n" +
-	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampB\b\xfaB\x05\xb2\x01\x02\b\x01R\tcreatedAt\x12C\n" +
 	"\n" +
-	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"J\n" +
-	"\vDelOrderReq\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x12\n" +
-	"\x04role\x18\x03 \x01(\tR\x04role\"\r\n" +
+	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampB\b\xfaB\x05\xb2\x01\x02\b\x01R\tupdatedAt\"x\n" +
+	"\vDelOrderReq\x12\x18\n" +
+	"\x02id\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x02id\x12!\n" +
+	"\auser_id\x18\x02 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x06userId\x12,\n" +
+	"\x04role\x18\x03 \x01(\tB\x18\xfaB\x15r\x13R\x05adminR\x03devR\x05guestR\x04role\"\r\n" +
 	"\vDelOrderRes2\xb3\x01\n" +
 	"\fOrderService\x124\n" +
 	"\bAddOrder\x12\x13.orders.AddOrderReq\x1a\x13.orders.AddOrderRes\x127\n" +

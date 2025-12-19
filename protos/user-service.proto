@@ -2,43 +2,44 @@ syntax = "proto3";
 package users;
 
 option go_package = "./;userservice";
+import "validate/validate.proto";
 
 message RegReq {
-  string name  = 1;
-  string email = 2;
-  string role  = 3;
-  string password = 4;
+  string name = 1 [(validate.rules).string = {min_len:2, max_len:50}];
+  string email = 2 [(validate.rules).string.email = true];
+  string role = 3 [(validate.rules).string = {in: ["admin", "dev", "guest"]}];
+  string password = 4 [(validate.rules).string.min_len = 8];
 }
 message RegRes {
-  string token = 1;
-  string session_key = 2;
+  string token = 1 [(validate.rules).string.min_len = 100];
+  string session_key = 2 [(validate.rules).string.uuid = true];
 }
 
 message LogReq {
-  string name  = 1;
-  string email = 2;
-  string password = 3;
+  string name = 1 [(validate.rules).string = {min_len:2, max_len:50}];
+  string email = 2 [(validate.rules).string.email = true];
+  string password = 3 [(validate.rules).string.min_len = 8];
 }
 message LogRes {
-  string token = 1;
-  string session_key = 2;
+  string token = 1 [(validate.rules).string.min_len = 100];
+  string session_key = 2 [(validate.rules).string.uuid = true];
 }
 
 message ExtJWTDataReq {
-  string token = 1;
-  string session_key = 2;
+  string token = 1 [(validate.rules).string.min_len = 100];
+  string session_key = 2 [(validate.rules).string.uuid = true];
 }
 message ExtJWTDataRes {
-  string role = 1;
+  string role = 1 [(validate.rules).string = {in: ["admin", "dev", "guest"]}];
   string user_id = 2;
-  string token = 3;
+  string token = 3 [(validate.rules).string.min_len = 100];
 }
 
 message DelUserReq {
-  string role = 1;
-  string user_id = 2;
+  string role = 1 [(validate.rules).string = {in: ["admin", "dev", "guest"]}];
+  string user_id = 2 [(validate.rules).string.uuid = true];
   string del_user_id = 3;
-  string session_key = 4;
+  string session_key = 4 [(validate.rules).string.uuid = true];
 }
 message DelUserRes{}
 

@@ -3,38 +3,45 @@ package orders;
 
 option go_package = "./;ordersservice";
 import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
 
 message AddOrderReq {
-  string user_id = 1;
-  string user_role = 2;
-  string target_url = 3;
-  string order_type = 4;
-  int32 quantity = 5;
-  string service_url = 6;
+  string user_id = 1 [(validate.rules).string.uuid = true];
+  string user_role = 2 [(validate.rules).string = {in:
+    ["admin", "dev", "guest"]}];
+  string target_url = 3 [(validate.rules).string.uri = true];
+  string order_type = 4 [(validate.rules).string = {in:
+    ["comments", "likes", "views"]}];
+  int32 quantity = 5 [(validate.rules).int32.gt = 0];
+  string service_url = 6 [(validate.rules).string.uri = true];
 }
 message AddOrderRes {
-  string id = 1;
+  string id = 1 [(validate.rules).string.uuid = true];
 }
 
 message OrderInfoReq {
-  string id = 1;
-  string user_id = 2;
+  string id = 1 [(validate.rules).string.uuid = true];
+  string user_id = 2 [(validate.rules).string.uuid = true];
 }
 message OrderInfoRes {
-  string user_id = 1;
-  string user_role = 2;
-  string status = 3;
-  string target_url = 4;
-  string service_url = 5;
-  string order_type = 6;
-  google.protobuf.Timestamp created_at = 7;
-  google.protobuf.Timestamp updated_at = 8;
+  string user_id = 1 [(validate.rules).string.uuid = true];
+  string user_role = 2 [(validate.rules).string = {in:
+    ["admin", "dev", "guest"]}];
+  string status = 3 [(validate.rules).string = {in:
+    ["done", "cancelled", "processing"]}];
+  string target_url = 4 [(validate.rules).string.uri = true];
+  string service_url = 5 [(validate.rules).string.uri = true];
+  string order_type = 6 [(validate.rules).string = {in:
+    ["comments", "likes", "views"]}];
+  google.protobuf.Timestamp created_at = 7 [(validate.rules).timestamp.required = true];
+  google.protobuf.Timestamp updated_at = 8 [(validate.rules).timestamp.required = true];
 }
 
 message DelOrderReq {
-  string id = 1;
-  string user_id = 2;
-  string role = 3;
+  string id = 1 [(validate.rules).string.uuid = true];
+  string user_id = 2 [(validate.rules).string.uuid = true];
+  string role = 3 [(validate.rules).string = {in:
+    ["admin", "dev", "guest"]}];
 }
 message DelOrderRes {}
 
