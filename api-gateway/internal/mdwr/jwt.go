@@ -47,6 +47,7 @@ func (m *mdwr) JWTAuth() func(http.Handler) http.Handler {
 
 			tokenString := parts[1]
 			sk, err := r.Cookie("session_key")
+
 			if err != nil {
 				m.log.Error("Failed to extract jwt data", zap.Error(err))
 				http.Error(w, err.Error(), http.StatusBadRequest)
@@ -54,7 +55,7 @@ func (m *mdwr) JWTAuth() func(http.Handler) http.Handler {
 			}
 
 			rq := r.Context().Value(ck.ReqKey).(string)
-			data, err := m.ext(tokenString, sk.String(), rq)
+			data, err := m.ext(tokenString, sk.Value, rq)
 			if err != nil {
 				m.log.Error("Failed to extract data from JWT token", zap.Error(err))
 				http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -24,7 +24,7 @@ func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 	}{}
 
 	rq := r.Context().Value(ck.ReqKey).(string)
-	uc.log.Debug("New request",
+	uc.log.Info("New request",
 		zap.String("op", op),
 		zap.String("request id", rq))
 
@@ -45,7 +45,7 @@ func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc.log.Debug("Extracted data for reg user",
+	uc.log.Info("Extracted data for reg user",
 		zap.String("role", req.Role))
 
 	res, err := service.Execute(uc.cb, func() (*pb.RegRes, error) {
@@ -67,10 +67,11 @@ func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc.log.Debug("Successfully added user",
+	uc.log.Info("Successfully added user",
 		zap.String("user role", req.Role))
 
 	c.SetSession(res.SessionKey)
+
 	c.JSON(http.StatusOK, map[string]string{
 		"token": res.Token,
 	})
@@ -87,7 +88,7 @@ func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 	}{}
 
 	rq := r.Context().Value(ck.ReqKey).(string)
-	uc.log.Debug("New request",
+	uc.log.Info("New request",
 		zap.String("op", op),
 		zap.String("request id", rq))
 
@@ -107,7 +108,7 @@ func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc.log.Debug("Successfully extract data")
+	uc.log.Info("Successfully extract data")
 
 	res, err := service.Execute(uc.cb, func() (*pb.LogRes, error) {
 		return uc.client.LogUser(c.Context(), &pb.LogReq{
@@ -126,7 +127,7 @@ func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc.log.Debug("Successfully login")
+	uc.log.Info("Successfully login")
 
 	c.SetSession(res.SessionKey)
 	c.JSON(http.StatusOK, map[string]string{
@@ -171,7 +172,7 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc.log.Debug("New request",
+	uc.log.Info("New request",
 		zap.String("op", op),
 		zap.String("request id", rq))
 
@@ -192,7 +193,7 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc.log.Debug("Successfully deleted user",
+	uc.log.Info("Successfully deleted user",
 		zap.String("deleted user id", req.delUserId))
 
 	w.WriteHeader(http.StatusOK)
@@ -217,7 +218,7 @@ func (uc *UsersClient) ExtJWTData(tokenString, sk, rq string) (ck.UserInfo, erro
 		return ck.UserInfo{}, err
 	}
 
-	uc.log.Debug("New request",
+	uc.log.Info("New request",
 		zap.String("op", op),
 		zap.String("request id", rq))
 
@@ -237,7 +238,7 @@ func (uc *UsersClient) ExtJWTData(tokenString, sk, rq string) (ck.UserInfo, erro
 		return ck.UserInfo{}, err
 	}
 
-	uc.log.Debug("Successfully extracted data from jwt token",
+	uc.log.Info("Successfully extracted data from jwt token",
 		zap.String("user id", res.UserId),
 		zap.String("role", res.Role))
 
@@ -251,7 +252,7 @@ func (uc *UsersClient) extUserId(w http.ResponseWriter, r *http.Request) {
 	const op = "usersClient.extUserId"
 
 	rq := r.Context().Value(ck.ReqKey).(string)
-	uc.log.Debug("New request",
+	uc.log.Info("New request",
 		zap.String("op", op),
 		zap.String("request id", rq))
 
