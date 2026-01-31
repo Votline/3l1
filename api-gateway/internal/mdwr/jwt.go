@@ -38,8 +38,8 @@ func (m *mdwr) JWTAuth() func(http.Handler) http.Handler {
 				return
 			}
 
-			parts := strings.Split(authHeader, " ")
-			if len(parts) != 2 || parts[0] != "Bearer" {
+			parts := strings.Split(strings.TrimSpace(authHeader), " ")
+			if len(parts) < 2 || parts[0] != "Bearer" {
 				m.log.Error("Invalid Authorization format", zap.Int("len parts", len(parts)), zap.String("Part 0", parts[0]))
 				http.Error(w, "Invalid Authorization format", http.StatusBadRequest)
 				return
@@ -54,7 +54,24 @@ func (m *mdwr) JWTAuth() func(http.Handler) http.Handler {
 				return
 			}
 
-			rq := r.Context().Value(ck.ReqKey).(string)
+			rqVal := r.Context().Value(ck.ReqKey)
+			rq, _ := rqVal.(string)
+			if rq == "" {
+				rq = r.Header.Get(RequestIDHeader)
+			}
+			if rq == "" {
+				m.log.Error("Request ID missing from context and header (RequestID middleware must run before JWTAuth)")
+				http.Error(w, "internal error", http.StatusInternalServerError)
+				return
+			}
+
+			m.log.Debug("AUTH DEBUG",
+				zap.String("auth_header", r.Header.Get("Authorization")),
+				zap.String("cookie", r.Header.Get("Cookie")),
+				zap.String("tokenString", tokenString),
+			)
+
+
 			data, err := m.ext(tokenString, sk.Value, rq)
 			if err != nil {
 				m.log.Error("Failed to extract data from JWT token", zap.Error(err))
@@ -62,7 +79,8 @@ func (m *mdwr) JWTAuth() func(http.Handler) http.Handler {
 				return
 			}
 
-			ctx := context.WithValue(r.Context(), ck.UserKey, data)
+			ctx := context.WithValue(r.Context(), ck.ReqKey, rq)
+			ctx = context.WithValue(ctx, ck.UserKey, data)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}

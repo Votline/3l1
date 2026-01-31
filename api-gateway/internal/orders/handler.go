@@ -38,7 +38,12 @@ func (oc *ordersClient) addOrder(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	req.userID = r.Context().Value("userInfo").(ck.UserInfo).UserID
+	ui, ok := r.Context().Value(ck.UserKey).(ck.UserInfo)
+	if !ok {
+		http.Error(w, "user not authorized", http.StatusUnauthorized)
+		return
+	}
+	req.userID = ui.UserID
 
 	if err := c.Validate(req); err != nil {
 		oc.log.Error("Failed to validate request data",

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/lib/pq"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -101,6 +103,10 @@ func (us *userserver) RegUser(ctx context.Context, req *pb.RegReq) (*pb.RegRes, 
 	}
 
 	if err := us.repo.AddUser(id, name+email, role, hashed); err != nil {
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) && pqErr.Code == "23505" {
+			return nil, fmt.Errorf("%s: user with this email or username already exists", op)
+		}
 		return nil, fmt.Errorf("%s: add user: %w", op, err)
 	}
 

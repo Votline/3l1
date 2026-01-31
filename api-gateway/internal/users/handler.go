@@ -23,7 +23,10 @@ func (uc *UsersClient) regUser(w http.ResponseWriter, r *http.Request) {
 		Pswd  string `json:"password" validate:"required,min=8"`
 	}{}
 
-	rq := r.Context().Value(ck.ReqKey).(string)
+	rq, _ := r.Context().Value(ck.ReqKey).(string)
+	if rq == "" {
+		rq = "no-request-id"
+	}
 	uc.log.Info("New request",
 		zap.String("op", op),
 		zap.String("request id", rq))
@@ -87,7 +90,10 @@ func (uc *UsersClient) logUser(w http.ResponseWriter, r *http.Request) {
 		Pswd  string `json:"password" validate:"required,min=8"`
 	}{}
 
-	rq := r.Context().Value(ck.ReqKey).(string)
+	rq, _ := r.Context().Value(ck.ReqKey).(string)
+	if rq == "" {
+		rq = "no-request-id"
+	}
 	uc.log.Info("New request",
 		zap.String("op", op),
 		zap.String("request id", rq))
@@ -146,10 +152,26 @@ func (uc *UsersClient) delUser(w http.ResponseWriter, r *http.Request) {
 		delUserId string `validate:"required,len=36"`
 	}{}
 
-	rq := r.Context().Value(ck.ReqKey).(string)
+	rqVal := r.Context().Value(ck.ReqKey)
+	rq, _ := rqVal.(string)
+	if rq == "" {
+		rq = r.Header.Get("X-Request-ID")
+	}
+	if rq == "" {
+		uc.log.Error("Request ID missing from context and header", zap.String("op", op))
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
 
-	req.role = r.Context().Value(ck.UserKey).(ck.UserInfo).Role
-	req.userId = r.Context().Value(ck.UserKey).(ck.UserInfo).UserID
+	userVal := r.Context().Value(ck.UserKey)
+	userInfo, _ := userVal.(ck.UserInfo)
+	if userInfo.UserID == "" || userInfo.Role == "" {
+		uc.log.Error("User data missing from context (JWT not applied?)", zap.String("op", op), zap.String("request id", rq))
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+	req.role = userInfo.Role
+	req.userId = userInfo.UserID
 	req.delUserId = chi.URLParam(r, "delUserId")
 	if req.delUserId == "me" {
 		req.delUserId = req.userId
@@ -251,7 +273,10 @@ func (uc *UsersClient) ExtJWTData(tokenString, sk, rq string) (ck.UserInfo, erro
 func (uc *UsersClient) extUserId(w http.ResponseWriter, r *http.Request) {
 	const op = "usersClient.extUserId"
 
-	rq := r.Context().Value(ck.ReqKey).(string)
+	rq, _ := r.Context().Value(ck.ReqKey).(string)
+	if rq == "" {
+		rq = "no-request-id"
+	}
 	uc.log.Info("New request",
 		zap.String("op", op),
 		zap.String("request id", rq))

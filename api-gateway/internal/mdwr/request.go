@@ -66,11 +66,14 @@ func (m *mdwr) Metrics() func(http.Handler) http.Handler {
 	}
 }
 
+const RequestIDHeader = "X-Request-ID"
+
 func (m *mdwr) RequestID() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			reqID := uuid.NewString()
 			ctx := context.WithValue(r.Context(), ck.ReqKey, reqID)
+			r.Header.Set(RequestIDHeader, reqID)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
